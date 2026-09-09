@@ -1,0 +1,103 @@
+const express = require('express');
+const http = require('http');
+const path = require('path');
+const cors = require('cors');
+const helmet = require('helmet');
+const morgan = require('morgan');
+const rateLimit = require('express-rate-limit');
+const { Server } = require('socket.io');
+
+const { port, corsOrigin, uploadDir, jwtSecret } = require('./config/env');
+const jwt = require('jsonwebtoken');
+const { testConnection } = require('./config/db');
+const authRoutes = require('./routes/authRoutes');
+const healthRoutes = require('./routes/healthRoutes');
+const menuRoutes = require('./routes/menuRoutes');
+const orderRoutes = require('./routes/orderRoutes');
+const notificationRoutes = require('./routes/notificationRoutes');
+const dashboardRoutes = require('./routes/dashboardRoutes');
+const billingRoutes = require('./routes/billingRoutes');
+const splitBillRoutes = require('./routes/splitBillRoutes');
+const tableRoutes = require('./routes/tableRoutes');
+const feedbackRoutes = require('./routes/feedbackRoutes');
+const notFoundMiddleware = require('./middleware/notFound');
+const errorHandlerMiddleware = require('./middleware/errorHandler');
+
+const app = express();
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: corsOrigin,
+    credentials: true,
+  },
+});
+
+const limiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 300, standardHeaders: true, legacyHeaders: false });
+
+app.use(helmet());
+app.use(cors({ origin: corsOrigin, credentials: true }));
+app.use(morgan('dev'));
+app.use(limiter);
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true }));
+app.use('/uploads', express.static(path.join(__dirname, uploadDir)));
+
+app.get('/health', (_req, res) => res.json({ ok: true, message: 'Backend is running' }));
+app.use('/api/health', healthRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/menu', menuRoutes);
+app.use('/api/orders', orderRoutes);
+app.use('/api/notifications', notificationRoutes);
+app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/bills', billingRoutes);
+app.use('/api/split-bill', splitBillRoutes);
+app.use('/api/tables', tableRoutes);
+app.use('/api/feedback', feedbackRoutes);
+
+app.use(notFoundMiddleware);
+app.use(errorHandlerMiddleware);
+
+// Only authenticated managers are allowed to hold a live socket connection -
+// the customer app never connects here, it polls REST for its own order
+// status instead. The manager dashboard sends its JWT access token as
+// `auth: { token }` when it calls io('...', { auth: { token } }).
+io.use((socket, next) => {
+  try {
+    const token = socket.handshake.auth?.token;
+    if (!token) return next(new Error('Authentication required'));
+    const decoded = jwt.verify(token, jwtSecret);
+    socket.managerId = decoded.id;
+    next();
+  } catch {
+    next(new Error('Authentication required'));
+  }
+});
+
+io.on('connection', (socket) => {
+  socket.join(`manager:${socket.managerId}`);
+
+  socket.on('disconnect', () => {
+    console.log(`Socket disconnected: ${socket.id}`);
+  });
+});
+
+app.locals.io = io;
+
+async function startServer() {
+  try {
+    const connected = await testConnection();
+    if (connected) {
+      console.log('PostgreSQL connection successful');
+    }
+  } catch (error) {
+    console.warn('PostgreSQL connection unavailable; continuing with startup.', error.message);
+  }
+
+  server.listen(port, () => {
+    console.log(`Server running on port ${port}`);
+  });
+}
+
+startServer();
+
+module.exports = app;

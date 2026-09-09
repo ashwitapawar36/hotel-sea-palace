@@ -1,75 +1,96 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Search, ShoppingCart, Loader2, UtensilsCrossed, Wine } from "lucide-react";
+import {
+  Search,
+  ShoppingCart,
+  Loader2,
+  UtensilsCrossed,
+  Wine,
+} from "lucide-react";
+
 import DishCard from "../components/DishCard";
 import NavDrawer from "../components/NavDrawer";
 import { useCart } from "../context/CartContext";
 import { useMenu } from "../context/MenuContext";
 
 const SECTIONS = [
-  { key: "food", label: "Food", icon: UtensilsCrossed },
-  { key: "bar", label: "Bar", icon: Wine },
+  {
+    key: "vegetarian",
+    label: "Veg",
+    icon: UtensilsCrossed,
+  },
+  {
+    key: "non-vegetarian",
+    label: "Non-Veg",
+    icon: UtensilsCrossed,
+  },
+  {
+    key: "common",
+    label: "Snacks & Sides",
+    icon: UtensilsCrossed,
+  },
+  {
+    key: "bar",
+    label: "Bar",
+    icon: Wine,
+  },
 ];
 
-// FOOD is a real two-level hierarchy: every Food category belongs to
-// exactly one parent group, Vegetarian Items or Non-Vegetarian Items (see
-// each item's normalized `foodGroup`, sourced from
-// menu_categories.food_group). This list is just the display labels for
-// the two group keys the backend returns - the hierarchy itself is not
-// defined here.
-const FOOD_GROUPS = [
-  { key: "vegetarian", label: "Vegetarian Items" },
-  { key: "non-vegetarian", label: "Non-Vegetarian Items" },
-];
+// Only display labels change here.
+// Database category IDs, names and slugs remain unchanged.
+function categoryLabel(category) {
+  switch (category.slug) {
+    case "veg-biryani":
+    case "non-veg-biryani":
+      return "Biryani";
 
-function slugify(text) {
-  return String(text)
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/(^-|-$)/g, "");
+    case "veg-thali":
+    case "non-veg-thali":
+      return "Try Our Thali’s";
+
+    default:
+      return category.name;
+  }
 }
 
-function GroupDivider({ label }) {
-  return (
-    <div style={{ display: "flex", alignItems: "center", gap: 10, margin: "26px 0 14px" }}>
-      <div style={{ flex: 1, height: 1, background: "var(--border)" }} />
-      <span style={{ fontFamily: "Poppins,sans-serif", fontSize: 12.5, fontWeight: 800, letterSpacing: "0.08em", color: "var(--gold)", textTransform: "uppercase", whiteSpace: "nowrap" }}>
-        {label}
-      </span>
-      <div style={{ flex: 1, height: 1, background: "var(--border)" }} />
-    </div>
+function itemCategoryKey(item) {
+  return String(
+    item.categoryId ||
+      item.categorySlug ||
+      item.category ||
+      "uncategorized"
   );
 }
 
-// One parent section (Vegetarian Items / Non-Vegetarian Items): a quick-jump
-// chip per child category, then every child category rendered as its own
-// subsection with its dishes underneath - never flattened into one shared
-// grid, so the hierarchy stays visually obvious while browsing.
-function FoodGroupSection({ label, categories }) {
-  const scrollToCategory = (name) => {
-    document.getElementById(`food-cat-${slugify(name)}`)?.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
+const styles = {
+  grid: {
+    display: "grid",
+    gridTemplateColumns:
+      "repeat(auto-fit, minmax(min(100%, 155px), 1fr))",
+    gap: 10,
+  },
 
+  heading: {
+    fontFamily: "Poppins, sans-serif",
+    fontSize: 15,
+    fontWeight: 700,
+    color: "var(--white)",
+    margin: 0,
+  },
+
+  empty: {
+    color: "var(--muted)",
+    fontSize: 13,
+    textAlign: "center",
+    marginTop: 36,
+  },
+};
+
+function DishGrid({ items }) {
   return (
-    <div>
-      <GroupDivider label={label} />
-      <div className="chip-row" style={{ marginBottom: 18 }}>
-        {categories.map((cat) => (
-          <button key={cat.name} className="chip" onClick={() => scrollToCategory(cat.name)}>
-            {cat.name}
-          </button>
-        ))}
-      </div>
-      {categories.map((cat) => (
-        <div key={cat.name} id={`food-cat-${slugify(cat.name)}`} style={{ marginBottom: 24, scrollMarginTop: 90 }}>
-          <h3 style={{ fontFamily: "Poppins,sans-serif", fontSize: 14.5, fontWeight: 700, color: "var(--white)", marginBottom: 10 }}>{cat.name}</h3>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-            {cat.items.map((d) => (
-              <DishCard key={d.id} dish={d} />
-            ))}
-          </div>
-        </div>
+    <div style={styles.grid}>
+      {items.map((dish) => (
+        <DishCard key={dish.id} dish={dish} />
       ))}
     </div>
   );
@@ -78,188 +99,539 @@ function FoodGroupSection({ label, categories }) {
 export default function Menu() {
   const navigate = useNavigate();
   const { cartCount } = useCart();
-  const { foodItems, barItems, barCategories, loading, error, reload } = useMenu();
-  // FOOD and BAR are the two primary sections. Bar keeps its own flat
-  // category-chip filter (unchanged); Food renders as the Vegetarian /
-  // Non-Vegetarian hierarchy below instead of a filtered single-category view.
-  const [section, setSection] = useState("food");
-  const [activeBarCategory, setActiveBarCategory] = useState("All");
+
+  const {
+    foodItems,
+    barItems,
+    categoryDetails = [],
+    loading,
+    error,
+    reload,
+  } = useMenu();
+
+  const [section, setSection] = useState("vegetarian");
+  const [activeCategory, setActiveCategory] = useState("all");
   const [search, setSearch] = useState("");
 
   const isBar = section === "bar";
-
-  const barCategoryChips = useMemo(() => {
-    const present = new Set(barItems.map((d) => d.category).filter(Boolean));
-    return [...new Set(barCategories.filter((c) => present.has(c)))];
-  }, [barItems, barCategories]);
-
-  useEffect(() => {
-    if (activeBarCategory !== "All" && !barCategoryChips.includes(activeBarCategory)) {
-      setActiveBarCategory("All");
-    }
-  }, [barCategoryChips, activeBarCategory]);
-
-  const barFiltered = useMemo(
-    () =>
-      barItems.filter((item) => {
-        const matchesCategory = activeBarCategory === "All" ? true : item.category === activeBarCategory;
-        const matchesSearch = search.trim() ? item.name.toLowerCase().includes(search.toLowerCase()) : true;
-        return matchesCategory && matchesSearch;
-      }),
-    [barItems, activeBarCategory, search]
+  const currentSection = SECTIONS.find(
+    (entry) => entry.key === section
   );
 
-  // Today's Specials is a promotional cross-cutting list, not a Food
-  // category - it's rendered above the hierarchy, separately from it.
-  const specials = useMemo(() => {
-    const matchesSearch = (d) => (search.trim() ? d.name.toLowerCase().includes(search.toLowerCase()) : true);
-    return foodItems.filter((d) => d.isSpecial && matchesSearch(d));
-  }, [foodItems, search]);
+  const sectionItems = useMemo(() => {
+    const items = isBar
+      ? barItems
+      : foodItems.filter(
+          (item) => item.foodGroup === section
+        );
 
-  // Groups every Food item by its parent (foodGroup) then its category, in
-  // the category's real display_order from the database - the hierarchy
-  // itself lives in menu_categories/menu_items, not in this component. A
-  // search term filters dishes within each category rather than flattening
-  // the structure; a category with zero matches (or zero available items)
-  // simply doesn't render, and each dish appears in exactly one category.
-  const foodHierarchy = useMemo(() => {
-    const matchesSearch = (d) => (search.trim() ? d.name.toLowerCase().includes(search.toLowerCase()) : true);
-    const byGroup = { vegetarian: new Map(), "non-vegetarian": new Map() };
-    foodItems.forEach((d) => {
-      if (!byGroup[d.foodGroup] || !matchesSearch(d)) return;
-      const bucket = byGroup[d.foodGroup];
-      if (!bucket.has(d.category)) bucket.set(d.category, { name: d.category, order: d.categoryOrder, items: [] });
-      bucket.get(d.category).items.push(d);
+    return items.filter(
+      (item) => item.available !== false
+    );
+  }, [foodItems, barItems, isBar, section]);
+
+  // Group dishes by actual category ID.
+  // Use the same hierarchy for food and bar.
+  const categories = useMemo(() => {
+    const metadata = new Map(
+      categoryDetails.map((category) => [
+        String(category.id),
+        category,
+      ])
+    );
+
+    const grouped = new Map();
+
+    sectionItems.forEach((item) => {
+      const key = itemCategoryKey(item);
+      const category = metadata.get(key);
+
+      if (!grouped.has(key)) {
+        grouped.set(key, {
+          key,
+          name:
+            category?.name ||
+            item.category ||
+            "Other",
+          slug:
+            category?.slug ||
+            item.categorySlug ||
+            "",
+          order: Number(
+            category?.displayOrder ??
+              item.categoryOrder ??
+              0
+          ),
+          items: [],
+        });
+      }
+
+      grouped.get(key).items.push(item);
     });
-    const toSorted = (map) => [...map.values()].sort((a, b) => a.order - b.order);
-    return FOOD_GROUPS.map((g) => ({ ...g, categories: toSorted(byGroup[g.key]) })).filter((g) => g.categories.length > 0);
-  }, [foodItems, search]);
+
+    return [...grouped.values()].sort(
+      (a, b) =>
+        a.order - b.order ||
+        a.name.localeCompare(b.name)
+    );
+  }, [sectionItems, categoryDetails]);
+
+  // If a reload removes the selected category, show all.
+  const selectedCategory =
+    activeCategory === "all" ||
+    categories.some(
+      (category) => category.key === activeCategory
+    )
+      ? activeCategory
+      : "all";
+
+  const visibleCategories = useMemo(() => {
+    const query = search.trim().toLowerCase();
+
+    return categories
+      .filter(
+        (category) =>
+          selectedCategory === "all" ||
+          category.key === selectedCategory
+      )
+      .map((category) => {
+        const matchesCategory =
+          category.name.toLowerCase().includes(query) ||
+          categoryLabel(category)
+            .toLowerCase()
+            .includes(query);
+
+        return {
+          ...category,
+          items: category.items.filter(
+            (item) =>
+              !query ||
+              matchesCategory ||
+              item.name.toLowerCase().includes(query)
+          ),
+        };
+      })
+      .filter((category) => category.items.length > 0);
+  }, [categories, selectedCategory, search]);
+
+  const visibleCount = visibleCategories.reduce(
+    (total, category) => total + category.items.length,
+    0
+  );
+
+  // Promotional copies stay inside the selected food tab.
+  // Each dish also remains in its normal category below.
+  const specials = useMemo(() => {
+    if (isBar || selectedCategory !== "all") return [];
+
+    return visibleCategories.flatMap((category) =>
+      category.items.filter((item) => item.isSpecial)
+    );
+  }, [visibleCategories, selectedCategory, isBar]);
+
+  const changeSection = (key) => {
+    setSection(key);
+    setActiveCategory("all");
+    setSearch("");
+  };
+
+  const clearFilters = () => {
+    setActiveCategory("all");
+    setSearch("");
+  };
 
   return (
     <div className="app-shell">
-      <div className="topbar" style={{ justifyContent: "space-between" }}>
-        <span className="page-title" onClick={() => navigate("/")} style={{ cursor: "pointer" }}>
+      <div
+        className="topbar"
+        style={{ justifyContent: "space-between" }}
+      >
+        <button
+          type="button"
+          className="page-title"
+          onClick={() => navigate("/")}
+          style={{
+            cursor: "pointer",
+            background: "transparent",
+            border: "none",
+            color: "var(--white)",
+            padding: 0,
+            textAlign: "left",
+          }}
+        >
           Hotel Sea Palace
-        </span>
+        </button>
+
         <div style={{ display: "flex", gap: 2 }}>
-          <button className="icon-btn" style={{ position: "relative", border: "none", background: "transparent" }} onClick={() => navigate("/cart")}>
-            <ShoppingCart size={20} color="var(--white)" />
+          <button
+            type="button"
+            className="icon-btn"
+            aria-label={`View cart, ${cartCount} items`}
+            onClick={() => navigate("/cart")}
+            style={{
+              position: "relative",
+              border: "none",
+              background: "transparent",
+            }}
+          >
+            <ShoppingCart
+              size={20}
+              color="var(--white)"
+            />
+
             {cartCount > 0 && (
               <span
                 key={cartCount}
                 className="badge-pop"
-                style={{ position: "absolute", top: 2, right: 2, width: 15, height: 15, background: "var(--gold)", color: "var(--bg)", fontSize: 9, fontWeight: 700, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center" }}
+                style={{
+                  position: "absolute",
+                  top: 2,
+                  right: 2,
+                  minWidth: 15,
+                  height: 15,
+                  padding: "0 3px",
+                  background: "var(--gold)",
+                  color: "var(--bg)",
+                  fontSize: 9,
+                  fontWeight: 700,
+                  borderRadius: 50,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
               >
                 {cartCount}
               </span>
             )}
           </button>
+
           <NavDrawer />
         </div>
       </div>
 
       <div className="page" style={{ paddingTop: 16 }}>
         <div style={{ padding: "0 16px" }}>
-          {/* FOOD | BAR - the two primary sections. Bar is never nested
-              inside Food, and Food's Vegetarian/Non-Vegetarian split never
-              leaks into Bar. */}
-          <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
-            {SECTIONS.map(({ key, label, icon: Icon }) => {
-              const active = section === key;
-              return (
-                <button
-                  key={key}
-                  onClick={() => setSection(key)}
-                  style={{
-                    flex: 1,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: 7,
-                    padding: "12px 6px",
-                    borderRadius: 13,
-                    border: `1.5px solid ${active ? "var(--gold)" : "var(--border)"}`,
-                    background: active ? "var(--gold-dim)" : "var(--surface)",
-                    color: active ? "var(--gold)" : "var(--muted)",
-                    fontFamily: "Poppins,sans-serif",
-                    fontSize: 13,
-                    fontWeight: 700,
-                  }}
-                >
-                  <Icon size={16} />
-                  {label}
-                </button>
-              );
-            })}
+          {/* Main menu sections */}
+          <div
+            role="group"
+            aria-label="Menu sections"
+            style={{
+              display: "flex",
+              gap: 8,
+              overflowX: "auto",
+              paddingBottom: 6,
+              marginBottom: 16,
+            }}
+          >
+            {SECTIONS.map(
+              ({ key, label, icon: Icon }) => {
+                const active = section === key;
+
+                return (
+                  <button
+                    type="button"
+                    key={key}
+                    aria-pressed={active}
+                    onClick={() => changeSection(key)}
+                    style={{
+                      flex: "1 0 auto",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: 6,
+                      padding: "12px 14px",
+                      borderRadius: 13,
+                      border: `1.5px solid ${
+                        active
+                          ? "var(--gold)"
+                          : "var(--border)"
+                      }`,
+                      background: active
+                        ? "var(--gold-dim)"
+                        : "var(--surface)",
+                      color: active
+                        ? "var(--gold)"
+                        : "var(--muted)",
+                      fontFamily: "Poppins, sans-serif",
+                      fontSize: 12,
+                      fontWeight: 700,
+                      whiteSpace: "nowrap",
+                      cursor: "pointer",
+                    }}
+                  >
+                    <Icon size={16} />
+                    {label}
+                  </button>
+                );
+              }
+            )}
           </div>
 
-          <div style={{ display: "flex", alignItems: "center", background: "var(--surface-alt)", borderRadius: 13, border: "1px solid var(--border)", overflow: "hidden", marginBottom: 16 }}>
+          {/* Search within the selected tab */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              background: "var(--surface-alt)",
+              borderRadius: 13,
+              border: "1px solid var(--border)",
+              overflow: "hidden",
+              marginBottom: 16,
+            }}
+          >
             <input
-              type="text"
-              placeholder={isBar ? "Search drinks..." : "Search dishes..."}
+              type="search"
+              aria-label={`Search ${currentSection.label}`}
+              placeholder={
+                isBar
+                  ? "Search drinks or categories..."
+                  : `Search ${currentSection.label.toLowerCase()}...`
+              }
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              style={{ flex: 1, background: "transparent", border: "none", outline: "none", padding: "12px 14px", fontSize: 13, color: "var(--white)" }}
+              onChange={(event) =>
+                setSearch(event.target.value)
+              }
+              style={{
+                flex: 1,
+                minWidth: 0,
+                background: "transparent",
+                border: "none",
+                padding: "12px 14px",
+                fontSize: 13,
+                color: "var(--white)",
+              }}
             />
-            <div style={{ padding: "0 14px" }}>
-              <Search size={17} color="var(--muted)" />
-            </div>
-          </div>
 
-          {isBar && (
-            <div className="chip-row" style={{ marginBottom: 20 }}>
-              <button className={`chip ${activeBarCategory === "All" ? "active" : ""}`} onClick={() => setActiveBarCategory("All")}>
-                All
-              </button>
-              {barCategoryChips.map((c) => (
-                <button key={c} className={`chip ${activeBarCategory === c ? "active" : ""}`} onClick={() => setActiveBarCategory(c)}>
-                  {c}
-                </button>
-              ))}
-            </div>
-          )}
+            <Search
+              size={17}
+              color="var(--muted)"
+              aria-hidden="true"
+              style={{
+                flexShrink: 0,
+                marginRight: 14,
+              }}
+            />
+          </div>
 
           {loading ? (
-            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginTop: 60, color: "var(--muted)" }}>
+            <div
+              role="status"
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                marginTop: 60,
+                color: "var(--muted)",
+              }}
+            >
               <Loader2 size={22} className="spin" />
-              <p style={{ fontSize: 13, marginTop: 10 }}>Loading menu…</p>
+              <p style={{ fontSize: 13, marginTop: 10 }}>
+                Loading menu…
+              </p>
             </div>
           ) : error ? (
-            <div style={{ textAlign: "center", marginTop: 60 }}>
-              <p style={{ color: "var(--red, #e53935)", fontSize: 13, marginBottom: 12 }}>{error}</p>
-              <button className="outline-btn" style={{ maxWidth: 160, margin: "0 auto" }} onClick={reload}>
+            <div
+              role="alert"
+              style={{
+                textAlign: "center",
+                marginTop: 40,
+              }}
+            >
+              <p
+                style={{
+                  color: "var(--red, #e53935)",
+                  fontSize: 13,
+                  marginBottom: 12,
+                }}
+              >
+                {error}
+              </p>
+
+              <button
+                type="button"
+                className="outline-btn"
+                onClick={() => reload()}
+                style={{
+                  maxWidth: 160,
+                  margin: "0 auto",
+                }}
+              >
                 Retry
               </button>
             </div>
-          ) : isBar ? (
-            barFiltered.length === 0 ? (
-              <p style={{ color: "var(--muted)", fontSize: 13, textAlign: "center", marginTop: 40 }}>No drinks in this category.</p>
-            ) : (
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-                {barFiltered.map((d) => (
-                  <DishCard key={d.id} dish={d} />
-                ))}
-              </div>
-            )
-          ) : specials.length === 0 && foodHierarchy.length === 0 ? (
-            <p style={{ color: "var(--muted)", fontSize: 13, textAlign: "center", marginTop: 40 }}>No dishes match your search.</p>
           ) : (
             <>
-              {specials.length > 0 && (
-                <div style={{ marginBottom: 8 }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
-                    <h2 style={{ fontFamily: "Poppins,sans-serif", fontSize: 15, fontWeight: 700, color: "var(--gold)" }}>Today's Specials</h2>
-                  </div>
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-                    {specials.map((d) => (
-                      <DishCard key={d.id} dish={d} />
-                    ))}
-                  </div>
+              {/* Category filters */}
+              {categories.length > 0 && (
+                <div
+                  className="chip-row"
+                  role="group"
+                  aria-label="Category filters"
+                  style={{ marginBottom: 18 }}
+                >
+                  <button
+                    type="button"
+                    className={`chip ${
+                      selectedCategory === "all"
+                        ? "active"
+                        : ""
+                    }`}
+                    aria-pressed={
+                      selectedCategory === "all"
+                    }
+                    onClick={() =>
+                      setActiveCategory("all")
+                    }
+                  >
+                    All
+                  </button>
+
+                  {categories.map((category) => (
+                    <button
+                      type="button"
+                      key={category.key}
+                      className={`chip ${
+                        selectedCategory === category.key
+                          ? "active"
+                          : ""
+                      }`}
+                      aria-pressed={
+                        selectedCategory === category.key
+                      }
+                      onClick={() =>
+                        setActiveCategory(category.key)
+                      }
+                    >
+                      {categoryLabel(category)}
+                    </button>
+                  ))}
                 </div>
               )}
-              {foodHierarchy.map((group) => (
-                <FoodGroupSection key={group.key} label={group.label} categories={group.categories} />
-              ))}
+
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  gap: 12,
+                  marginBottom: 16,
+                }}
+              >
+                <h1 style={styles.heading}>
+                  {currentSection.label}
+                </h1>
+
+                <span
+                  aria-live="polite"
+                  style={{
+                    fontSize: 12,
+                    color: "var(--muted)",
+                  }}
+                >
+                  {visibleCount}{" "}
+                  {visibleCount === 1 ? "item" : "items"}
+                </span>
+              </div>
+
+              {section === "common" && (
+                <p
+                  style={{
+                    color: "var(--muted)",
+                    fontSize: 12,
+                    lineHeight: 1.6,
+                    marginBottom: 18,
+                  }}
+                >
+                  Soups, snacks, rice and breads.
+                  Check each dish’s veg or non-veg indicator.
+                </p>
+              )}
+
+              {visibleCategories.length === 0 ? (
+                <div style={styles.empty}>
+                  <p>
+                    {search.trim()
+                      ? "No items match your search in this section."
+                      : "No items are currently available in this section."}
+                  </p>
+
+                  {(search.trim() ||
+                    selectedCategory !== "all") && (
+                    <button
+                      type="button"
+                      className="outline-btn"
+                      onClick={clearFilters}
+                      style={{
+                        maxWidth: 180,
+                        margin: "16px auto",
+                      }}
+                    >
+                      Clear filters
+                    </button>
+                  )}
+                </div>
+              ) : (
+                <>
+                  {specials.length > 0 && (
+                    <section
+                      aria-labelledby="menu-specials"
+                      style={{ marginBottom: 28 }}
+                    >
+                      <h2
+                        id="menu-specials"
+                        style={{
+                          ...styles.heading,
+                          color: "var(--gold)",
+                          marginBottom: 12,
+                        }}
+                      >
+                        Today’s Specials
+                      </h2>
+
+                      <DishGrid items={specials} />
+                    </section>
+                  )}
+
+                  {/* Preserve separate headings in All view */}
+                  {visibleCategories.map((category) => (
+                    <section
+                      key={category.key}
+                      aria-labelledby={`category-${category.key}`}
+                      style={{ marginBottom: 28 }}
+                    >
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 12,
+                          marginBottom: 12,
+                        }}
+                      >
+                        <h2
+                          id={`category-${category.key}`}
+                          style={{
+                            ...styles.heading,
+                            color: "var(--gold)",
+                          }}
+                        >
+                          {categoryLabel(category)}
+                        </h2>
+
+                        <div
+                          aria-hidden="true"
+                          style={{
+                            flex: 1,
+                            height: 1,
+                            background: "var(--border)",
+                          }}
+                        />
+                      </div>
+
+                      <DishGrid items={category.items} />
+                    </section>
+                  ))}
+                </>
+              )}
             </>
           )}
         </div>

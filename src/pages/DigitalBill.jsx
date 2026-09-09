@@ -132,7 +132,7 @@ export default function DigitalBill() {
   }, []);
 
   const handlePay = async () => {
-    if (!order || !paymentMethod) return;
+    if (!order || !["cash", "card", "upi"].includes(paymentMethod)) return;
     setPaying(true);
     setPayError(null);
     try {
@@ -314,26 +314,7 @@ export default function DigitalBill() {
                       </button>
                     );
                   })}
-                  {splitResult && (
-                    <button
-                      onClick={() => setPaymentMethod("split")}
-                      style={{
-                        flex: 1,
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                        gap: 6,
-                        padding: "12px 6px",
-                        borderRadius: 12,
-                        border: `1.5px solid ${paymentMethod === "split" ? "var(--gold)" : "var(--border)"}`,
-                        background: paymentMethod === "split" ? "var(--gold-dim)" : "transparent",
-                        color: paymentMethod === "split" ? "var(--gold)" : "var(--muted)",
-                      }}
-                    >
-                      <Users2 size={18} />
-                      <span style={{ fontSize: 11, fontFamily: "Poppins,sans-serif", fontWeight: 600 }}>Split</span>
-                    </button>
-                  )}
+                  
                 </div>
                 {payError && <p style={{ color: "var(--red, #e53935)", fontSize: 12, marginBottom: 10 }}>{payError}</p>}
                 <button className="gold-btn" disabled={!paymentMethod || paying} onClick={handlePay}>

@@ -11,10 +11,17 @@ function normalizeItem(row) {
     image: row.image_url,
     category: row.category_name,
     menuType: row.menu_type,
+    foodGroup: row.food_group || null,
     available: row.is_available !== false,
-    isSpecial: !!row.is_special,
-    isVeg: !!row.is_veg,
-    variants: (row.variants || []).map((v) => ({ id: v.id, label: v.label, price: Number(v.price) })),
+    isSpecial: Boolean(row.is_special),
+    isVeg: Boolean(row.is_veg),
+    isAlcoholic: Boolean(row.is_alcoholic),
+    variants: (row.variants || []).map((variant) => ({
+      id: variant.id,
+      label: variant.label,
+      price: Number(variant.price),
+      displayOrder: Number(variant.display_order ?? 0),
+    })),
   };
 }
 

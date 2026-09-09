@@ -1,118 +1,266 @@
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+
 import { api, ApiError } from "../services/api";
 
 const MenuContext = createContext(null);
 
-// Fallback categories shown while the network request is in flight so the
-// chip row doesn't jump around; overwritten as soon as real data arrives.
-const FALLBACK_STATE = {
+const INITIAL_STATE = {
   foodItems: [],
   barItems: [],
   foodCategories: [],
   barCategories: [],
+  categoryDetails: [],
   popularItems: [],
 };
 
-export function MenuProvider({ children }) {
-  const [state, setState] = useState(FALLBACK_STATE);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+const GROUP_ORDER = {
+  vegetarian: 1,
+  "non-vegetarian": 2,
+  common: 3,
+};
 
-  const load = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const [foodRes, barRes, catRes, popularRes] = await Promise.all([
-        api.get("/menu/items?type=food"),
-        api.get("/menu/items?type=bar"),
-        api.get("/menu/categories"),
-        api.get("/menu/popular"),
-      ]);
-
-      const categories = catRes?.data || [];
-
-      setState({
-        foodItems: (foodRes?.data || []).map(normalizeFoodItem),
-        barItems: (barRes?.data || []).map(normalizeBarItem),
-        foodCategories: categories.filter((c) => c.menu_type === "food").map((c) => c.name),
-        barCategories: categories.filter((c) => c.menu_type === "bar").map((c) => c.name),
-        // Real order-history popularity (total quantity sold, cancelled
-        // orders excluded) - see GET /api/menu/popular. Empty when there's
-        // no order history yet; the Home page shows a recommended state then.
-        popularItems: (popularRes?.data || []).map(normalizeFoodItem),
-      });
-    } catch (err) {
-      setError(err instanceof ApiError ? err.message : "Failed to load the menu. Please try again.");
-    } finally {
-      setLoading(false);
-    }
+function normalizeCategory(row) {
+  return {
+    id: row.id,
+    name: row.name,
+    slug: row.slug,
+    menuType: row.menu_type,
+    foodGroup:
+      row.menu_type === "food" ? row.food_group || null : null,
+    displayOrder: Number(row.display_order ?? 0),
+    isActive: row.is_active !== false,
   };
-
-  useEffect(() => {
-    load();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const value = useMemo(
-    () => ({
-      ...state,
-      allItems: [...state.foodItems, ...state.barItems],
-      loading,
-      error,
-      reload: load,
-    }),
-    [state, loading, error]
-  );
-
-  return <MenuContext.Provider value={value}>{children}</MenuContext.Provider>;
 }
 
-// The backend returns snake_case Postgres rows; the rest of the app (DishCard,
-// Menu, Home, Cart) expects the shape the old static menuData.js used, so we
-// translate once here rather than sprinkling `mi.image_url` vs `dish.image`
-// everywhere.
+function sortCategories(a, b) {
+  if (a.menuType !== b.menuType) {
+    return a.menuType === "food" ? -1 : 1;
+  }
+
+  if (a.menuType === "food") {
+    const groupDifference =
+      (GROUP_ORDER[a.foodGroup] ?? 4) -
+      (GROUP_ORDER[b.foodGroup] ?? 4);
+
+    if (groupDifference !== 0) return groupDifference;
+  }
+
+  return (
+    a.displayOrder - b.displayOrder ||
+    a.name.localeCompare(b.name)
+  );
+}
+
+// Keep the original food-item shape used by DishCard,
+// Home and Cart. Group membership comes from the database.
 function normalizeFoodItem(row) {
   return {
     id: row.id,
     name: row.name,
-    desc: row.description,
+    desc: row.description || "",
     price: Number(row.price),
-    image: row.image_url,
+    image: row.image_url || null,
+
+    categoryId: row.category_id,
     category: row.category_name,
-    // 'vegetarian' | 'non-vegetarian' - the parent section a Food category
-    // belongs to (menu_categories.food_group). Always null for Bar items.
+    categorySlug: row.category_slug,
+    categoryOrder: Number(row.category_display_order ?? 0),
+
+    menuType: "food",
     foodGroup: row.food_group || null,
-    categoryOrder: row.category_display_order ?? 0,
-    available: row.is_available !== false,
-    isSpecial: !!row.is_special,
-    isVeg: !!row.is_veg,
-    // Food items are never alcoholic, but this is read straight off the
-    // row (not assumed) so cartDishes/tax math always has a real value to
-    // spread onto every cart line, regardless of item type.
-    isAlcoholic: !!row.is_alcoholic,
+
+    available:
+      row.is_available !== false &&
+      row.category_is_active !== false,
+
+    isSpecial: Boolean(row.is_special),
+    isVeg: Boolean(row.is_veg),
+    isAlcoholic: Boolean(row.is_alcoholic),
+
+    preparationTimeMinutes: Number(
+      row.preparation_time_minutes ?? 15
+    ),
+
+    totalQuantity: Number(row.total_quantity ?? 0),
   };
 }
 
 function normalizeBarItem(row) {
+  const variants = (row.variants || [])
+    .map((variant, index) => ({
+      id: variant.id,
+      label: variant.label,
+      price: Number(variant.price),
+      displayOrder: Number(
+        variant.display_order ??
+          variant.displayOrder ??
+          index
+      ),
+    }))
+    .sort(
+      (a, b) =>
+        a.displayOrder - b.displayOrder ||
+        a.price - b.price
+    );
+
   return {
     id: row.id,
     name: row.name,
+    desc: row.description || "",
+    image: row.image_url || null,
+    price: Number(row.price),
+
+    categoryId: row.category_id,
     category: row.category_name,
-    image: row.image_url,
-    available: row.is_available !== false,
-    desc: row.description,
-    // Not every Bar-menu item is alcohol (Cold Drinks & Others, Solkadhi,
-    // Buttermilk, etc.) - this is the authoritative per-item flag used to
-    // split CGST+SGST vs VAT everywhere tax is previewed client-side.
-    isAlcoholic: !!row.is_alcoholic,
-    // Each variant keeps its own DB id (menu_item_variants.id) - this is
-    // what gets sent to the order API, never the label.
-    variants: (row.variants || []).map((v) => ({ id: v.id, label: v.label, price: Number(v.price) })),
+    categorySlug: row.category_slug,
+    categoryOrder: Number(row.category_display_order ?? 0),
+
+    menuType: "bar",
+    foodGroup: null,
+
+    available:
+      row.is_available !== false &&
+      row.category_is_active !== false,
+
+    isSpecial: Boolean(row.is_special),
+    isVeg: Boolean(row.is_veg),
+
+    // Bar includes non-alcoholic drinks too.
+    isAlcoholic: Boolean(row.is_alcoholic),
+
+    // Preserve database IDs for order submission.
+    variants,
   };
 }
 
+export function MenuProvider({ children }) {
+  const [state, setState] = useState(INITIAL_STATE);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Prevent an older request from overwriting a newer reload.
+  const requestIdRef = useRef(0);
+
+  const load = useCallback(async () => {
+    const requestId = ++requestIdRef.current;
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const [foodRes, barRes, categoryRes, popularRes] =
+        await Promise.all([
+          api.get("/menu/items?type=food"),
+          api.get("/menu/items?type=bar"),
+          api.get("/menu/categories"),
+          api.get("/menu/popular"),
+        ]);
+
+      if (requestId !== requestIdRef.current) return;
+
+      const categoryDetails = (categoryRes?.data || [])
+        .map(normalizeCategory)
+        .filter((category) => category.isActive)
+        .sort(sortCategories);
+
+      setState({
+        foodItems: (foodRes?.data || []).map(
+          normalizeFoodItem
+        ),
+
+        barItems: (barRes?.data || []).map(
+          normalizeBarItem
+        ),
+
+        // Keep these as name arrays for existing consumers.
+        foodCategories: categoryDetails
+          .filter((category) => category.menuType === "food")
+          .map((category) => category.name),
+
+        barCategories: categoryDetails
+          .filter((category) => category.menuType === "bar")
+          .map((category) => category.name),
+
+        // Full category metadata for the updated menu page.
+        categoryDetails,
+
+        // Popularity still comes from actual order history.
+        popularItems: (popularRes?.data || []).map(
+          normalizeFoodItem
+        ),
+      });
+    } catch (err) {
+      if (requestId !== requestIdRef.current) return;
+
+      setError(
+        err instanceof ApiError
+          ? err.message
+          : "Failed to load the menu. Please try again."
+      );
+    } finally {
+      if (requestId === requestIdRef.current) {
+        setLoading(false);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    load();
+
+    return () => {
+      // Ignore pending responses after cleanup.
+      requestIdRef.current += 1;
+    };
+  }, [load]);
+
+  const value = useMemo(
+    () => ({
+      ...state,
+
+      allItems: [...state.foodItems, ...state.barItems],
+
+      vegItems: state.foodItems.filter(
+        (item) => item.foodGroup === "vegetarian"
+      ),
+
+      nonVegItems: state.foodItems.filter(
+        (item) => item.foodGroup === "non-vegetarian"
+      ),
+
+      commonItems: state.foodItems.filter(
+        (item) => item.foodGroup === "common"
+      ),
+
+      loading,
+      error,
+      reload: load,
+    }),
+    [state, loading, error, load]
+  );
+
+  return (
+    <MenuContext.Provider value={value}>
+      {children}
+    </MenuContext.Provider>
+  );
+}
+
 export function useMenu() {
-  const ctx = useContext(MenuContext);
-  if (!ctx) throw new Error("useMenu must be used within MenuProvider");
-  return ctx;
+  const context = useContext(MenuContext);
+
+  if (!context) {
+    throw new Error(
+      "useMenu must be used within MenuProvider"
+    );
+  }
+
+  return context;
 }

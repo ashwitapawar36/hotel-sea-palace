@@ -1,604 +1,842 @@
--- Seed managers
--- Default credentials for local/dev use (change before production):
---   username: admin     password: SeaPalace@123
---   username: manager   password: SeaPalace@123
-INSERT INTO managers (username, email, full_name, password_hash, role, is_active)
-VALUES
-  ('admin', 'admin@seapalace.com', 'System Admin', '$2b$10$Z2LuDX44DXswztrgXgktt.XQoIiLlojGSChsQPnn0whQSS9Nl8xfy', 'admin', TRUE),
-  ('manager', 'manager@seapalace.com', 'Restaurant Manager', '$2b$10$Z2LuDX44DXswztrgXgktt.XQoIiLlojGSChsQPnn0whQSS9Nl8xfy', 'manager', TRUE)
-ON CONFLICT (username) DO NOTHING;
+BEGIN;
 
--- Seed restaurant tables
-INSERT INTO restaurant_tables (table_number, capacity, status, location, qr_code_text)
-VALUES
-  (1, 4, 'available', 'Near Window', 'table-1'),
-  (2, 2, 'occupied', 'Main Hall', 'table-2'),
-  (3, 4, 'reserved', 'Garden', 'table-3'),
-  (4, 6, 'available', 'Rooftop', 'table-4'),
-  (5, 4, 'available', 'Main Hall', 'table-5'),
-  (6, 4, 'available', 'Main Hall', 'table-6'),
-  (7, 2, 'available', 'Near Window', 'table-7'),
-  (8, 4, 'available', 'Garden', 'table-8'),
-  (9, 4, 'available', 'Main Hall', 'table-9'),
-  (10, 6, 'available', 'Rooftop', 'table-10'),
-  (11, 4, 'available', 'Main Hall', 'table-11'),
-  (12, 4, 'available', 'Garden', 'table-12'),
-  (13, 2, 'available', 'Near Window', 'table-13'),
-  (14, 4, 'available', 'Main Hall', 'table-14'),
-  (15, 4, 'available', 'Rooftop', 'table-15'),
-  (16, 6, 'available', 'Rooftop', 'table-16')
-ON CONFLICT (table_number) DO NOTHING;
+-- =========================================================
+-- MANAGERS
+-- Existing accounts and passwords are not overwritten.
+-- Default password for newly inserted accounts: SeaPalace@123
+-- =========================================================
+-- Prevent menu changes while this migration runs.
+LOCK TABLE menu_categories, menu_items
+IN SHARE ROW EXCLUSIVE MODE;
 
--- Seed categories (food menu + bar menu)
--- Seed categories (food menu + bar menu). Food categories carry a
--- food_group ('vegetarian' | 'non-vegetarian') so the customer-facing menu
--- can group them into the two required top-level sections; Bar categories
--- never set it, since Bar has no such split. Existing slugs are kept as-is
--- (only display names/order/food_group change) to avoid touching anything
--- that already references a category by slug.
-INSERT INTO menu_categories (name, slug, menu_type, food_group, description, display_order, is_active)
-VALUES
-  ('Soup', 'soup', 'food', 'vegetarian', 'Soup menu', 1, TRUE),
-  ('Snacks', 'snacks', 'food', 'vegetarian', 'Snacks menu', 2, TRUE),
-  ('Starters', 'veg-starters', 'food', 'vegetarian', 'Starters menu', 3, TRUE),
-  ('Main Course', 'veg-main-course', 'food', 'vegetarian', 'Main Course menu', 4, TRUE),
-  ('Chinese', 'veg-chinese', 'food', 'vegetarian', 'Chinese menu', 5, TRUE),
-  ('Rice & Biryani', 'rice-khichadi', 'food', 'vegetarian', 'Rice & Biryani menu', 6, TRUE),
-  ('Roti & Breads', 'roti-breads', 'food', 'vegetarian', 'Roti & Breads menu', 7, TRUE),
-  ('Thali', 'veg-thali', 'food', 'vegetarian', 'Thali menu', 8, TRUE),
-  ('Egg Items', 'egg-items', 'food', 'non-vegetarian', 'Egg Items menu', 9, TRUE),
-  ('Chicken Starters & Tandoori', 'chicken-starters-tandoori', 'food', 'non-vegetarian', 'Chicken Starters & Tandoori menu', 10, TRUE),
-  ('Chicken Main Course & Biryani', 'chicken-main-course-biryani', 'food', 'non-vegetarian', 'Chicken Main Course & Biryani menu', 11, TRUE),
-  ('Chicken Thalis', 'chicken-thalis', 'food', 'non-vegetarian', 'Chicken Thalis menu', 12, TRUE),
-  ('Mutton & Liver Items', 'mutton-liver-items', 'food', 'non-vegetarian', 'Mutton & Liver Items menu', 13, TRUE),
-  ('Fish & Seafood', 'fish-seafood', 'food', 'non-vegetarian', 'Fish & Seafood menu', 14, TRUE),
-  ('Seafood Thalis', 'seafood-thalis', 'food', 'non-vegetarian', 'Seafood Thalis menu', 15, TRUE),
-  ('Vodka', 'vodka', 'bar', NULL, 'Vodka selection', 16, TRUE),
-  ('Scotch', 'scotch', 'bar', NULL, 'Scotch selection', 17, TRUE),
-  ('Premium Whiskey', 'premium-whiskey', 'bar', NULL, 'Premium Whiskey selection', 18, TRUE),
-  ('Whiskey', 'whiskey', 'bar', NULL, 'Whiskey selection', 19, TRUE),
-  ('Rum', 'rum', 'bar', NULL, 'Rum selection', 20, TRUE),
-  ('Beer - Mild', 'beer--mild', 'bar', NULL, 'Beer - Mild selection', 21, TRUE),
-  ('Beer - Strong', 'beer--strong', 'bar', NULL, 'Beer - Strong selection', 22, TRUE),
-  ('Cold Drinks & Others', 'cold-drinks--others', 'bar', NULL, 'Cold Drinks & Others selection', 23, TRUE)
--- ON CONFLICT targets `name`, not `slug`: schema.sql's migration above
--- guarantees every category already has its final canonical *name* by the
--- time this runs, regardless of which slug a given database's history left
--- it with (a database upgraded through an earlier version of this project
--- may have a different slug for the same category name) - matching on slug
--- here would insert a second row and crash on the separate UNIQUE(name)
--- constraint instead of safely no-op'ing.
-ON CONFLICT (name) DO NOTHING;
+-- Free the names required by the canonical categories.
+-- Preserve the old category IDs and their linked records.
+UPDATE menu_categories
+SET name = 'Legacy Rice', updated_at = NOW()
+WHERE slug = 'rice'
+  AND name = 'Rice';
 
--- Seed food menu items
-WITH cat AS (
-  SELECT id, slug FROM menu_categories
-)
-INSERT INTO menu_items (category_id, name, description, price, image_url, is_veg, is_available, preparation_time_minutes)
-SELECT c.id, v.name, v.description, v.price, v.image_url, v.is_veg, TRUE, 15
-FROM (
-  VALUES
-    ('roti-breads', 'Tandori Roti', 'Roti & Breads special from Hotel Sea Palace''s kitchen', 25.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Tandoori_Roti.JPG?width=480', TRUE),
-    ('roti-breads', 'Butter Roti', 'Roti & Breads special from Hotel Sea Palace''s kitchen', 35.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Tandoori_Roti.JPG?width=480', TRUE),
-    ('roti-breads', 'Naan', 'Roti & Breads special from Hotel Sea Palace''s kitchen', 50.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Tandoori_Roti.JPG?width=480', TRUE),
-    ('roti-breads', 'Butter Naan', 'Roti & Breads special from Hotel Sea Palace''s kitchen', 60.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Tandoori_Roti.JPG?width=480', TRUE),
-    ('roti-breads', 'Butter Paratha', 'Roti & Breads special from Hotel Sea Palace''s kitchen', 60.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Tandoori_Roti.JPG?width=480', TRUE),
-    ('roti-breads', 'Bhakari', 'Roti & Breads special from Hotel Sea Palace''s kitchen', 30.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Tandoori_Roti.JPG?width=480', TRUE),
-    ('roti-breads', 'Chapati', 'Roti & Breads special from Hotel Sea Palace''s kitchen', 20.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Tandoori_Roti.JPG?width=480', TRUE),
-    ('roti-breads', 'Butter Chapati', 'Roti & Breads special from Hotel Sea Palace''s kitchen', 25.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Tandoori_Roti.JPG?width=480', TRUE),
-    ('roti-breads', 'Garlic Naan', 'Roti & Breads special from Hotel Sea Palace''s kitchen', 90.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Tandoori_Roti.JPG?width=480', TRUE),
-    ('roti-breads', 'Cheese Garlic Naan', 'Roti & Breads special from Hotel Sea Palace''s kitchen', 120.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Tandoori_Roti.JPG?width=480', TRUE),
-    ('rice-khichadi', 'Steam Rice', 'Rice & Khichadi special from Hotel Sea Palace''s kitchen', 150.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chicken_Fried_Rice.JPG?width=480', TRUE),
-    ('rice-khichadi', 'Steam Rice (Half)', 'Rice & Khichadi special from Hotel Sea Palace''s kitchen', 80.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chicken_Fried_Rice.JPG?width=480', TRUE),
-    ('rice-khichadi', 'Jeera Rice', 'Rice & Khichadi special from Hotel Sea Palace''s kitchen', 160.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chicken_Fried_Rice.JPG?width=480', TRUE),
-    ('rice-khichadi', 'Masala Rice', 'Rice & Khichadi special from Hotel Sea Palace''s kitchen', 210.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chicken_Fried_Rice.JPG?width=480', TRUE),
-    ('rice-khichadi', 'Curd Rice', 'Rice & Khichadi special from Hotel Sea Palace''s kitchen', 180.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chicken_Fried_Rice.JPG?width=480', TRUE),
-    ('rice-khichadi', 'Palak Khichadi', 'Rice & Khichadi special from Hotel Sea Palace''s kitchen', 180.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chicken_Fried_Rice.JPG?width=480', TRUE),
-    ('rice-khichadi', 'Dal Khichadi', 'Rice & Khichadi special from Hotel Sea Palace''s kitchen', 190.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chicken_Fried_Rice.JPG?width=480', TRUE),
-    ('rice-khichadi', 'Dal Tadka Khichadi', 'Rice & Khichadi special from Hotel Sea Palace''s kitchen', 210.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chicken_Fried_Rice.JPG?width=480', TRUE),
-    ('soup', 'Tomato Soup', 'Soup special from Hotel Sea Palace''s kitchen', 120.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Tomato_soup.jpg?width=480', TRUE),
-    ('soup', 'Veg Hot ''N'' Sour Soup', 'Soup special from Hotel Sea Palace''s kitchen', 120.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Tomato_soup.jpg?width=480', TRUE),
-    ('soup', 'Veg Manchow Soup', 'Soup special from Hotel Sea Palace''s kitchen', 120.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Tomato_soup.jpg?width=480', TRUE),
-    ('soup', 'Veg Sweet Corn Soup', 'Soup special from Hotel Sea Palace''s kitchen', 120.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Tomato_soup.jpg?width=480', TRUE),
-    ('snacks', 'Paneer Pakoda', 'Snacks special from Hotel Sea Palace''s kitchen', 240.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Pakora.JPG?width=480', TRUE),
-    ('snacks', 'Veg Pakoda', 'Snacks special from Hotel Sea Palace''s kitchen', 190.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Pakora.JPG?width=480', TRUE),
-    ('snacks', 'Solkadhi', 'Snacks special from Hotel Sea Palace''s kitchen', 60.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Pakora.JPG?width=480', TRUE),
-    ('snacks', 'Schezwan Chatani', 'Snacks special from Hotel Sea Palace''s kitchen', 30.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Pakora.JPG?width=480', TRUE),
-    ('veg-starters', 'Channa Garlic', 'Veg Starters special from Hotel Sea Palace''s kitchen', 210.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Gobi_manchurian.jpg?width=480', TRUE),
-    ('veg-starters', 'Channa Koliwada', 'Veg Starters special from Hotel Sea Palace''s kitchen', 220.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Gobi_manchurian.jpg?width=480', TRUE),
-    ('veg-starters', 'Channa Oil Fry', 'Veg Starters special from Hotel Sea Palace''s kitchen', 210.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Gobi_manchurian.jpg?width=480', TRUE),
-    ('veg-starters', 'Finger Chips', 'Veg Starters special from Hotel Sea Palace''s kitchen', 140.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Gobi_manchurian.jpg?width=480', TRUE),
-    ('veg-starters', 'Green Peas Garlic', 'Veg Starters special from Hotel Sea Palace''s kitchen', 190.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Gobi_manchurian.jpg?width=480', TRUE),
-    ('veg-starters', 'Green Peas Oil Fry', 'Veg Starters special from Hotel Sea Palace''s kitchen', 170.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Gobi_manchurian.jpg?width=480', TRUE),
-    ('veg-starters', 'Kaju Namkin', 'Veg Starters special from Hotel Sea Palace''s kitchen', 290.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Gobi_manchurian.jpg?width=480', TRUE),
-    ('veg-starters', 'Mashroom Chilly', 'Veg Starters special from Hotel Sea Palace''s kitchen', 280.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Gobi_manchurian.jpg?width=480', TRUE),
-    ('veg-starters', 'Paneer Chilly Dry / Crispy', 'Veg Starters special from Hotel Sea Palace''s kitchen', 290.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Gobi_manchurian.jpg?width=480', TRUE),
-    ('veg-starters', 'Veg Chilly', 'Veg Starters special from Hotel Sea Palace''s kitchen', 280.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Gobi_manchurian.jpg?width=480', TRUE),
-    ('veg-starters', 'Veg Crispy', 'Veg Starters special from Hotel Sea Palace''s kitchen', 290.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Gobi_manchurian.jpg?width=480', TRUE),
-    ('veg-starters', 'Veg Manchurian Dry', 'Veg Starters special from Hotel Sea Palace''s kitchen', 290.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Gobi_manchurian.jpg?width=480', TRUE),
-    ('veg-starters', 'Veg Schezwan Dry', 'Veg Starters special from Hotel Sea Palace''s kitchen', 280.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Gobi_manchurian.jpg?width=480', TRUE),
-    ('veg-main-course', 'Aloo Jeera', 'Veg Main Course special from Hotel Sea Palace''s kitchen', 180.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chana_Dal_Curry.jpg?width=480', TRUE),
-    ('veg-main-course', 'Aloo Gobi', 'Veg Main Course special from Hotel Sea Palace''s kitchen', 210.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chana_Dal_Curry.jpg?width=480', TRUE),
-    ('veg-main-course', 'Aloo Mutter', 'Veg Main Course special from Hotel Sea Palace''s kitchen', 210.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chana_Dal_Curry.jpg?width=480', TRUE),
-    ('veg-main-course', 'Aloo Palak', 'Veg Main Course special from Hotel Sea Palace''s kitchen', 210.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chana_Dal_Curry.jpg?width=480', TRUE),
-    ('veg-main-course', 'Aloo Shimla', 'Veg Main Course special from Hotel Sea Palace''s kitchen', 210.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chana_Dal_Curry.jpg?width=480', TRUE),
-    ('veg-main-course', 'Aloo Tomato', 'Veg Main Course special from Hotel Sea Palace''s kitchen', 210.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chana_Dal_Curry.jpg?width=480', TRUE),
-    ('veg-main-course', 'Dal Fry', 'Veg Main Course special from Hotel Sea Palace''s kitchen', 170.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chana_Dal_Curry.jpg?width=480', TRUE),
-    ('veg-main-course', 'Chana Masala', 'Veg Main Course special from Hotel Sea Palace''s kitchen', 210.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chana_Dal_Curry.jpg?width=480', TRUE),
-    ('veg-main-course', 'Dal Kolhapuri Tadka', 'Veg Main Course special from Hotel Sea Palace''s kitchen', 190.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chana_Dal_Curry.jpg?width=480', TRUE),
-    ('veg-main-course', 'Green Peas Masala', 'Veg Main Course special from Hotel Sea Palace''s kitchen', 270.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chana_Dal_Curry.jpg?width=480', TRUE),
-    ('veg-main-course', 'Kaju Masala', 'Veg Main Course special from Hotel Sea Palace''s kitchen', 260.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chana_Dal_Curry.jpg?width=480', TRUE),
-    ('veg-main-course', 'Mix Veg', 'Veg Main Course special from Hotel Sea Palace''s kitchen', 240.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chana_Dal_Curry.jpg?width=480', TRUE),
-    ('veg-main-course', 'Mashroom Cheese Masala', 'Veg Main Course special from Hotel Sea Palace''s kitchen', 310.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chana_Dal_Curry.jpg?width=480', TRUE),
-    ('veg-main-course', 'Mashroom Masala', 'Veg Main Course special from Hotel Sea Palace''s kitchen', 280.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chana_Dal_Curry.jpg?width=480', TRUE),
-    ('veg-main-course', 'Paneer Handi', 'Veg Main Course special from Hotel Sea Palace''s kitchen', 310.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chana_Dal_Curry.jpg?width=480', TRUE),
-    ('veg-main-course', 'Paneer Butter Masala', 'Veg Main Course special from Hotel Sea Palace''s kitchen', 280.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chana_Dal_Curry.jpg?width=480', TRUE),
-    ('veg-main-course', 'Paneer Chingari', 'Veg Main Course special from Hotel Sea Palace''s kitchen', 290.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chana_Dal_Curry.jpg?width=480', TRUE),
-    ('veg-main-course', 'Paneer Kadai', 'Veg Main Course special from Hotel Sea Palace''s kitchen', 320.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chana_Dal_Curry.jpg?width=480', TRUE),
-    ('veg-main-course', 'Paneer Kaju Masala', 'Veg Main Course special from Hotel Sea Palace''s kitchen', 290.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chana_Dal_Curry.jpg?width=480', TRUE),
-    ('veg-main-course', 'Paneer Masala', 'Veg Main Course special from Hotel Sea Palace''s kitchen', 260.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chana_Dal_Curry.jpg?width=480', TRUE),
-    ('veg-main-course', 'Paneer Mutter', 'Veg Main Course special from Hotel Sea Palace''s kitchen', 260.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chana_Dal_Curry.jpg?width=480', TRUE),
-    ('veg-main-course', 'Paneer Palak', 'Veg Main Course special from Hotel Sea Palace''s kitchen', 260.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chana_Dal_Curry.jpg?width=480', TRUE),
-    ('veg-main-course', 'Paneer Tikka Masala', 'Veg Main Course special from Hotel Sea Palace''s kitchen', 280.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chana_Dal_Curry.jpg?width=480', TRUE),
-    ('veg-main-course', 'Paneer Bhurji', 'Veg Main Course special from Hotel Sea Palace''s kitchen', 280.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chana_Dal_Curry.jpg?width=480', TRUE),
-    ('veg-main-course', 'Shimla Masala', 'Veg Main Course special from Hotel Sea Palace''s kitchen', 280.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chana_Dal_Curry.jpg?width=480', TRUE),
-    ('veg-main-course', 'Veg Kadhai', 'Veg Main Course special from Hotel Sea Palace''s kitchen', 310.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chana_Dal_Curry.jpg?width=480', TRUE),
-    ('veg-main-course', 'Veg Kolhapuri', 'Veg Main Course special from Hotel Sea Palace''s kitchen', 240.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chana_Dal_Curry.jpg?width=480', TRUE),
-    ('veg-main-course', 'Veg Lasuni', 'Veg Main Course special from Hotel Sea Palace''s kitchen', 260.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chana_Dal_Curry.jpg?width=480', TRUE),
-    ('veg-main-course', 'Veg Makhanwala', 'Veg Main Course special from Hotel Sea Palace''s kitchen', 260.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chana_Dal_Curry.jpg?width=480', TRUE),
-    ('veg-main-course', 'Veg Maratha', 'Veg Main Course special from Hotel Sea Palace''s kitchen', 280.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chana_Dal_Curry.jpg?width=480', TRUE),
-    ('veg-main-course', 'Mashroom Handi', 'Veg Main Course special from Hotel Sea Palace''s kitchen', 310.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chana_Dal_Curry.jpg?width=480', TRUE),
-    ('veg-main-course', 'Mix Veg Handi', 'Veg Main Course special from Hotel Sea Palace''s kitchen', 290.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chana_Dal_Curry.jpg?width=480', TRUE),
-    ('veg-chinese', 'Veg Schezwan Fried Rice', 'Veg Chinese special from Hotel Sea Palace''s kitchen', 220.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Manchurian.jpg?width=480', TRUE),
-    ('veg-chinese', 'Veg Manchurian Fried Rice', 'Veg Chinese special from Hotel Sea Palace''s kitchen', 280.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Manchurian.jpg?width=480', TRUE),
-    ('veg-chinese', 'Veg Triple Rice', 'Veg Chinese special from Hotel Sea Palace''s kitchen', 290.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Manchurian.jpg?width=480', TRUE),
-    ('veg-chinese', 'Veg Fried Rice', 'Veg Chinese special from Hotel Sea Palace''s kitchen', 200.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Manchurian.jpg?width=480', TRUE),
-    ('veg-chinese', 'Veg Hakka Noodles', 'Veg Chinese special from Hotel Sea Palace''s kitchen', 200.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Manchurian.jpg?width=480', TRUE),
-    ('veg-chinese', 'Mashroom Fried Rice', 'Veg Chinese special from Hotel Sea Palace''s kitchen', 210.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Manchurian.jpg?width=480', TRUE),
-    ('rice-khichadi', 'Mashroom Biryani', 'Veg Biryani special from Hotel Sea Palace''s kitchen', 260.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chicken_Biryani.jpg?width=480', TRUE),
-    ('rice-khichadi', 'Mashroom Pulav', 'Veg Biryani special from Hotel Sea Palace''s kitchen', 240.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chicken_Biryani.jpg?width=480', TRUE),
-    ('rice-khichadi', 'Paneer Biryani', 'Veg Biryani special from Hotel Sea Palace''s kitchen', 290.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chicken_Biryani.jpg?width=480', TRUE),
-    ('rice-khichadi', 'Paneer Pulav', 'Veg Biryani special from Hotel Sea Palace''s kitchen', 260.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chicken_Biryani.jpg?width=480', TRUE),
-    ('rice-khichadi', 'Veg Biryani', 'Veg Biryani special from Hotel Sea Palace''s kitchen', 240.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chicken_Biryani.jpg?width=480', TRUE),
-    ('rice-khichadi', 'Veg Pulav', 'Veg Biryani special from Hotel Sea Palace''s kitchen', 230.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chicken_Biryani.jpg?width=480', TRUE),
-    ('veg-thali', 'Veg Thali', 'Veg Thali special from Hotel Sea Palace''s kitchen', 170.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Goan_Fish_Thali.jpg?width=480', TRUE),
-    ('egg-items', 'Egg Pakoda', 'Egg Items special from Hotel Sea Palace''s kitchen', 210.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chilli_chicken_pakoda.jpg?width=480', FALSE),
-    ('egg-items', 'Boil Egg', 'Egg Items special from Hotel Sea Palace''s kitchen', 60.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chilli_chicken_pakoda.jpg?width=480', FALSE),
-    ('egg-items', 'Egg Bhurji', 'Egg Items special from Hotel Sea Palace''s kitchen', 120.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chilli_chicken_pakoda.jpg?width=480', FALSE),
-    ('egg-items', 'Egg Chilly', 'Egg Items special from Hotel Sea Palace''s kitchen', 220.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chilli_chicken_pakoda.jpg?width=480', FALSE),
-    ('egg-items', 'Egg Omlet', 'Egg Items special from Hotel Sea Palace''s kitchen', 90.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chilli_chicken_pakoda.jpg?width=480', FALSE),
-    ('egg-items', 'Half Fry', 'Egg Items special from Hotel Sea Palace''s kitchen', 90.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chilli_chicken_pakoda.jpg?width=480', FALSE),
-    ('egg-items', 'Egg Fried Rice', 'Egg Items special from Hotel Sea Palace''s kitchen', 200.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chilli_chicken_pakoda.jpg?width=480', FALSE),
-    ('egg-items', 'Egg Schezwan Rice', 'Egg Items special from Hotel Sea Palace''s kitchen', 210.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chilli_chicken_pakoda.jpg?width=480', FALSE),
-    ('egg-items', 'Egg Triple Rice', 'Egg Items special from Hotel Sea Palace''s kitchen', 280.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chilli_chicken_pakoda.jpg?width=480', FALSE),
-    ('egg-items', 'Egg Hakka Noodles', 'Egg Items special from Hotel Sea Palace''s kitchen', 200.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chilli_chicken_pakoda.jpg?width=480', FALSE),
-    ('egg-items', 'Egg Schezwan Noodles', 'Egg Items special from Hotel Sea Palace''s kitchen', 220.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chilli_chicken_pakoda.jpg?width=480', FALSE),
-    ('egg-items', 'Egg Biryani', 'Egg Items special from Hotel Sea Palace''s kitchen', 250.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chilli_chicken_pakoda.jpg?width=480', FALSE),
-    ('egg-items', 'Egg Thali', 'Egg Items special from Hotel Sea Palace''s kitchen', 260.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chilli_chicken_pakoda.jpg?width=480', FALSE),
-    ('chicken-starters-tandoori', 'Chicken 65', 'Chicken Starters & Tandoori special from Hotel Sea Palace''s kitchen', 320.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Tandoori_chicken_Indian.jpg?width=480', FALSE),
-    ('chicken-starters-tandoori', 'Chicken Chilly Dry', 'Chicken Starters & Tandoori special from Hotel Sea Palace''s kitchen', 290.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Tandoori_chicken_Indian.jpg?width=480', FALSE),
-    ('chicken-starters-tandoori', 'Chicken Crispy', 'Chicken Starters & Tandoori special from Hotel Sea Palace''s kitchen', 320.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Tandoori_chicken_Indian.jpg?width=480', FALSE),
-    ('chicken-starters-tandoori', 'Chicken Lollipop Masala Dry', 'Chicken Starters & Tandoori special from Hotel Sea Palace''s kitchen', 280.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Tandoori_chicken_Indian.jpg?width=480', FALSE),
-    ('chicken-starters-tandoori', 'Chicken Lollipop', 'Chicken Starters & Tandoori special from Hotel Sea Palace''s kitchen', 260.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Tandoori_chicken_Indian.jpg?width=480', FALSE),
-    ('chicken-starters-tandoori', 'Chicken Manchurian Dry', 'Chicken Starters & Tandoori special from Hotel Sea Palace''s kitchen', 290.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Tandoori_chicken_Indian.jpg?width=480', FALSE),
-    ('chicken-starters-tandoori', 'Chicken Oil Fry', 'Chicken Starters & Tandoori special from Hotel Sea Palace''s kitchen', 290.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Tandoori_chicken_Indian.jpg?width=480', FALSE),
-    ('chicken-starters-tandoori', 'Chicken Schezwan Dry', 'Chicken Starters & Tandoori special from Hotel Sea Palace''s kitchen', 290.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Tandoori_chicken_Indian.jpg?width=480', FALSE),
-    ('chicken-starters-tandoori', 'Chicken Garlic', 'Chicken Starters & Tandoori special from Hotel Sea Palace''s kitchen', 290.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Tandoori_chicken_Indian.jpg?width=480', FALSE),
-    ('chicken-starters-tandoori', 'Chicken Fry', 'Chicken Starters & Tandoori special from Hotel Sea Palace''s kitchen', 290.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Tandoori_chicken_Indian.jpg?width=480', FALSE),
-    ('chicken-starters-tandoori', 'Chicken Tikka', 'Chicken Starters & Tandoori special from Hotel Sea Palace''s kitchen', 310.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Tandoori_chicken_Indian.jpg?width=480', FALSE),
-    ('chicken-starters-tandoori', 'Chicken Tandoori Half', 'Chicken Starters & Tandoori special from Hotel Sea Palace''s kitchen', 260.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Tandoori_chicken_Indian.jpg?width=480', FALSE),
-    ('chicken-starters-tandoori', 'Chicken Tandoori Full', 'Chicken Starters & Tandoori special from Hotel Sea Palace''s kitchen', 430.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Tandoori_chicken_Indian.jpg?width=480', FALSE),
-    ('chicken-starters-tandoori', 'Chicken Pahadi Kabab', 'Chicken Starters & Tandoori special from Hotel Sea Palace''s kitchen', 310.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Tandoori_chicken_Indian.jpg?width=480', FALSE),
-    ('chicken-starters-tandoori', 'Chicken Boti Kabab', 'Chicken Starters & Tandoori special from Hotel Sea Palace''s kitchen', 320.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Tandoori_chicken_Indian.jpg?width=480', FALSE),
-    ('chicken-starters-tandoori', 'Chicken Lollipop Tandoori', 'Chicken Starters & Tandoori special from Hotel Sea Palace''s kitchen', 310.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Tandoori_chicken_Indian.jpg?width=480', FALSE),
-    ('chicken-starters-tandoori', 'Chicken Tangadi Kabab', 'Chicken Starters & Tandoori special from Hotel Sea Palace''s kitchen', 350.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Tandoori_chicken_Indian.jpg?width=480', FALSE),
-    ('chicken-starters-tandoori', 'Chicken Afagan Tandoori (Half)', 'Chicken Starters & Tandoori special from Hotel Sea Palace''s kitchen', 280.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Tandoori_chicken_Indian.jpg?width=480', FALSE),
-    ('chicken-starters-tandoori', 'Chicken Afagan Tandoori (Full)', 'Chicken Starters & Tandoori special from Hotel Sea Palace''s kitchen', 480.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Tandoori_chicken_Indian.jpg?width=480', FALSE),
-    ('chicken-starters-tandoori', 'Chicken Jangali Tandoori (Half)', 'Chicken Starters & Tandoori special from Hotel Sea Palace''s kitchen', 280.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Tandoori_chicken_Indian.jpg?width=480', FALSE),
-    ('chicken-starters-tandoori', 'Chicken Jangali Tandoori (Full)', 'Chicken Starters & Tandoori special from Hotel Sea Palace''s kitchen', 480.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Tandoori_chicken_Indian.jpg?width=480', FALSE),
-    ('chicken-starters-tandoori', 'Rozali Kabab', 'Chicken Starters & Tandoori special from Hotel Sea Palace''s kitchen', 320.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Tandoori_chicken_Indian.jpg?width=480', FALSE),
-    ('chicken-starters-tandoori', 'Chicken Reshmi Kabab', 'Chicken Starters & Tandoori special from Hotel Sea Palace''s kitchen', 320.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Tandoori_chicken_Indian.jpg?width=480', FALSE),
-    ('chicken-starters-tandoori', 'Chicken Lasooni Kabab', 'Chicken Starters & Tandoori special from Hotel Sea Palace''s kitchen', 320.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Tandoori_chicken_Indian.jpg?width=480', FALSE),
-    ('chicken-starters-tandoori', 'Chicken Family Platter', 'Chicken Starters & Tandoori special from Hotel Sea Palace''s kitchen', 1699.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Tandoori_chicken_Indian.jpg?width=480', FALSE),
-    ('chicken-main-course-biryani', 'Chicken Masala', 'Chicken Main Course & Biryani special from Hotel Sea Palace''s kitchen', 280.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chicken_Curry_North_Indian_Style.jpg?width=480', FALSE),
-    ('chicken-main-course-biryani', 'Chicken Kolhapuri', 'Chicken Main Course & Biryani special from Hotel Sea Palace''s kitchen', 290.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chicken_Curry_North_Indian_Style.jpg?width=480', FALSE),
-    ('chicken-main-course-biryani', 'Chicken Tikka Masala', 'Chicken Main Course & Biryani special from Hotel Sea Palace''s kitchen', 340.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chicken_Curry_North_Indian_Style.jpg?width=480', FALSE),
-    ('chicken-main-course-biryani', 'Chicken Moghlai', 'Chicken Main Course & Biryani special from Hotel Sea Palace''s kitchen', 310.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chicken_Curry_North_Indian_Style.jpg?width=480', FALSE),
-    ('chicken-main-course-biryani', 'Chicken Hydrabadi', 'Chicken Main Course & Biryani special from Hotel Sea Palace''s kitchen', 290.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chicken_Curry_North_Indian_Style.jpg?width=480', FALSE),
-    ('chicken-main-course-biryani', 'Chicken Kadhai', 'Chicken Main Course & Biryani special from Hotel Sea Palace''s kitchen', 320.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chicken_Curry_North_Indian_Style.jpg?width=480', FALSE),
-    ('chicken-main-course-biryani', 'Chicken Lapeta', 'Chicken Main Course & Biryani special from Hotel Sea Palace''s kitchen', 310.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chicken_Curry_North_Indian_Style.jpg?width=480', FALSE),
-    ('chicken-main-course-biryani', 'Chicken Afagani', 'Chicken Main Course & Biryani special from Hotel Sea Palace''s kitchen', 310.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chicken_Curry_North_Indian_Style.jpg?width=480', FALSE),
-    ('chicken-main-course-biryani', 'Butter Chicken Full', 'Chicken Main Course & Biryani special from Hotel Sea Palace''s kitchen', 630.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chicken_Curry_North_Indian_Style.jpg?width=480', FALSE),
-    ('chicken-main-course-biryani', 'Butter Chicken Half', 'Chicken Main Course & Biryani special from Hotel Sea Palace''s kitchen', 350.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chicken_Curry_North_Indian_Style.jpg?width=480', FALSE),
-    ('chicken-main-course-biryani', 'Chicken Kheema Masala', 'Chicken Main Course & Biryani special from Hotel Sea Palace''s kitchen', 310.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chicken_Curry_North_Indian_Style.jpg?width=480', FALSE),
-    ('chicken-main-course-biryani', 'Chicken Fried Rice', 'Chicken Main Course & Biryani special from Hotel Sea Palace''s kitchen', 210.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chicken_Curry_North_Indian_Style.jpg?width=480', FALSE),
-    ('chicken-main-course-biryani', 'Chicken Schezwan Rice', 'Chicken Main Course & Biryani special from Hotel Sea Palace''s kitchen', 230.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chicken_Curry_North_Indian_Style.jpg?width=480', FALSE),
-    ('chicken-main-course-biryani', 'Chicken Triple Rice', 'Chicken Main Course & Biryani special from Hotel Sea Palace''s kitchen', 290.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chicken_Curry_North_Indian_Style.jpg?width=480', FALSE),
-    ('chicken-main-course-biryani', 'Chicken Manchurian Rice', 'Chicken Main Course & Biryani special from Hotel Sea Palace''s kitchen', 290.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chicken_Curry_North_Indian_Style.jpg?width=480', FALSE),
-    ('chicken-main-course-biryani', 'Chicken Hakka Noodles', 'Chicken Main Course & Biryani special from Hotel Sea Palace''s kitchen', 210.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chicken_Curry_North_Indian_Style.jpg?width=480', FALSE),
-    ('chicken-main-course-biryani', 'Chicken Schezwan Noodles', 'Chicken Main Course & Biryani special from Hotel Sea Palace''s kitchen', 230.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chicken_Curry_North_Indian_Style.jpg?width=480', FALSE),
-    ('chicken-main-course-biryani', 'Chicken Biryani', 'Chicken Main Course & Biryani special from Hotel Sea Palace''s kitchen', 270.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chicken_Curry_North_Indian_Style.jpg?width=480', FALSE),
-    ('chicken-main-course-biryani', 'Chicken Pulav', 'Chicken Main Course & Biryani special from Hotel Sea Palace''s kitchen', 260.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chicken_Curry_North_Indian_Style.jpg?width=480', FALSE),
-    ('chicken-main-course-biryani', 'Chicken Hydrabadi Biryani', 'Chicken Main Course & Biryani special from Hotel Sea Palace''s kitchen', 300.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chicken_Curry_North_Indian_Style.jpg?width=480', FALSE),
-    ('chicken-thalis', 'Chicken Thali', 'Chicken Thalis special from Hotel Sea Palace''s kitchen', 290.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Goan_Fish_Thali.jpg?width=480', FALSE),
-    ('chicken-thalis', 'Chicken Kolhapuri Thali', 'Chicken Thalis special from Hotel Sea Palace''s kitchen', 310.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Goan_Fish_Thali.jpg?width=480', FALSE),
-    ('chicken-thalis', 'Chicken Kheema Thali', 'Chicken Thalis special from Hotel Sea Palace''s kitchen', 310.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Goan_Fish_Thali.jpg?width=480', FALSE),
-    ('chicken-thalis', 'Butter Chicken Thali', 'Chicken Thalis special from Hotel Sea Palace''s kitchen', 340.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Goan_Fish_Thali.jpg?width=480', FALSE),
-    ('chicken-thalis', 'Chicken Kharda Thali', 'Chicken Thalis special from Hotel Sea Palace''s kitchen', 310.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Goan_Fish_Thali.jpg?width=480', FALSE),
-    ('chicken-thalis', 'Chicken Kala Masala Thali', 'Chicken Thalis special from Hotel Sea Palace''s kitchen', 310.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Goan_Fish_Thali.jpg?width=480', FALSE),
-    ('mutton-liver-items', 'Liver Oil Fry', 'Mutton & Liver Items special from Hotel Sea Palace''s kitchen', 250.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chapati_and_mutton_curry.JPG?width=480', FALSE),
-    ('mutton-liver-items', 'Liver Masala', 'Mutton & Liver Items special from Hotel Sea Palace''s kitchen', 240.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chapati_and_mutton_curry.JPG?width=480', FALSE),
-    ('mutton-liver-items', 'Chicken Liver Thali', 'Mutton & Liver Items special from Hotel Sea Palace''s kitchen', 260.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chapati_and_mutton_curry.JPG?width=480', FALSE),
-    ('mutton-liver-items', 'Mutton Fry', 'Mutton & Liver Items special from Hotel Sea Palace''s kitchen', 410.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chapati_and_mutton_curry.JPG?width=480', FALSE),
-    ('mutton-liver-items', 'Mutton Masala', 'Mutton & Liver Items special from Hotel Sea Palace''s kitchen', 390.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chapati_and_mutton_curry.JPG?width=480', FALSE),
-    ('mutton-liver-items', 'Mutton Kolhapuri', 'Mutton & Liver Items special from Hotel Sea Palace''s kitchen', 390.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chapati_and_mutton_curry.JPG?width=480', FALSE),
-    ('mutton-liver-items', 'Mutton Hydrabadi', 'Mutton & Liver Items special from Hotel Sea Palace''s kitchen', 390.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chapati_and_mutton_curry.JPG?width=480', FALSE),
-    ('mutton-liver-items', 'Mutton Lapeta', 'Mutton & Liver Items special from Hotel Sea Palace''s kitchen', 410.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chapati_and_mutton_curry.JPG?width=480', FALSE),
-    ('mutton-liver-items', 'Mutton Kheema Masala', 'Mutton & Liver Items special from Hotel Sea Palace''s kitchen', 410.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chapati_and_mutton_curry.JPG?width=480', FALSE),
-    ('mutton-liver-items', 'Mutton Biryani', 'Mutton & Liver Items special from Hotel Sea Palace''s kitchen', 370.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chapati_and_mutton_curry.JPG?width=480', FALSE),
-    ('mutton-liver-items', 'Mutton Thali', 'Mutton & Liver Items special from Hotel Sea Palace''s kitchen', 370.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chapati_and_mutton_curry.JPG?width=480', FALSE),
-    ('mutton-liver-items', 'Mutton Kolhapuri Thali', 'Mutton & Liver Items special from Hotel Sea Palace''s kitchen', 410.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chapati_and_mutton_curry.JPG?width=480', FALSE),
-    ('mutton-liver-items', 'Mutton Kheema Thali', 'Mutton & Liver Items special from Hotel Sea Palace''s kitchen', 410.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chapati_and_mutton_curry.JPG?width=480', FALSE),
-    ('mutton-liver-items', 'Mutton Kala Masala Thali', 'Mutton & Liver Items special from Hotel Sea Palace''s kitchen', 410.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chapati_and_mutton_curry.JPG?width=480', FALSE),
-    ('mutton-liver-items', 'Mutton Kharda Thali', 'Mutton & Liver Items special from Hotel Sea Palace''s kitchen', 410.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Chapati_and_mutton_curry.JPG?width=480', FALSE),
-    ('fish-seafood', 'Fish Finger', 'Fish & Seafood special from Hotel Sea Palace''s kitchen', 440.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Fry_fish.jpg?width=480', FALSE),
-    ('fish-seafood', 'Bombil Fry', 'Fish & Seafood special from Hotel Sea Palace''s kitchen', 290.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Fry_fish.jpg?width=480', FALSE),
-    ('fish-seafood', 'Mandeli Fry', 'Fish & Seafood special from Hotel Sea Palace''s kitchen', 210.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Fry_fish.jpg?width=480', FALSE),
-    ('fish-seafood', 'Pomfret Tawa / Rawa Fry', 'Fish & Seafood special from Hotel Sea Palace''s kitchen', 510.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Fry_fish.jpg?width=480', FALSE),
-    ('fish-seafood', 'Surmai Tawa / Rawa Fry', 'Fish & Seafood special from Hotel Sea Palace''s kitchen', 510.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Fry_fish.jpg?width=480', FALSE),
-    ('fish-seafood', 'Bangda Tawa / Rawa Fry', 'Fish & Seafood special from Hotel Sea Palace''s kitchen', 300.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Fry_fish.jpg?width=480', FALSE),
-    ('fish-seafood', 'Bangda Masala', 'Fish & Seafood special from Hotel Sea Palace''s kitchen', 320.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Fry_fish.jpg?width=480', FALSE),
-    ('fish-seafood', 'Surmai Curry', 'Fish & Seafood special from Hotel Sea Palace''s kitchen', 510.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Fry_fish.jpg?width=480', FALSE),
-    ('fish-seafood', 'Surmai Masala', 'Fish & Seafood special from Hotel Sea Palace''s kitchen', 510.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Fry_fish.jpg?width=480', FALSE),
-    ('fish-seafood', 'Khekada Masala (Crab)', 'Fish & Seafood special from Hotel Sea Palace''s kitchen', 390.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Fry_fish.jpg?width=480', FALSE),
-    ('fish-seafood', 'Prawns Chilly Dry', 'Fish & Seafood special from Hotel Sea Palace''s kitchen', 510.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Fry_fish.jpg?width=480', FALSE),
-    ('fish-seafood', 'Prawns Koliwada', 'Fish & Seafood special from Hotel Sea Palace''s kitchen', 510.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Fry_fish.jpg?width=480', FALSE),
-    ('fish-seafood', 'Prawns Tawa / Rawa Fry', 'Fish & Seafood special from Hotel Sea Palace''s kitchen', 510.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Fry_fish.jpg?width=480', FALSE),
-    ('fish-seafood', 'Prawns Masala', 'Fish & Seafood special from Hotel Sea Palace''s kitchen', 510.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Fry_fish.jpg?width=480', FALSE),
-    ('fish-seafood', 'Prawns Fry', 'Fish & Seafood special from Hotel Sea Palace''s kitchen', 510.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Fry_fish.jpg?width=480', FALSE),
-    ('fish-seafood', 'Prawns Fried Rice', 'Fish & Seafood special from Hotel Sea Palace''s kitchen', 470.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Fry_fish.jpg?width=480', FALSE),
-    ('fish-seafood', 'Prawns Schezwan Rice', 'Fish & Seafood special from Hotel Sea Palace''s kitchen', 460.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Fry_fish.jpg?width=480', FALSE),
-    ('fish-seafood', 'Prawns Triple Rice', 'Fish & Seafood special from Hotel Sea Palace''s kitchen', 520.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Fry_fish.jpg?width=480', FALSE),
-    ('fish-seafood', 'Prawns Hakka Noodles', 'Fish & Seafood special from Hotel Sea Palace''s kitchen', 450.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Fry_fish.jpg?width=480', FALSE),
-    ('fish-seafood', 'Prawns Schezwan Noodles', 'Fish & Seafood special from Hotel Sea Palace''s kitchen', 460.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Fry_fish.jpg?width=480', FALSE),
-    ('fish-seafood', 'Prawns Biryani', 'Fish & Seafood special from Hotel Sea Palace''s kitchen', 490.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Fry_fish.jpg?width=480', FALSE),
-    ('fish-seafood', 'Prawns Pulav', 'Fish & Seafood special from Hotel Sea Palace''s kitchen', 480.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Fry_fish.jpg?width=480', FALSE),
-    ('seafood-thalis', 'Surmai Thali', 'Seafood Thalis special from Hotel Sea Palace''s kitchen', 470.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Goan_Fish_Thali.jpg?width=480', FALSE),
-    ('seafood-thalis', 'Pomfret Thali', 'Seafood Thalis special from Hotel Sea Palace''s kitchen', 510.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Goan_Fish_Thali.jpg?width=480', FALSE),
-    ('seafood-thalis', 'Prawns Thali', 'Seafood Thalis special from Hotel Sea Palace''s kitchen', 510.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Goan_Fish_Thali.jpg?width=480', FALSE),
-    ('seafood-thalis', 'Bangda Thali', 'Seafood Thalis special from Hotel Sea Palace''s kitchen', 320.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Goan_Fish_Thali.jpg?width=480', FALSE),
-    ('seafood-thalis', 'Bombil Thali', 'Seafood Thalis special from Hotel Sea Palace''s kitchen', 320.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Goan_Fish_Thali.jpg?width=480', FALSE)
-) AS v(slug, name, description, price, image_url, is_veg)
-JOIN cat c ON c.slug = v.slug
-ON CONFLICT (category_id, name) DO NOTHING;
+UPDATE menu_categories
+SET name = 'Legacy Roti', updated_at = NOW()
+WHERE slug = 'roti'
+  AND name = 'Roti';
 
--- Seed bar menu items (base row per drink; see menu_item_variants below for each pour size)
-WITH cat AS (
-  SELECT id, slug FROM menu_categories
-)
-INSERT INTO menu_items (category_id, name, description, price, image_url, is_veg, is_available, preparation_time_minutes)
-SELECT c.id, v.name, v.description, v.price, v.image_url, TRUE, TRUE, 5
-FROM (
-  VALUES
-    ('vodka', 'Romanov', 'Vodka - choose your pour size', 80.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/A_bottle_of_Absolut_Vodka.jpg?width=480'),
-    ('vodka', 'White Mischief', 'Vodka - choose your pour size', 90.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/A_bottle_of_Absolut_Vodka.jpg?width=480'),
-    ('vodka', 'G Master', 'Vodka - choose your pour size', 100.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/A_bottle_of_Absolut_Vodka.jpg?width=480'),
-    ('vodka', 'Smirnoff', 'Vodka - choose your pour size', 130.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/A_bottle_of_Absolut_Vodka.jpg?width=480'),
-    ('vodka', 'Smirnoff Flavour', 'Vodka - choose your pour size', 140.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/A_bottle_of_Absolut_Vodka.jpg?width=480'),
-    ('vodka', 'Magic Moments Flavour', 'Vodka - choose your pour size', 100.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/A_bottle_of_Absolut_Vodka.jpg?width=480'),
-    ('vodka', 'Magic Moments', 'Vodka - choose your pour size', 90.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/A_bottle_of_Absolut_Vodka.jpg?width=480'),
-    ('scotch', 'Indri', 'Scotch - choose your pour size', 400.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/The_Glenlivet_12_year_old_whisky.jpg?width=480'),
-    ('scotch', 'Vat 69', 'Scotch - choose your pour size', 200.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/The_Glenlivet_12_year_old_whisky.jpg?width=480'),
-    ('scotch', 'Black & White', 'Scotch - choose your pour size', 200.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/The_Glenlivet_12_year_old_whisky.jpg?width=480'),
-    ('scotch', 'Jameson', 'Scotch - choose your pour size', 200.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/The_Glenlivet_12_year_old_whisky.jpg?width=480'),
-    ('scotch', 'Red Label', 'Scotch - choose your pour size', 190.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/The_Glenlivet_12_year_old_whisky.jpg?width=480'),
-    ('scotch', 'Black Label', 'Scotch - choose your pour size', 270.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/The_Glenlivet_12_year_old_whisky.jpg?width=480'),
-    ('scotch', 'Ballantine''s', 'Scotch - choose your pour size', 180.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/The_Glenlivet_12_year_old_whisky.jpg?width=480'),
-    ('scotch', 'J&B', 'Scotch - choose your pour size', 180.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/The_Glenlivet_12_year_old_whisky.jpg?width=480'),
-    ('scotch', '100 Pipers', 'Scotch - choose your pour size', 180.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/The_Glenlivet_12_year_old_whisky.jpg?width=480'),
-    ('premium-whiskey', 'Blenders Pride', 'Premium Whiskey - choose your pour size', 120.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Glass_of_whisky_at_Kotka_City_Theatre.jpg?width=480'),
-    ('premium-whiskey', 'American Pride', 'Premium Whiskey - choose your pour size', 120.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Glass_of_whisky_at_Kotka_City_Theatre.jpg?width=480'),
-    ('premium-whiskey', 'Antiquity', 'Premium Whiskey - choose your pour size', 110.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Glass_of_whisky_at_Kotka_City_Theatre.jpg?width=480'),
-    ('premium-whiskey', 'Signature', 'Premium Whiskey - choose your pour size', 110.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Glass_of_whisky_at_Kotka_City_Theatre.jpg?width=480'),
-    ('premium-whiskey', 'Legacy', 'Premium Whiskey - choose your pour size', 110.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Glass_of_whisky_at_Kotka_City_Theatre.jpg?width=480'),
-    ('premium-whiskey', 'Rockford', 'Premium Whiskey - choose your pour size', 110.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Glass_of_whisky_at_Kotka_City_Theatre.jpg?width=480'),
-    ('premium-whiskey', 'Oaksmith Silver', 'Premium Whiskey - choose your pour size', 90.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Glass_of_whisky_at_Kotka_City_Theatre.jpg?width=480'),
-    ('premium-whiskey', 'Oaksmith Gold', 'Premium Whiskey - choose your pour size', 120.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Glass_of_whisky_at_Kotka_City_Theatre.jpg?width=480'),
-    ('whiskey', 'Imperial Blue', 'Whiskey - choose your pour size', 80.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Glass_of_whisky_at_Kotka_City_Theatre.jpg?width=480'),
-    ('whiskey', 'DSP Black', 'Whiskey - choose your pour size', 80.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Glass_of_whisky_at_Kotka_City_Theatre.jpg?width=480'),
-    ('whiskey', 'McDowell''s No.1', 'Whiskey - choose your pour size', 80.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Glass_of_whisky_at_Kotka_City_Theatre.jpg?width=480'),
-    ('whiskey', 'Royal Stag Barrel', 'Whiskey - choose your pour size', 100.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Glass_of_whisky_at_Kotka_City_Theatre.jpg?width=480'),
-    ('whiskey', 'Royal Stag', 'Whiskey - choose your pour size', 90.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Glass_of_whisky_at_Kotka_City_Theatre.jpg?width=480'),
-    ('whiskey', 'Royal Challenge', 'Whiskey - choose your pour size', 90.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Glass_of_whisky_at_Kotka_City_Theatre.jpg?width=480'),
-    ('whiskey', 'OCB', 'Whiskey - choose your pour size', 80.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Glass_of_whisky_at_Kotka_City_Theatre.jpg?width=480'),
-    ('whiskey', 'The Glenwalk', 'Whiskey - choose your pour size', 120.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Glass_of_whisky_at_Kotka_City_Theatre.jpg?width=480'),
-    ('whiskey', 'Iconic', 'Whiskey - choose your pour size', 80.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Glass_of_whisky_at_Kotka_City_Theatre.jpg?width=480'),
-    ('whiskey', 'B7', 'Whiskey - choose your pour size', 80.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Glass_of_whisky_at_Kotka_City_Theatre.jpg?width=480'),
-    ('whiskey', 'B10', 'Whiskey - choose your pour size', 90.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Glass_of_whisky_at_Kotka_City_Theatre.jpg?width=480'),
-    ('rum', 'Old Monk', 'Rum - choose your pour size', 70.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Mc_Dowell_No._1_Rum.jpg?width=480'),
-    ('rum', 'McDowell''s No.1 Rum', 'Rum - choose your pour size', 70.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Mc_Dowell_No._1_Rum.jpg?width=480'),
-    ('rum', 'Bacardi Black', 'Rum - choose your pour size', 90.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Mc_Dowell_No._1_Rum.jpg?width=480'),
-    ('rum', 'Bacardi White', 'Rum - choose your pour size', 130.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Mc_Dowell_No._1_Rum.jpg?width=480'),
-    ('rum', 'Bacardi Lemon', 'Rum - choose your pour size', 140.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Mc_Dowell_No._1_Rum.jpg?width=480'),
-    ('beer--mild', 'Kingfisher (Mild)', 'Beer - Mild - choose your pour size', 270.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Mug_of_beer_from_above_(ubt_2005).jpg?width=480'),
-    ('beer--mild', 'Tuborg (Mild)', 'Beer - Mild - choose your pour size', 260.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Mug_of_beer_from_above_(ubt_2005).jpg?width=480'),
-    ('beer--mild', 'London Pilsner', 'Beer - Mild - choose your pour size', 220.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Mug_of_beer_from_above_(ubt_2005).jpg?width=480'),
-    ('beer--mild', 'Carlsberg (Mild)', 'Beer - Mild - choose your pour size', 280.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Mug_of_beer_from_above_(ubt_2005).jpg?width=480'),
-    ('beer--mild', 'Budweiser (Mild)', 'Beer - Mild - choose your pour size', 280.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Mug_of_beer_from_above_(ubt_2005).jpg?width=480'),
-    ('beer--strong', 'Kingfisher Strong', 'Beer - Strong - choose your pour size', 260.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Drinking_a_beer_outside.jpg?width=480'),
-    ('beer--strong', 'Tuborg Strong', 'Beer - Strong - choose your pour size', 260.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Drinking_a_beer_outside.jpg?width=480'),
-    ('beer--strong', 'London Pilsner Strong', 'Beer - Strong - choose your pour size', 220.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Drinking_a_beer_outside.jpg?width=480'),
-    ('beer--strong', 'Carlsberg Strong', 'Beer - Strong - choose your pour size', 280.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Drinking_a_beer_outside.jpg?width=480'),
-    ('beer--strong', 'Budweiser Magnum', 'Beer - Strong - choose your pour size', 280.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Drinking_a_beer_outside.jpg?width=480'),
-    ('cold-drinks--others', 'Cold Drink', 'Cold Drinks & Others - choose your pour size', 60.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Bottle_and_glass_of_inca_kola.jpg?width=480'),
-    ('cold-drinks--others', 'Soda', 'Cold Drinks & Others - choose your pour size', 25.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Bottle_and_glass_of_inca_kola.jpg?width=480'),
-    ('cold-drinks--others', 'Mineral Water', 'Cold Drinks & Others - choose your pour size', 25.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Bottle_and_glass_of_inca_kola.jpg?width=480'),
-    ('cold-drinks--others', 'Small Water', 'Cold Drinks & Others - choose your pour size', 15.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Bottle_and_glass_of_inca_kola.jpg?width=480'),
-    ('cold-drinks--others', 'Solkadhi', 'Cold Drinks & Others - choose your pour size', 50.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Bottle_and_glass_of_inca_kola.jpg?width=480'),
-    ('cold-drinks--others', 'Buttermilk', 'Cold Drinks & Others - choose your pour size', 60.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Bottle_and_glass_of_inca_kola.jpg?width=480'),
-    ('cold-drinks--others', 'Red Bull', 'Cold Drinks & Others - choose your pour size', 220.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Bottle_and_glass_of_inca_kola.jpg?width=480'),
-    ('cold-drinks--others', 'Breezer', 'Cold Drinks & Others - choose your pour size', 260.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Bottle_and_glass_of_inca_kola.jpg?width=480'),
-    ('cold-drinks--others', 'Rio', 'Cold Drinks & Others - choose your pour size', 90.00, 'https://commons.wikimedia.org/wiki/Special:FilePath/Bottle_and_glass_of_inca_kola.jpg?width=480')
-) AS v(slug, name, description, price, image_url)
-JOIN cat c ON c.slug = v.slug
-ON CONFLICT (category_id, name) DO NOTHING;
-
--- Seed pour-size variants for every bar item (label + price shown to the guest)
--- Joined through menu_categories.menu_type = 'bar' to avoid name clashes with
--- any food item that happens to share a name (e.g. 'Solkadhi' exists as both a
--- Snacks starter and a bar mocktail).
-INSERT INTO menu_item_variants (menu_item_id, label, price, display_order)
-SELECT mi.id, v.label, v.price, v.display_order
-FROM menu_items mi
-JOIN menu_categories mc ON mc.id = mi.category_id AND mc.menu_type = 'bar'
-JOIN (
-  VALUES
-  ('Romanov', '30 ml', 80.00, 1),
-  ('Romanov', '60 ml', 130.00, 2),
-  ('Romanov', '90 ml', 190.00, 3),
-  ('Romanov', '180 ml', 360.00, 4),
-  ('White Mischief', '30 ml', 90.00, 1),
-  ('White Mischief', '60 ml', 150.00, 2),
-  ('White Mischief', '90 ml', 220.00, 3),
-  ('White Mischief', '180 ml', 420.00, 4),
-  ('G Master', '30 ml', 100.00, 1),
-  ('G Master', '60 ml', 160.00, 2),
-  ('G Master', '90 ml', 230.00, 3),
-  ('G Master', '180 ml', 440.00, 4),
-  ('Smirnoff', '30 ml', 130.00, 1),
-  ('Smirnoff', '60 ml', 230.00, 2),
-  ('Smirnoff', '90 ml', 330.00, 3),
-  ('Smirnoff', '180 ml', 610.00, 4),
-  ('Smirnoff Flavour', '30 ml', 140.00, 1),
-  ('Smirnoff Flavour', '60 ml', 240.00, 2),
-  ('Smirnoff Flavour', '90 ml', 350.00, 3),
-  ('Smirnoff Flavour', '180 ml', 640.00, 4),
-  ('Magic Moments Flavour', '30 ml', 100.00, 1),
-  ('Magic Moments Flavour', '60 ml', 160.00, 2),
-  ('Magic Moments Flavour', '90 ml', 240.00, 3),
-  ('Magic Moments Flavour', '180 ml', 450.00, 4),
-  ('Magic Moments', '30 ml', 90.00, 1),
-  ('Magic Moments', '60 ml', 150.00, 2),
-  ('Magic Moments', '90 ml', 220.00, 3),
-  ('Magic Moments', '180 ml', 420.00, 4),
-  ('Indri', '30 ml', 400.00, 1),
-  ('Indri', '60 ml', 700.00, 2),
-  ('Indri', '90 ml', 1050.00, 3),
-  ('Indri', '180 ml', 1900.00, 4),
-  ('Vat 69', '30 ml', 200.00, 1),
-  ('Vat 69', '60 ml', 350.00, 2),
-  ('Vat 69', '90 ml', 510.00, 3),
-  ('Vat 69', '180 ml', 980.00, 4),
-  ('Black & White', '30 ml', 200.00, 1),
-  ('Black & White', '60 ml', 380.00, 2),
-  ('Black & White', '90 ml', 550.00, 3),
-  ('Black & White', '180 ml', 990.00, 4),
-  ('Jameson', '30 ml', 200.00, 1),
-  ('Jameson', '60 ml', 380.00, 2),
-  ('Jameson', '90 ml', 550.00, 3),
-  ('Jameson', '180 ml', 1050.00, 4),
-  ('Red Label', '30 ml', 190.00, 1),
-  ('Red Label', '60 ml', 350.00, 2),
-  ('Red Label', '90 ml', 510.00, 3),
-  ('Red Label', '180 ml', 980.00, 4),
-  ('Black Label', '30 ml', 270.00, 1),
-  ('Black Label', '60 ml', 530.00, 2),
-  ('Black Label', '90 ml', 790.00, 3),
-  ('Black Label', '180 ml', 1540.00, 4),
-  ('Ballantine''s', '30 ml', 180.00, 1),
-  ('Ballantine''s', '60 ml', 350.00, 2),
-  ('Ballantine''s', '90 ml', 480.00, 3),
-  ('Ballantine''s', '180 ml', 950.00, 4),
-  ('J&B', '30 ml', 180.00, 1),
-  ('J&B', '60 ml', 350.00, 2),
-  ('J&B', '90 ml', 480.00, 3),
-  ('J&B', '180 ml', 950.00, 4),
-  ('100 Pipers', '30 ml', 180.00, 1),
-  ('100 Pipers', '60 ml', 350.00, 2),
-  ('100 Pipers', '90 ml', 520.00, 3),
-  ('100 Pipers', '180 ml', 1010.00, 4),
-  ('Blenders Pride', '30 ml', 120.00, 1),
-  ('Blenders Pride', '60 ml', 210.00, 2),
-  ('Blenders Pride', '90 ml', 310.00, 3),
-  ('Blenders Pride', '180 ml', 590.00, 4),
-  ('American Pride', '30 ml', 120.00, 1),
-  ('American Pride', '60 ml', 210.00, 2),
-  ('American Pride', '90 ml', 310.00, 3),
-  ('American Pride', '180 ml', 590.00, 4),
-  ('Antiquity', '30 ml', 110.00, 1),
-  ('Antiquity', '60 ml', 230.00, 2),
-  ('Antiquity', '90 ml', 340.00, 3),
-  ('Antiquity', '180 ml', 620.00, 4),
-  ('Signature', '30 ml', 110.00, 1),
-  ('Signature', '60 ml', 210.00, 2),
-  ('Signature', '90 ml', 310.00, 3),
-  ('Signature', '180 ml', 580.00, 4),
-  ('Legacy', '30 ml', 110.00, 1),
-  ('Legacy', '60 ml', 210.00, 2),
-  ('Legacy', '90 ml', 310.00, 3),
-  ('Legacy', '180 ml', 590.00, 4),
-  ('Rockford', '30 ml', 110.00, 1),
-  ('Rockford', '60 ml', 210.00, 2),
-  ('Rockford', '90 ml', 310.00, 3),
-  ('Rockford', '180 ml', 590.00, 4),
-  ('Oaksmith Silver', '30 ml', 90.00, 1),
-  ('Oaksmith Silver', '60 ml', 170.00, 2),
-  ('Oaksmith Silver', '90 ml', 250.00, 3),
-  ('Oaksmith Silver', '180 ml', 480.00, 4),
-  ('Oaksmith Gold', '30 ml', 120.00, 1),
-  ('Oaksmith Gold', '60 ml', 210.00, 2),
-  ('Oaksmith Gold', '90 ml', 310.00, 3),
-  ('Oaksmith Gold', '180 ml', 600.00, 4),
-  ('Imperial Blue', '30 ml', 80.00, 1),
-  ('Imperial Blue', '60 ml', 130.00, 2),
-  ('Imperial Blue', '90 ml', 190.00, 3),
-  ('Imperial Blue', '180 ml', 360.00, 4),
-  ('DSP Black', '30 ml', 80.00, 1),
-  ('DSP Black', '60 ml', 130.00, 2),
-  ('DSP Black', '90 ml', 190.00, 3),
-  ('DSP Black', '180 ml', 360.00, 4),
-  ('McDowell''s No.1', '30 ml', 80.00, 1),
-  ('McDowell''s No.1', '60 ml', 130.00, 2),
-  ('McDowell''s No.1', '90 ml', 190.00, 3),
-  ('McDowell''s No.1', '180 ml', 360.00, 4),
-  ('Royal Stag Barrel', '30 ml', 100.00, 1),
-  ('Royal Stag Barrel', '60 ml', 170.00, 2),
-  ('Royal Stag Barrel', '90 ml', 240.00, 3),
-  ('Royal Stag Barrel', '180 ml', 440.00, 4),
-  ('Royal Stag', '30 ml', 90.00, 1),
-  ('Royal Stag', '60 ml', 140.00, 2),
-  ('Royal Stag', '90 ml', 210.00, 3),
-  ('Royal Stag', '180 ml', 380.00, 4),
-  ('Royal Challenge', '30 ml', 90.00, 1),
-  ('Royal Challenge', '60 ml', 140.00, 2),
-  ('Royal Challenge', '90 ml', 210.00, 3),
-  ('Royal Challenge', '180 ml', 390.00, 4),
-  ('OCB', '30 ml', 80.00, 1),
-  ('OCB', '60 ml', 130.00, 2),
-  ('OCB', '90 ml', 190.00, 3),
-  ('OCB', '180 ml', 360.00, 4),
-  ('The Glenwalk', '30 ml', 120.00, 1),
-  ('The Glenwalk', '60 ml', 190.00, 2),
-  ('The Glenwalk', '90 ml', 260.00, 3),
-  ('The Glenwalk', '180 ml', 460.00, 4),
-  ('Iconic', '30 ml', 80.00, 1),
-  ('Iconic', '60 ml', 130.00, 2),
-  ('Iconic', '90 ml', 190.00, 3),
-  ('Iconic', '180 ml', 360.00, 4),
-  ('B7', '30 ml', 80.00, 1),
-  ('B7', '60 ml', 130.00, 2),
-  ('B7', '90 ml', 190.00, 3),
-  ('B7', '180 ml', 360.00, 4),
-  ('B10', '30 ml', 90.00, 1),
-  ('B10', '60 ml', 140.00, 2),
-  ('B10', '90 ml', 210.00, 3),
-  ('B10', '180 ml', 390.00, 4),
-  ('Old Monk', '30 ml', 70.00, 1),
-  ('Old Monk', '60 ml', 130.00, 2),
-  ('Old Monk', '90 ml', 190.00, 3),
-  ('Old Monk', '180 ml', 360.00, 4),
-  ('McDowell''s No.1 Rum', '30 ml', 70.00, 1),
-  ('McDowell''s No.1 Rum', '60 ml', 130.00, 2),
-  ('McDowell''s No.1 Rum', '90 ml', 190.00, 3),
-  ('McDowell''s No.1 Rum', '180 ml', 360.00, 4),
-  ('Bacardi Black', '30 ml', 90.00, 1),
-  ('Bacardi Black', '60 ml', 140.00, 2),
-  ('Bacardi Black', '90 ml', 210.00, 3),
-  ('Bacardi Black', '180 ml', 390.00, 4),
-  ('Bacardi White', '30 ml', 130.00, 1),
-  ('Bacardi White', '60 ml', 220.00, 2),
-  ('Bacardi White', '90 ml', 330.00, 3),
-  ('Bacardi White', '180 ml', 610.00, 4),
-  ('Bacardi Lemon', '30 ml', 140.00, 1),
-  ('Bacardi Lemon', '60 ml', 240.00, 2),
-  ('Bacardi Lemon', '90 ml', 350.00, 3),
-  ('Bacardi Lemon', '180 ml', 640.00, 4),
-  ('Kingfisher (Mild)', '500 ml', 270.00, 1),
-  ('Kingfisher (Mild)', '650 ml', 330.00, 2),
-  ('Tuborg (Mild)', '500 ml', 260.00, 1),
-  ('Tuborg (Mild)', '650 ml', 310.00, 2),
-  ('London Pilsner', '500 ml', 220.00, 1),
-  ('London Pilsner', '650 ml', 270.00, 2),
-  ('Carlsberg (Mild)', '500 ml', 280.00, 1),
-  ('Carlsberg (Mild)', '650 ml', 370.00, 2),
-  ('Budweiser (Mild)', '500 ml', 280.00, 1),
-  ('Budweiser (Mild)', '650 ml', 370.00, 2),
-  ('Kingfisher Strong', '500 ml', 260.00, 1),
-  ('Kingfisher Strong', '650 ml', 310.00, 2),
-  ('Tuborg Strong', '500 ml', 260.00, 1),
-  ('Tuborg Strong', '650 ml', 320.00, 2),
-  ('London Pilsner Strong', '500 ml', 220.00, 1),
-  ('London Pilsner Strong', '650 ml', 270.00, 2),
-  ('Carlsberg Strong', '500 ml', 280.00, 1),
-  ('Carlsberg Strong', '650 ml', 390.00, 2),
-  ('Budweiser Magnum', '500 ml', 280.00, 1),
-  ('Budweiser Magnum', '650 ml', 390.00, 2),
-  ('Cold Drink', '600 ml', 60.00, 1),
-  ('Soda', '600 ml', 25.00, 1),
-  ('Mineral Water', 'Bottle', 25.00, 1),
-  ('Small Water', 'Bottle', 15.00, 1),
-  ('Solkadhi', 'Glass', 50.00, 1),
-  ('Buttermilk', 'Glass', 60.00, 1),
-  ('Red Bull', 'Can', 220.00, 1),
-  ('Breezer', 'Bottle', 260.00, 1),
-  ('Rio', 'Bottle', 90.00, 1)
-) AS v(item_name, label, price, display_order) ON v.item_name = mi.name
-ON CONFLICT (menu_item_id, label) DO NOTHING;
-
--- Mark which menu items are alcoholic (drives CGST+SGST vs VAT at order
--- time). Driven purely by category, never by menu_type, since the Bar menu
--- also contains non-alcoholic items (Cold Drinks & Others). Written as two
--- unconditional UPDATEs rather than only-on-insert so re-running db:init
--- always leaves the flag correct even if a manager later moves an item
--- between categories.
+-- The seed below re-enables only the matched printed-menu items.
+-- Other food records remain available for historical orders.
 UPDATE menu_items mi
-SET is_alcoholic = TRUE
+SET is_available = FALSE,
+    updated_at = NOW()
 FROM menu_categories mc
 WHERE mc.id = mi.category_id
-  AND mc.slug IN ('vodka', 'scotch', 'premium-whiskey', 'whiskey', 'rum', 'beer--mild', 'beer--strong')
-  AND mi.is_alcoholic IS DISTINCT FROM TRUE;
+  AND mc.menu_type = 'food';
 
+-- The PDF does not confirm that the ambiguous Rs 25 entry is Soda.
 UPDATE menu_items mi
-SET is_alcoholic = FALSE
-FROM menu_categories mc
-WHERE mc.id = mi.category_id
-  AND mc.slug NOT IN ('vodka', 'scotch', 'premium-whiskey', 'whiskey', 'rum', 'beer--mild', 'beer--strong')
-  AND mi.is_alcoholic IS DISTINCT FROM FALSE;
-
--- 'Cold Drinks & Others' is mostly non-alcoholic (water, soda, buttermilk,
--- Red Bull...), but "Breezer" and "Rio" are real RTD alcoholic beverage
--- brands (a Bacardi Breezer alcopop and a Skyy Rio alcoholic fruit drink)
--- that happen to be shelved in that same category on the physical menu.
--- Category alone would mis-tag them as non-alcoholic, so they're corrected
--- here by name within that one category.
-UPDATE menu_items mi
-SET is_alcoholic = TRUE
+SET is_available = FALSE,
+    updated_at = NOW()
 FROM menu_categories mc
 WHERE mc.id = mi.category_id
   AND mc.slug = 'cold-drinks--others'
-  AND mi.name IN ('Breezer', 'Rio')
-  AND mi.is_alcoholic IS DISTINCT FROM TRUE;
+  AND mi.name = 'Soda';
 
--- Seed today's specials
-INSERT INTO todays_specials (menu_item_id, discount_percent, is_featured)
-SELECT id, 10.00, TRUE
-FROM menu_items
-WHERE name IN ('Chicken Family Platter', 'Pomfret Tawa / Rawa Fry', 'Mutton Kolhapuri', 'Chicken Biryani')
+INSERT INTO managers (
+  username, email, full_name, password_hash, role, is_active
+)
+VALUES
+  (
+    'admin',
+    'admin@seapalace.com',
+    'System Admin',
+    crypt('SeaPalace@123', gen_salt('bf', 10)),
+    'admin',
+    TRUE
+  ),
+  (
+    'manager',
+    'manager@seapalace.com',
+    'Restaurant Manager',
+    crypt('SeaPalace@123', gen_salt('bf', 10)),
+    'manager',
+    TRUE
+  )
+ON CONFLICT (username) DO NOTHING;
+
+-- =========================================================
+-- RESTAURANT TABLES
+-- Existing table statuses and capacities are preserved.
+-- =========================================================
+
+INSERT INTO restaurant_tables (
+  table_number, capacity, status, location, qr_code_text
+)
+SELECT
+  n,
+  CASE
+    WHEN n IN (4, 10, 15, 16) THEN 6
+    WHEN n IN (2, 7, 13) THEN 2
+    ELSE 4
+  END,
+  'available',
+  CASE
+    WHEN n IN (1, 7, 13) THEN 'Near Window'
+    WHEN n IN (3, 8, 12) THEN 'Garden'
+    WHEN n IN (4, 10, 15, 16) THEN 'Rooftop'
+    ELSE 'Main Hall'
+  END,
+  'table-' || n
+FROM generate_series(1, 16) AS t(n)
+ON CONFLICT (table_number) DO NOTHING;
+
+-- =========================================================
+-- CATEGORY DEFINITIONS
+--
+-- food_group:
+--   vegetarian     = Veg
+--   non-vegetarian = Non-Veg
+--   common         = Snacks & Sides
+--   NULL           = Bar
+--
+-- Distinct stored names are required by UNIQUE(name).
+-- =========================================================
+
+CREATE TEMP TABLE seed_categories (
+  slug TEXT PRIMARY KEY,
+  name TEXT NOT NULL UNIQUE,
+  menu_type TEXT NOT NULL,
+  food_group TEXT,
+  display_order INTEGER NOT NULL
+) ON COMMIT DROP;
+
+INSERT INTO seed_categories VALUES
+  ('veg-starters', 'Veg Starters', 'food', 'vegetarian', 1),
+  ('veg-main-course', 'Veg Main Course', 'food', 'vegetarian', 2),
+  ('veg-chinese', 'Veg Chinese', 'food', 'vegetarian', 3),
+  ('veg-biryani', 'Veg Biryani', 'food', 'vegetarian', 4),
+  ('veg-thali', 'Veg Thali', 'food', 'vegetarian', 5),
+
+  ('fish-starters', 'Fish Starters', 'food', 'non-vegetarian', 1),
+  ('non-veg-starters', 'Non-Veg Starters', 'food', 'non-vegetarian', 2),
+  ('tandoori-starters', 'Tandoori Starters', 'food', 'non-vegetarian', 3),
+  ('mutton-main-course', 'Mutton Main Course', 'food', 'non-vegetarian', 4),
+  ('chicken-main-course', 'Chicken Main Course', 'food', 'non-vegetarian', 5),
+  ('fish', 'Fish', 'food', 'non-vegetarian', 6),
+  ('non-veg-chinese', 'Non-Veg Chinese', 'food', 'non-vegetarian', 7),
+  ('non-veg-biryani', 'Non-Veg Biryani', 'food', 'non-vegetarian', 8),
+  ('non-veg-thali', 'Non-Veg Thali', 'food', 'non-vegetarian', 9),
+
+  ('soup', 'Soup', 'food', 'common', 1),
+  ('snacks', 'Snacks', 'food', 'common', 2),
+  ('rice-khichadi', 'Rice', 'food', 'common', 3),
+  ('roti-breads', 'Roti', 'food', 'common', 4),
+
+  ('vodka', 'Vodka', 'bar', NULL, 1),
+  ('beer--mild', 'Beer Mild', 'bar', NULL, 2),
+  ('beer--strong', 'Beer Strong', 'bar', NULL, 3),
+  ('cold-drinks--others', 'Cold Drinks', 'bar', NULL, 4),
+  ('scotch', 'Scotch', 'bar', NULL, 5),
+  ('premium-whiskey', 'Premium Whiskey', 'bar', NULL, 6),
+  ('rum', 'Rum', 'bar', NULL, 7),
+  ('whiskey', 'Whiskey', 'bar', NULL, 8);
+
+-- Match by slug or final name, retaining category IDs.
+-- If these identify two different rows, stop rather than
+-- silently merge categories and their dishes.
+
+DO $$
+DECLARE
+  r RECORD;
+  matched_ids UUID[];
+BEGIN
+  FOR r IN SELECT * FROM seed_categories LOOP
+    SELECT array_agg(id)
+    INTO matched_ids
+    FROM menu_categories
+    WHERE slug = r.slug OR name = r.name;
+
+    IF COALESCE(cardinality(matched_ids), 0) > 1 THEN
+      RAISE EXCEPTION
+        'Category conflict for "%": name and slug match different rows. Run the reviewed menu migration first.',
+        r.name;
+    ELSIF COALESCE(cardinality(matched_ids), 0) = 1 THEN
+      UPDATE menu_categories
+      SET
+        name = r.name,
+        slug = r.slug,
+        menu_type = r.menu_type,
+        food_group = r.food_group,
+        display_order = r.display_order,
+        updated_at = NOW()
+      WHERE id = matched_ids[1];
+    ELSE
+      INSERT INTO menu_categories (
+        name, slug, menu_type, food_group,
+        description, display_order, is_active
+      )
+      VALUES (
+        r.name, r.slug, r.menu_type, r.food_group,
+        r.name || ' menu', r.display_order, TRUE
+      );
+    END IF;
+  END LOOP;
+END $$;
+
+-- =========================================================
+-- FOOD ITEMS
+--
+-- Keep existing spellings for matching existing item IDs.
+-- Half/full dishes remain separate food items, compatible
+-- with the current food card and cart implementation.
+--
+-- Paneer Handi appears twice on the printed menu at the
+-- same price; it is represented once.
+-- =========================================================
+
+CREATE TEMP TABLE seed_items (
+  category_slug TEXT NOT NULL REFERENCES seed_categories(slug),
+  name TEXT NOT NULL,
+  price NUMERIC(10,2) NOT NULL CHECK (price >= 0),
+  is_veg BOOLEAN NOT NULL,
+  is_alcoholic BOOLEAN NOT NULL DEFAULT FALSE,
+  PRIMARY KEY (category_slug, name)
+) ON COMMIT DROP;
+
+INSERT INTO seed_items (
+  category_slug, name, price, is_veg
+)
+VALUES
+  -- SOUP
+  ('soup', 'Tomato Soup', 120, TRUE),
+  ('soup', 'Veg Hot ''N'' Sour Soup', 120, TRUE),
+  ('soup', 'Veg Manchow Soup', 120, TRUE),
+  ('soup', 'Veg Sweet Corn Soup', 120, TRUE),
+
+  -- SNACKS
+  ('snacks', 'Paneer Pakoda', 240, TRUE),
+  ('snacks', 'Veg Pakoda', 190, TRUE),
+  ('snacks', 'Solkadhi', 60, TRUE),
+  ('snacks', 'Schezwan Chatani', 30, TRUE),
+  ('snacks', 'Egg Pakoda', 210, FALSE),
+
+  -- VEG STARTERS
+  ('veg-starters', 'Channa Garlic', 210, TRUE),
+  ('veg-starters', 'Channa Koliwada', 220, TRUE),
+  ('veg-starters', 'Channa Oil Fry', 210, TRUE),
+  ('veg-starters', 'Finger Chips', 140, TRUE),
+  ('veg-starters', 'Green Peas Garlic', 190, TRUE),
+  ('veg-starters', 'Green Peas Oil Fry', 170, TRUE),
+  ('veg-starters', 'Kaju Namkin', 290, TRUE),
+  ('veg-starters', 'Mashroom Chilly', 280, TRUE),
+  ('veg-starters', 'Paneer Chilly Dry / Crispy', 290, TRUE),
+  ('veg-starters', 'Veg Chilly', 280, TRUE),
+  ('veg-starters', 'Veg Crispy', 290, TRUE),
+  ('veg-starters', 'Veg Manchurian Dry', 290, TRUE),
+  ('veg-starters', 'Veg Schezwan Dry', 280, TRUE),
+
+  -- VEG MAIN COURSE
+  ('veg-main-course', 'Aloo Jeera', 180, TRUE),
+  ('veg-main-course', 'Aloo Gobi', 210, TRUE),
+  ('veg-main-course', 'Aloo Mutter', 210, TRUE),
+  ('veg-main-course', 'Aloo Palak', 210, TRUE),
+  ('veg-main-course', 'Aloo Shimla', 210, TRUE),
+  ('veg-main-course', 'Aloo Tomato', 210, TRUE),
+  ('veg-main-course', 'Dal Fry', 170, TRUE),
+  ('veg-main-course', 'Chana Masala', 210, TRUE),
+  ('veg-main-course', 'Dal Kolhapuri Tadka', 190, TRUE),
+  ('veg-main-course', 'Green Peas Masala', 270, TRUE),
+  ('veg-main-course', 'Kaju Masala', 260, TRUE),
+  ('veg-main-course', 'Mix Veg', 240, TRUE),
+  ('veg-main-course', 'Mashroom Cheese Masala', 310, TRUE),
+  ('veg-main-course', 'Mashroom Masala', 280, TRUE),
+  ('veg-main-course', 'Paneer Handi', 310, TRUE),
+  ('veg-main-course', 'Paneer Butter Masala', 280, TRUE),
+  ('veg-main-course', 'Paneer Chingari', 290, TRUE),
+  ('veg-main-course', 'Paneer Kadai', 320, TRUE),
+  ('veg-main-course', 'Paneer Kaju Masala', 290, TRUE),
+  ('veg-main-course', 'Paneer Masala', 260, TRUE),
+  ('veg-main-course', 'Paneer Mutter', 260, TRUE),
+  ('veg-main-course', 'Paneer Palak', 260, TRUE),
+  ('veg-main-course', 'Paneer Tikka Masala', 280, TRUE),
+  ('veg-main-course', 'Paneer Bhurji', 280, TRUE),
+  ('veg-main-course', 'Shimla Masala', 280, TRUE),
+  ('veg-main-course', 'Veg Kadhai', 310, TRUE),
+  ('veg-main-course', 'Veg Kolhapuri', 240, TRUE),
+  ('veg-main-course', 'Veg Lasuni', 260, TRUE),
+  ('veg-main-course', 'Veg Makhanwala', 260, TRUE),
+  ('veg-main-course', 'Veg Maratha', 280, TRUE),
+  ('veg-main-course', 'Mashroom Handi', 310, TRUE),
+  ('veg-main-course', 'Mix Veg Handi', 290, TRUE),
+
+  -- VEG CHINESE
+  ('veg-chinese', 'Veg Schezwan Fried Rice', 220, TRUE),
+  ('veg-chinese', 'Veg Manchurian Fried Rice', 280, TRUE),
+  ('veg-chinese', 'Veg Triple Rice', 290, TRUE),
+  ('veg-chinese', 'Veg Fried Rice', 200, TRUE),
+  ('veg-chinese', 'Veg Hakka Noodles', 200, TRUE),
+  ('veg-chinese', 'Mashroom Fried Rice', 210, TRUE),
+
+  -- RICE
+  ('rice-khichadi', 'Curd Rice', 180, TRUE),
+  ('rice-khichadi', 'Palak Khichadi', 180, TRUE),
+  ('rice-khichadi', 'Dal Khichadi', 190, TRUE),
+  ('rice-khichadi', 'Dal Tadka Khichadi', 210, TRUE),
+  ('rice-khichadi', 'Jeera Rice', 160, TRUE),
+  ('rice-khichadi', 'Masala Rice', 210, TRUE),
+  ('rice-khichadi', 'Steam Rice', 150, TRUE),
+  ('rice-khichadi', 'Steam Rice (Half)', 80, TRUE),
+
+  -- ROTI
+  ('roti-breads', 'Tandori Roti', 25, TRUE),
+  ('roti-breads', 'Butter Roti', 35, TRUE),
+  ('roti-breads', 'Naan', 50, TRUE),
+  ('roti-breads', 'Butter Naan', 60, TRUE),
+  ('roti-breads', 'Butter Paratha', 60, TRUE),
+  ('roti-breads', 'Bhakari', 30, TRUE),
+  ('roti-breads', 'Chapati', 20, TRUE),
+  ('roti-breads', 'Butter Chapati', 25, TRUE),
+  ('roti-breads', 'Garlic Naan', 90, TRUE),
+  ('roti-breads', 'Cheese Garlic Naan', 120, TRUE),
+
+  -- VEG BIRYANI / PULAV
+  ('veg-biryani', 'Mashroom Biryani', 260, TRUE),
+  ('veg-biryani', 'Mashroom Pulav', 240, TRUE),
+  ('veg-biryani', 'Paneer Biryani', 290, TRUE),
+  ('veg-biryani', 'Paneer Pulav', 260, TRUE),
+  ('veg-biryani', 'Veg Biryani', 240, TRUE),
+  ('veg-biryani', 'Veg Pulav', 230, TRUE),
+
+  -- VEG THALI
+  ('veg-thali', 'Veg Thali', 170, TRUE),
+
+  -- FISH STARTERS
+  ('fish-starters', 'Prawns Chilly Dry', 510, FALSE),
+  ('fish-starters', 'Prawns Koliwada', 510, FALSE),
+  ('fish-starters', 'Fish Finger', 440, FALSE),
+  ('fish-starters', 'Bombil Fry', 290, FALSE),
+  ('fish-starters', 'Mandeli Fry', 210, FALSE),
+  ('fish-starters', 'Pomfret Tawa / Rawa Fry', 510, FALSE),
+  ('fish-starters', 'Surmai Tawa / Rawa Fry', 510, FALSE),
+  ('fish-starters', 'Prawns Tawa / Rawa Fry', 510, FALSE),
+  ('fish-starters', 'Bangda Tawa / Rawa Fry', 300, FALSE),
+
+  -- NON-VEG STARTERS
+  ('non-veg-starters', 'Boil Egg', 60, FALSE),
+  ('non-veg-starters', 'Chicken 65', 320, FALSE),
+  ('non-veg-starters', 'Chicken Chilly Dry', 290, FALSE),
+  ('non-veg-starters', 'Chicken Crispy', 320, FALSE),
+  ('non-veg-starters', 'Chicken Lollipop Masala Dry', 280, FALSE),
+  ('non-veg-starters', 'Chicken Lollipop', 260, FALSE),
+  ('non-veg-starters', 'Chicken Manchurian Dry', 290, FALSE),
+  ('non-veg-starters', 'Chicken Oil Fry', 290, FALSE),
+  ('non-veg-starters', 'Chicken Schezwan Dry', 290, FALSE),
+  ('non-veg-starters', 'Chicken Garlic', 290, FALSE),
+  ('non-veg-starters', 'Egg Bhurji', 120, FALSE),
+  ('non-veg-starters', 'Egg Chilly', 220, FALSE),
+  ('non-veg-starters', 'Egg Omlet', 90, FALSE),
+  ('non-veg-starters', 'Half Fry', 90, FALSE),
+  ('non-veg-starters', 'Liver Oil Fry', 250, FALSE),
+  ('non-veg-starters', 'Chicken Fry', 290, FALSE),
+  ('non-veg-starters', 'Mutton Fry', 410, FALSE),
+
+  -- TANDOORI STARTERS
+  ('tandoori-starters', 'Chicken Tikka', 310, FALSE),
+  ('tandoori-starters', 'Chicken Tandoori Half', 260, FALSE),
+  ('tandoori-starters', 'Chicken Tandoori Full', 430, FALSE),
+  ('tandoori-starters', 'Chicken Pahadi Kabab', 310, FALSE),
+  ('tandoori-starters', 'Chicken Boti Kabab', 320, FALSE),
+  ('tandoori-starters', 'Chicken Lollipop Tandoori', 310, FALSE),
+  ('tandoori-starters', 'Chicken Tangadi Kabab', 350, FALSE),
+  ('tandoori-starters', 'Chicken Afagan Tandoori (Half)', 280, FALSE),
+  ('tandoori-starters', 'Chicken Afagan Tandoori (Full)', 480, FALSE),
+  ('tandoori-starters', 'Chicken Jangali Tandoori (Half)', 280, FALSE),
+  ('tandoori-starters', 'Chicken Jangali Tandoori (Full)', 480, FALSE),
+  ('tandoori-starters', 'Rozali Kabab', 320, FALSE),
+  ('tandoori-starters', 'Chicken Reshmi Kabab', 320, FALSE),
+  ('tandoori-starters', 'Chicken Lasooni Kabab', 320, FALSE),
+  ('tandoori-starters', 'Chicken Family Platter', 1699, FALSE),
+
+  -- MUTTON MAIN COURSE
+  ('mutton-main-course', 'Mutton Masala', 390, FALSE),
+  ('mutton-main-course', 'Mutton Kolhapuri', 390, FALSE),
+  ('mutton-main-course', 'Mutton Hydrabadi', 390, FALSE),
+  ('mutton-main-course', 'Mutton Lapeta', 410, FALSE),
+  ('mutton-main-course', 'Mutton Kheema Masala', 410, FALSE),
+
+  -- CHICKEN MAIN COURSE
+  ('chicken-main-course', 'Chicken Masala', 280, FALSE),
+  ('chicken-main-course', 'Chicken Kolhapuri', 290, FALSE),
+  ('chicken-main-course', 'Chicken Tikka Masala', 340, FALSE),
+  ('chicken-main-course', 'Chicken Moghlai', 310, FALSE),
+  ('chicken-main-course', 'Chicken Hydrabadi', 290, FALSE),
+  ('chicken-main-course', 'Chicken Kadhai', 320, FALSE),
+  ('chicken-main-course', 'Chicken Lapeta', 310, FALSE),
+  ('chicken-main-course', 'Chicken Afagani', 310, FALSE),
+  ('chicken-main-course', 'Butter Chicken Full', 630, FALSE),
+  ('chicken-main-course', 'Butter Chicken Half', 350, FALSE),
+  ('chicken-main-course', 'Chicken Kheema Masala', 310, FALSE),
+  ('chicken-main-course', 'Liver Masala', 240, FALSE),
+
+  -- FISH MAIN DISHES
+  ('fish', 'Bangda Masala', 320, FALSE),
+  ('fish', 'Prawns Masala', 510, FALSE),
+  ('fish', 'Prawns Fry', 510, FALSE),
+  ('fish', 'Surmai Curry', 510, FALSE),
+  ('fish', 'Surmai Masala', 510, FALSE),
+  ('fish', 'Khekada Masala (Crab)', 390, FALSE),
+
+  -- NON-VEG CHINESE
+  ('non-veg-chinese', 'Chicken Fried Rice', 210, FALSE),
+  ('non-veg-chinese', 'Chicken Schezwan Rice', 230, FALSE),
+  ('non-veg-chinese', 'Chicken Triple Rice', 290, FALSE),
+  ('non-veg-chinese', 'Chicken Manchurian Rice', 290, FALSE),
+  ('non-veg-chinese', 'Chicken Hakka Noodles', 210, FALSE),
+  ('non-veg-chinese', 'Chicken Schezwan Noodles', 230, FALSE),
+  ('non-veg-chinese', 'Egg Fried Rice', 200, FALSE),
+  ('non-veg-chinese', 'Egg Schezwan Rice', 210, FALSE),
+  ('non-veg-chinese', 'Egg Triple Rice', 280, FALSE),
+  ('non-veg-chinese', 'Egg Hakka Noodles', 200, FALSE),
+  ('non-veg-chinese', 'Egg Schezwan Noodles', 220, FALSE),
+  ('non-veg-chinese', 'Prawns Fried Rice', 470, FALSE),
+  ('non-veg-chinese', 'Prawns Schezwan Rice', 460, FALSE),
+  ('non-veg-chinese', 'Prawns Triple Rice', 520, FALSE),
+  ('non-veg-chinese', 'Prawns Hakka Noodles', 450, FALSE),
+  ('non-veg-chinese', 'Prawns Schezwan Noodles', 460, FALSE),
+
+  -- NON-VEG BIRYANI / PULAV
+  ('non-veg-biryani', 'Chicken Biryani', 270, FALSE),
+  ('non-veg-biryani', 'Chicken Pulav', 260, FALSE),
+  ('non-veg-biryani', 'Chicken Hydrabadi Biryani', 300, FALSE),
+  ('non-veg-biryani', 'Mutton Biryani', 370, FALSE),
+  ('non-veg-biryani', 'Prawns Biryani', 490, FALSE),
+  ('non-veg-biryani', 'Prawns Pulav', 480, FALSE),
+  ('non-veg-biryani', 'Egg Biryani', 250, FALSE),
+
+  -- NON-VEG THALIS
+  ('non-veg-thali', 'Egg Thali', 260, FALSE),
+  ('non-veg-thali', 'Chicken Thali', 290, FALSE),
+  ('non-veg-thali', 'Chicken Kolhapuri Thali', 310, FALSE),
+  ('non-veg-thali', 'Chicken Kheema Thali', 310, FALSE),
+  ('non-veg-thali', 'Butter Chicken Thali', 340, FALSE),
+  ('non-veg-thali', 'Chicken Liver Thali', 260, FALSE),
+  ('non-veg-thali', 'Chicken Kharda Thali', 310, FALSE),
+  ('non-veg-thali', 'Chicken Kala Masala Thali', 310, FALSE),
+  ('non-veg-thali', 'Mutton Thali', 370, FALSE),
+  ('non-veg-thali', 'Mutton Kolhapuri Thali', 410, FALSE),
+  ('non-veg-thali', 'Mutton Kheema Thali', 410, FALSE),
+  ('non-veg-thali', 'Mutton Kala Masala Thali', 410, FALSE),
+  ('non-veg-thali', 'Mutton Kharda Thali', 410, FALSE),
+  ('non-veg-thali', 'Surmai Thali', 470, FALSE),
+  ('non-veg-thali', 'Pomfret Thali', 510, FALSE),
+  ('non-veg-thali', 'Prawns Thali', 510, FALSE),
+  ('non-veg-thali', 'Bangda Thali', 320, FALSE),
+  ('non-veg-thali', 'Bombil Thali', 320, FALSE);
+
+-- =========================================================
+-- BAR SPIRITS
+-- Price columns correspond to the PDF's serving sizes.
+-- =========================================================
+
+CREATE TEMP TABLE seed_spirits (
+  category_slug TEXT NOT NULL REFERENCES seed_categories(slug),
+  name TEXT NOT NULL,
+  p30 NUMERIC(10,2) NOT NULL,
+  p60 NUMERIC(10,2) NOT NULL,
+  p90 NUMERIC(10,2) NOT NULL,
+  p180 NUMERIC(10,2) NOT NULL,
+  PRIMARY KEY (category_slug, name)
+) ON COMMIT DROP;
+
+INSERT INTO seed_spirits VALUES
+  -- VODKA
+  ('vodka', 'Romanov', 80, 130, 190, 360),
+  ('vodka', 'White Mischief', 90, 150, 220, 420),
+  ('vodka', 'G Master', 100, 160, 230, 440),
+  ('vodka', 'Smirnoff', 130, 230, 330, 610),
+  ('vodka', 'Smirnoff Flavour', 140, 240, 350, 640),
+  ('vodka', 'Magic Moments Flavour', 100, 160, 240, 450),
+  ('vodka', 'Magic Moments', 90, 150, 220, 420),
+
+  -- SCOTCH
+  ('scotch', 'Indri', 400, 700, 1050, 1900),
+  ('scotch', 'Vat 69', 200, 350, 510, 980),
+  ('scotch', 'Black & White', 200, 380, 550, 990),
+  ('scotch', 'Jameson', 200, 380, 550, 1050),
+  ('scotch', 'Red Label', 190, 350, 510, 980),
+  ('scotch', 'Black Label', 270, 530, 790, 1540),
+  ('scotch', 'Ballantine''s', 180, 350, 480, 950),
+  ('scotch', 'J&B', 180, 350, 480, 950),
+  ('scotch', '100 Pipers', 180, 350, 520, 1010),
+
+  -- PREMIUM WHISKEY
+  ('premium-whiskey', 'Blenders Pride', 120, 210, 310, 590),
+  ('premium-whiskey', 'American Pride', 120, 210, 310, 590),
+  ('premium-whiskey', 'Antiquity', 110, 230, 340, 620),
+  ('premium-whiskey', 'Signature', 110, 210, 310, 580),
+  ('premium-whiskey', 'Legacy', 110, 210, 310, 590),
+  ('premium-whiskey', 'Rockford', 110, 210, 310, 590),
+  ('premium-whiskey', 'Oaksmith Silver', 90, 170, 250, 480),
+  ('premium-whiskey', 'Oaksmith Gold', 120, 210, 310, 600),
+
+  -- RUM
+  ('rum', 'Old Monk', 70, 130, 190, 360),
+  ('rum', 'McDowell''s No.1 Rum', 70, 130, 190, 360),
+  ('rum', 'Bacardi Black', 90, 140, 210, 390),
+  ('rum', 'Bacardi White', 130, 220, 330, 610),
+  ('rum', 'Bacardi Lemon', 140, 240, 350, 640),
+
+  -- WHISKEY
+  ('whiskey', 'Imperial Blue', 80, 130, 190, 360),
+  ('whiskey', 'DSP Black', 80, 130, 190, 360),
+  ('whiskey', 'McDowell''s No.1', 80, 130, 190, 360),
+  ('whiskey', 'Royal Stag Barrel', 100, 170, 240, 440),
+  ('whiskey', 'Royal Stag', 90, 140, 210, 380),
+  ('whiskey', 'Royal Challenge', 90, 140, 210, 390),
+  ('whiskey', 'OCB', 80, 130, 190, 360),
+  ('whiskey', 'The Glenwalk', 120, 190, 260, 460),
+  ('whiskey', 'Iconic', 80, 130, 190, 360),
+  ('whiskey', 'B7', 80, 130, 190, 360),
+  ('whiskey', 'B10', 90, 140, 210, 390);
+
+-- =========================================================
+-- BEER
+-- =========================================================
+
+CREATE TEMP TABLE seed_beers (
+  category_slug TEXT NOT NULL REFERENCES seed_categories(slug),
+  name TEXT NOT NULL,
+  p500 NUMERIC(10,2) NOT NULL,
+  p650 NUMERIC(10,2) NOT NULL,
+  PRIMARY KEY (category_slug, name)
+) ON COMMIT DROP;
+
+INSERT INTO seed_beers VALUES
+  ('beer--mild', 'Kingfisher (Mild)', 270, 330),
+  ('beer--mild', 'Tuborg (Mild)', 260, 310),
+  ('beer--mild', 'London Pilsner', 220, 270),
+  ('beer--mild', 'Carlsberg (Mild)', 280, 370),
+  ('beer--mild', 'Budweiser (Mild)', 280, 370),
+
+  ('beer--strong', 'Kingfisher Strong', 260, 310),
+  ('beer--strong', 'Tuborg Strong', 260, 320),
+  ('beer--strong', 'London Pilsner Strong', 220, 270),
+  ('beer--strong', 'Carlsberg Strong', 280, 390),
+  ('beer--strong', 'Budweiser Magnum', 280, 390);
+
+-- =========================================================
+-- COLD DRINKS
+--
+-- "Serving" avoids inventing a volume absent from the PDF.
+-- Breezer/Rio retain the alcoholic classification from
+-- the supplied project; verify the actual stocked products.
+--
+-- The ambiguous second "cold drink 600 ml" at Rs 25 is not
+-- inserted as "Soda". Any existing Soda row is left intact
+-- for review during migration.
+-- =========================================================
+
+CREATE TEMP TABLE seed_cold_drinks (
+  name TEXT PRIMARY KEY,
+  label TEXT NOT NULL,
+  price NUMERIC(10,2) NOT NULL,
+  is_alcoholic BOOLEAN NOT NULL
+) ON COMMIT DROP;
+
+INSERT INTO seed_cold_drinks VALUES
+  ('Cold Drink', '600 ml', 60, FALSE),
+  ('Mineral Water', 'Serving', 25, FALSE),
+  ('Solkadhi', 'Serving', 50, FALSE),
+  ('Buttermilk', 'Serving', 60, FALSE),
+  ('Red Bull', 'Serving', 220, FALSE),
+  ('Breezer', 'Serving', 260, TRUE),
+  ('Rio', 'Serving', 90, TRUE),
+  ('Small Water', 'Serving', 15, FALSE);
+
+INSERT INTO seed_items (
+  category_slug, name, price, is_veg, is_alcoholic
+)
+SELECT category_slug, name, p30, TRUE, TRUE
+FROM seed_spirits;
+
+INSERT INTO seed_items (
+  category_slug, name, price, is_veg, is_alcoholic
+)
+SELECT category_slug, name, p500, TRUE, TRUE
+FROM seed_beers;
+
+INSERT INTO seed_items (
+  category_slug, name, price, is_veg, is_alcoholic
+)
+SELECT
+  'cold-drinks--others',
+  name,
+  price,
+  TRUE,
+  is_alcoholic
+FROM seed_cold_drinks;
+
+-- =========================================================
+-- APPLY MENU ITEMS
+--
+-- Prefer a match already in the target category.
+-- Otherwise reuse a unique same-name item in the same
+-- menu_type, moving it without changing its ID.
+--
+-- This keeps food/bar Solkadhi separate.
+-- Multiple possible legacy matches cause a rollback.
+--
+-- Existing descriptions, images, availability and prep
+-- times are preserved. New items use the schema defaults
+-- and no invented image URL.
+-- =========================================================
+
+DO $$
+DECLARE
+  r RECORD;
+  target_category_id UUID;
+  matched_item_id UUID;
+  candidate_ids UUID[];
+BEGIN
+  LOCK TABLE menu_items IN SHARE ROW EXCLUSIVE MODE;
+
+  FOR r IN
+    SELECT s.*, c.menu_type, c.name AS category_name
+    FROM seed_items s
+    JOIN seed_categories c ON c.slug = s.category_slug
+    ORDER BY s.category_slug, s.name
+  LOOP
+    SELECT id
+    INTO STRICT target_category_id
+    FROM menu_categories
+    WHERE slug = r.category_slug;
+
+    matched_item_id := NULL;
+
+    SELECT id
+    INTO matched_item_id
+    FROM menu_items
+    WHERE category_id = target_category_id
+      AND name = r.name;
+
+    IF matched_item_id IS NULL THEN
+      -- When several same-name legacy records exist, prefer the
+-- one referenced by the most order lines.
+-- Other copies remain stored, but unavailable.
+SELECT ARRAY[mi.id]
+INTO candidate_ids
+FROM menu_items mi
+JOIN menu_categories mc ON mc.id = mi.category_id
+WHERE mi.name = r.name
+  AND mc.menu_type = r.menu_type
+ORDER BY
+  (
+    SELECT COUNT(*)
+    FROM order_items oi
+    WHERE oi.menu_item_id = mi.id
+  ) DESC,
+  mi.created_at ASC,
+  mi.id ASC
+LIMIT 1;
+
+      IF COALESCE(cardinality(candidate_ids), 0) > 1 THEN
+        RAISE EXCEPTION
+          'Multiple legacy matches for "%". Resolve them in the menu migration before seeding.',
+          r.name;
+      ELSIF COALESCE(cardinality(candidate_ids), 0) = 1 THEN
+        matched_item_id := candidate_ids[1];
+      END IF;
+    END IF;
+
+    IF matched_item_id IS NOT NULL THEN
+      UPDATE menu_items
+SET
+  category_id = target_category_id,
+  price = r.price,
+  is_veg = r.is_veg,
+  is_alcoholic = r.is_alcoholic,
+  is_available = TRUE,
+  updated_at = NOW()
+WHERE id = matched_item_id;
+    ELSE
+      INSERT INTO menu_items (
+        category_id,
+        name,
+        description,
+        price,
+        is_veg,
+        is_alcoholic
+      )
+      VALUES (
+        target_category_id,
+        r.name,
+        r.category_name || ' from Hotel Sea Palace',
+        r.price,
+        r.is_veg,
+        r.is_alcoholic
+      );
+    END IF;
+  END LOOP;
+END $$;
+
+-- =========================================================
+-- VARIANTS
+-- Category + item name identify the correct drink.
+-- Upserts retain existing variant IDs and order references.
+-- =========================================================
+
+CREATE TEMP TABLE seed_variants (
+  category_slug TEXT NOT NULL,
+  item_name TEXT NOT NULL,
+  label TEXT NOT NULL,
+  price NUMERIC(10,2) NOT NULL,
+  display_order INTEGER NOT NULL,
+  PRIMARY KEY (category_slug, item_name, label),
+  FOREIGN KEY (category_slug, item_name)
+    REFERENCES seed_items(category_slug, name)
+) ON COMMIT DROP;
+
+INSERT INTO seed_variants
+SELECT
+  s.category_slug,
+  s.name,
+  v.label,
+  v.price,
+  v.display_order
+FROM seed_spirits s
+CROSS JOIN LATERAL (
+  VALUES
+    ('30 ml', s.p30, 1),
+    ('60 ml', s.p60, 2),
+    ('90 ml', s.p90, 3),
+    ('180 ml', s.p180, 4)
+) AS v(label, price, display_order);
+
+INSERT INTO seed_variants
+SELECT
+  b.category_slug,
+  b.name,
+  v.label,
+  v.price,
+  v.display_order
+FROM seed_beers b
+CROSS JOIN LATERAL (
+  VALUES
+    ('500 ml', b.p500, 1),
+    ('650 ml', b.p650, 2)
+) AS v(label, price, display_order);
+
+-- Preserve an existing single-serving label, such as Glass
+-- or Bottle, rather than adding a duplicate "Serving".
+-- Stop if multiple existing variants make the match unclear.
+
+DO $$
+DECLARE
+  r RECORD;
+  item_id UUID;
+  existing_labels TEXT[];
+  chosen_label TEXT;
+BEGIN
+  FOR r IN SELECT * FROM seed_cold_drinks LOOP
+    SELECT mi.id
+    INTO STRICT item_id
+    FROM menu_items mi
+    JOIN menu_categories mc ON mc.id = mi.category_id
+    WHERE mc.slug = 'cold-drinks--others'
+      AND mi.name = r.name;
+
+    SELECT array_agg(label ORDER BY display_order, id)
+    INTO existing_labels
+    FROM menu_item_variants
+    WHERE menu_item_id = item_id;
+
+    IF COALESCE(cardinality(existing_labels), 0) > 1 THEN
+      RAISE EXCEPTION
+        'Drink "%" has multiple existing variants. Review its serving sizes before seeding.',
+        r.name;
+    END IF;
+
+    chosen_label := r.label;
+
+    IF COALESCE(cardinality(existing_labels), 0) = 1 THEN
+      chosen_label := existing_labels[1];
+
+      IF r.name = 'Cold Drink' AND chosen_label <> '600 ml' THEN
+        RAISE EXCEPTION
+          'Cold Drink has variant "%", but the confirmed PDF entry is 600 ml. Review before seeding.',
+          chosen_label;
+      END IF;
+    END IF;
+
+    INSERT INTO seed_variants VALUES (
+      'cold-drinks--others',
+      r.name,
+      chosen_label,
+      r.price,
+      1
+    );
+  END LOOP;
+END $$;
+
+INSERT INTO menu_item_variants (
+  menu_item_id, label, price, display_order
+)
+SELECT
+  mi.id,
+  sv.label,
+  sv.price,
+  sv.display_order
+FROM seed_variants sv
+JOIN menu_categories mc
+  ON mc.slug = sv.category_slug
+JOIN menu_items mi
+  ON mi.category_id = mc.id
+ AND mi.name = sv.item_name
+ON CONFLICT (menu_item_id, label)
+DO UPDATE SET
+  price = EXCLUDED.price,
+  display_order = EXCLUDED.display_order,
+  updated_at = NOW();
+
+-- =========================================================
+-- TODAY'S SPECIALS
+-- Preserve existing manager-selected promotions.
+-- Only add defaults if an item has no special record.
+-- =========================================================
+
+INSERT INTO todays_specials (
+  menu_item_id, discount_percent, is_featured
+)
+SELECT mi.id, 10, TRUE
+FROM menu_items mi
+JOIN menu_categories mc ON mc.id = mi.category_id
+JOIN (
+  VALUES
+    ('tandoori-starters', 'Chicken Family Platter'),
+    ('fish-starters', 'Pomfret Tawa / Rawa Fry'),
+    ('mutton-main-course', 'Mutton Kolhapuri'),
+    ('non-veg-biryani', 'Chicken Biryani')
+) AS s(slug, name)
+  ON mc.slug = s.slug
+ AND mi.name = s.name
 ON CONFLICT (menu_item_id) DO NOTHING;
 
--- Seed restaurant settings
+-- =========================================================
+-- SETTINGS
+-- Retains the supplied project's configured rate defaults.
+-- Existing settings are not overwritten.
+-- =========================================================
+
 INSERT INTO restaurant_settings (key, value, description)
 VALUES
-  ('restaurant_name', 'Hotel Sea Palace', 'The restaurant display name'),
+  ('restaurant_name', 'Hotel Sea Palace', 'Restaurant display name'),
   ('currency', 'INR', 'Default currency'),
-  ('cgst_rate', '9', 'CGST percent applied to non-alcoholic subtotal'),
-  ('sgst_rate', '9', 'SGST percent applied to non-alcoholic subtotal'),
-  ('vat_rate', '10', 'VAT percent applied to alcoholic subtotal'),
+  ('cgst_rate', '9', 'Configured CGST percent on non-alcoholic items'),
+  ('sgst_rate', '9', 'Configured SGST percent on non-alcoholic items'),
+  ('vat_rate', '10', 'Configured VAT percent on alcoholic items'),
   ('service_charge', '0', 'Service charge percentage')
 ON CONFLICT (key) DO NOTHING;
 
--- The old flat 5% GST setting is no longer used anywhere in the app - tax is
--- now computed per-category in orderController.js (CGST 9% + SGST 9% on
--- non-alcoholic, VAT 10% on alcoholic). Remove it so it can't be read by
--- mistake; safe to re-run.
-DELETE FROM restaurant_settings WHERE key = 'tax_rate';
+-- Legacy categories/items are deliberately retained here.
+-- The reviewed migration will handle obsolete sample dishes,
+-- duplicate matches and empty old categories separately.
+-- No orders, bills or historical line prices are changed.
+
+COMMIT;

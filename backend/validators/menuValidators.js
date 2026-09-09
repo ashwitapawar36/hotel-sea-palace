@@ -4,7 +4,12 @@ const categoryValidator = [
   body('name').isString().trim().notEmpty().withMessage('Category name is required'),
   body('slug').optional({ values: 'falsy' }).isString().trim().notEmpty().withMessage('Category slug must be a non-empty string'),
   body('menuType').optional().isIn(['food', 'bar']).withMessage('Menu type must be food or bar'),
-  body('foodGroup').optional({ values: 'falsy' }).isIn(['vegetarian', 'non-vegetarian']).withMessage('Food group must be vegetarian or non-vegetarian'),
+  body('foodGroup')
+  .optional({ values: 'falsy' })
+  .isIn(['vegetarian', 'non-vegetarian', 'common'])
+  .withMessage(
+    'Food group must be vegetarian, non-vegetarian, or common'
+  ),
   body('description').optional().isString(),
   body('displayOrder').optional().isInt({ min: 0 }),
   body('isActive').optional().isBoolean(),

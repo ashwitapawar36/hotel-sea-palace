@@ -1,5 +1,8 @@
 const db = require('../config/db');
+const crypto = require('crypto');
 
+const UUID_PATTERN =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const CGST_RATE = 0.025;
 const SGST_RATE = 0.025;
 const VAT_RATE = 0.10;
@@ -33,7 +36,116 @@ async function placeOrder(req, res, next) {
       throw Object.assign(new Error(`Table ${tableNumber} does not exist`), { status: 400 });
     }
     const tableId = tableRows[0].id;
+    const { visitId, submissionKey } = req.body;
+    const visitToken = req.get('X-Visit-Token');
 
+    if (
+      !UUID_PATTERN.test(String(visitId || '')) ||
+      !UUID_PATTERN.test(String(submissionKey || '')) ||
+      typeof visitToken !== 'string' ||
+      !/^[0-9a-f]{64}$/i.test(visitToken)
+    ) {
+      throw Object.assign(
+        new Error('Valid visit details are required to submit an order.'),
+        { status: 400 }
+      );
+    }
+
+    const tokenHash = crypto
+      .createHash('sha256')
+      .update(visitToken)
+      .digest('hex');
+
+    // Lock the visit so simultaneous submissions are handled in order.
+    // Final billing must use this same lock when we add that endpoint.
+    const { rows: visitRows } = await client.query(
+      `SELECT id, table_id, status
+      FROM table_visits
+      WHERE id = $1 AND access_token_hash = $2
+      FOR UPDATE`,
+      [visitId, tokenHash]
+    );
+
+    const visit = visitRows[0];
+
+    if (!visit || visit.table_id !== tableId) {
+      throw Object.assign(
+        new Error('Visit not found or access denied.'),
+        { status: 403 }
+      );
+    }
+
+    // Check for a completed earlier submission before checking visit status.
+    // A retry should still recover its order after a bill was requested.
+    const { rows: previousOrders } = await client.query(
+      `SELECT *
+      FROM orders
+      WHERE visit_id = $1 AND submission_key = $2`,
+      [visitId, submissionKey]
+    );
+
+    if (previousOrders[0]) {
+      const previousOrder = previousOrders[0];
+
+      const { rows: previousItems } = await client.query(
+        `SELECT oi.id, oi.menu_item_id, oi.variant_id,
+                oi.quantity, oi.unit_price, oi.line_total, oi.notes,
+                mi.name, mv.label AS variant_label
+        FROM order_items oi
+        JOIN menu_items mi ON mi.id = oi.menu_item_id
+        LEFT JOIN menu_item_variants mv ON mv.id = oi.variant_id
+        WHERE oi.order_id = $1
+        ORDER BY oi.created_at, oi.id`,
+        [previousOrder.id]
+      );
+
+      // A submission key can only be reused for the same cart contents.
+      const signature = (lines) =>
+        JSON.stringify(
+          lines.map((line) => JSON.stringify([
+            String(line.menuItemId ?? line.menu_item_id).toLowerCase(),
+            String(line.variantId ?? line.variant_id ?? '').toLowerCase(),
+            Number(line.quantity),
+            line.notes || null,
+          ])).sort()
+        );
+
+      if (
+        signature(items) !== signature(previousItems) ||
+        (customerName || 'Guest') !== previousOrder.customer_name ||
+        (notes || null) !== previousOrder.notes
+      ) {
+        throw Object.assign(
+          new Error('This submission key was already used for different items.'),
+          { status: 409 }
+        );
+      }
+
+      await client.query('COMMIT');
+
+      // Return the saved order without inserting another notification
+      // or broadcasting another new_order event.
+      return res.status(200).json({
+        success: true,
+        data: {
+          replayed: true,
+          order: {
+            ...previousOrder,
+            table_number: Number(tableNumber),
+            items: previousItems,
+          },
+        },
+      });
+    }
+
+    if (visit.status !== 'open') {
+      throw Object.assign(
+        new Error(
+          'The final bill has already been requested or this visit has ended. Please contact the manager.'
+        ),
+        { status: 409 }
+      );
+    }
     // Resolve every line's authoritative price (and alcoholic status) from
     // the database first, before any order/order_item rows are written.
     // Tax rules are per-item, not per-order: a table that orders both food
@@ -103,11 +215,50 @@ async function placeOrder(req, res, next) {
     const totalAmount = round2(subtotal + taxAmount);
 
     const { rows: orderRows } = await client.query(
-      `INSERT INTO orders (table_id, order_number, customer_name, status, payment_status, subtotal, tax_amount, food_subtotal, alcohol_subtotal, cgst_amount, sgst_amount, vat_amount, total_amount, notes)
-       VALUES ($1, $2, $3, 'pending', 'unpaid', $4, $5, $6, $7, $8, $9, $10, $11, $12)
-       RETURNING id, order_number, status, payment_status, subtotal, tax_amount, food_subtotal, alcohol_subtotal, cgst_amount, sgst_amount, vat_amount, total_amount, created_at`,
-      [tableId, orderNumber, customerName || 'Guest', subtotal, taxAmount, foodSubtotal, alcoholSubtotal, cgstAmount, sgstAmount, vatAmount, totalAmount, notes || null],
-    );
+  `INSERT INTO orders (
+     table_id,
+     order_number,
+     customer_name,
+     status,
+     payment_status,
+     subtotal,
+     tax_amount,
+     food_subtotal,
+     alcohol_subtotal,
+     cgst_amount,
+     sgst_amount,
+     vat_amount,
+     total_amount,
+     notes,
+     visit_id,
+     submission_key
+   )
+   VALUES (
+     $1, $2, $3, 'pending', 'unpaid',
+     $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14
+   )
+   RETURNING
+     id, order_number, status, payment_status,
+     subtotal, tax_amount, food_subtotal, alcohol_subtotal,
+     cgst_amount, sgst_amount, vat_amount, total_amount,
+     created_at, visit_id, submission_key`,
+  [
+    tableId,
+    orderNumber,
+    customerName || 'Guest',
+    subtotal,
+    taxAmount,
+    foodSubtotal,
+    alcoholSubtotal,
+    cgstAmount,
+    sgstAmount,
+    vatAmount,
+    totalAmount,
+    notes || null,
+    visitId,
+    submissionKey,
+  ]
+);
 
     const order = orderRows[0];
     const insertedItems = [];

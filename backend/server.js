@@ -22,6 +22,7 @@ const tableRoutes = require('./routes/tableRoutes');
 const feedbackRoutes = require('./routes/feedbackRoutes');
 const notFoundMiddleware = require('./middleware/notFound');
 const errorHandlerMiddleware = require('./middleware/errorHandler');
+const visitRoutes = require('./routes/visitRoutes');
 
 const app = express();
 const server = http.createServer(app);
@@ -86,6 +87,7 @@ app.use('/api/bills', billingRoutes);
 app.use('/api/split-bill', splitBillRoutes);
 app.use('/api/tables', tableRoutes);
 app.use('/api/feedback', feedbackRoutes);
+app.use('/api/visits', visitRoutes);
 
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);

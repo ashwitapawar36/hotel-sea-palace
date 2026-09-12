@@ -60,7 +60,7 @@ export default function ManagerLogin() {
         <form className="card login-card" onSubmit={handleLogin}>
           <div className="login-badge">
             <ShieldCheck size={15} color="var(--gold)" />
-            <span>JWT-secured manager sign-in</span>
+            <span>Manager Sign In</span>
           </div>
 
           <div className="login-meta">

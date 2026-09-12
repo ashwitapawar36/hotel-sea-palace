@@ -4,8 +4,8 @@ import { api } from "../services/api";
 
 const CartContext = createContext(null);
 
-const CGST_RATE = 0.09;
-const SGST_RATE = 0.09;
+const CGST_RATE = 0.025;
+const SGST_RATE = 0.025;
 const VAT_RATE = 0.1;
 
 // Item/variant ids are Postgres UUIDs (strings), not numbers - so cart keys
@@ -144,8 +144,12 @@ export function CartProvider({ children }) {
   };
 
   const updateDinerName = (id, name) => {
-    setDiners((prev) => prev.map((diner) => (diner.id === id ? { ...diner, name: name.trim() || "Guest" } : diner)));
-  };
+  setDiners((prev) =>
+    prev.map((diner) =>
+      diner.id === id ? { ...diner, name } : diner
+    )
+  );
+};
 
   const removeDiner = (id) => {
     setDiners((prev) => prev.filter((diner) => diner.id !== id));

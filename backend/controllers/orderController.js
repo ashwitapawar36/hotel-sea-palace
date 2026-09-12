@@ -1,7 +1,7 @@
 const db = require('../config/db');
 
-const CGST_RATE = 0.09;
-const SGST_RATE = 0.09;
+const CGST_RATE = 0.025;
+const SGST_RATE = 0.025;
 const VAT_RATE = 0.10;
 
 function buildOrderNumber() {

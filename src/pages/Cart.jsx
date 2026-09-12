@@ -74,13 +74,13 @@ export default function Cart() {
           )}
           {cgst > 0 && (
             <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, color: "var(--muted)", marginBottom: 6 }}>
-              <span>CGST (9%)</span>
+              <span>CGST (2.5%)</span>
               <span>₹{cgst.toLocaleString("en-IN")}</span>
             </div>
           )}
           {sgst > 0 && (
             <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, color: "var(--muted)", marginBottom: 6 }}>
-              <span>SGST (9%)</span>
+              <span>SGST (2.5%)</span>
               <span>₹{sgst.toLocaleString("en-IN")}</span>
             </div>
           )}

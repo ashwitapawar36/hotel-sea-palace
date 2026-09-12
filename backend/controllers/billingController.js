@@ -151,8 +151,8 @@ function drawItemRows(doc, startY, items) {
 function drawTotals(doc, startY, order) {
   const rows = [];
   if (Number(order.food_subtotal) > 0) rows.push(['Food / Non-Alcoholic Subtotal', formatCurrency(order.food_subtotal)]);
-  if (Number(order.cgst_amount) > 0) rows.push(['CGST (9%)', formatCurrency(order.cgst_amount)]);
-  if (Number(order.sgst_amount) > 0) rows.push(['SGST (9%)', formatCurrency(order.sgst_amount)]);
+  if (Number(order.cgst_amount) > 0) rows.push(['CGST', formatCurrency(order.cgst_amount)]);
+  if (Number(order.sgst_amount) > 0) rows.push(['SGST', formatCurrency(order.sgst_amount)]);
   if (Number(order.alcohol_subtotal) > 0) rows.push(['Alcohol Subtotal', formatCurrency(order.alcohol_subtotal)]);
   if (Number(order.vat_amount) > 0) rows.push(['VAT (10%)', formatCurrency(order.vat_amount)]);
 

@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef , useState } from "react";
 import { api, authStorage, ApiError } from "../services/api";
 import { connectManagerSocket, disconnectManagerSocket } from "../services/socket";
 import { getManagerSummary } from "../utils/managerUtils";
@@ -34,6 +34,33 @@ function normalizeOrder(row) {
 
 export function ManagerProvider({ children }) {
   const { showToast } = useToast();
+  const seenOrderIds = useRef(new Set());
+const ordersInitialized = useRef(false);
+const alertsActive = useRef(false);
+
+useEffect(() => {
+  alertsActive.current = true;
+
+  return () => {
+    alertsActive.current = false;
+  };
+}, []);
+
+const notifyNewOrder = useCallback(
+  (id, message) => {
+    if (
+      !alertsActive.current ||
+      !id ||
+      seenOrderIds.current.has(id)
+    ) {
+      return;
+    }
+
+    seenOrderIds.current.add(id);
+    showToast(message, 10000);
+  },
+  [showToast]
+);
   const [manager, setManager] = useState(null);
   const [orders, setOrders] = useState([]);
   const [isAuthenticated, setIsAuthenticated] = useState(() => !!authStorage.getAccessToken());
@@ -61,12 +88,24 @@ export function ManagerProvider({ children }) {
       try {
         const res = await api.get("/orders", { auth: true });
         const normalized = (res?.data || []).map(normalizeOrder);
-        setOrders((prev) => {
-          if (silent && normalized.length > prev.length) {
-            showToast(`New Order - Table ${normalized[0].table}`);
-          }
-          return normalized;
+        if (!alertsActive.current) return;
+
+      if (!ordersInitialized.current) {
+        // Existing orders on first load are not new notifications.
+        normalized.forEach((order) => {
+          seenOrderIds.current.add(order.id);
         });
+        ordersInitialized.current = true;
+      } else {
+        normalized.forEach((order) => {
+          notifyNewOrder(
+            order.id,
+            `New order — Table ${order.table}: ${order.orderNumber}`
+          );
+        });
+      }
+
+      setOrders(normalized);
         setOrdersError(null);
       } catch (err) {
         if (err instanceof ApiError && err.status === 401) {
@@ -79,7 +118,7 @@ export function ManagerProvider({ children }) {
         if (!silent) setOrdersLoading(false);
       }
     },
-    [showToast]
+    [notifyNewOrder]
   );
 
   // PostgreSQL is the source of truth for notification state: this always
@@ -161,7 +200,12 @@ export function ManagerProvider({ children }) {
     const socket = connectManagerSocket(token);
 
     const handleNewOrder = (payload) => {
-      showToast(payload?.message || "New order received");
+      notifyNewOrder(
+        payload?.orderId,
+        payload?.orderNumber
+          ? `New order received: ${payload.orderNumber}`
+          : "New order received"
+      );
       // The backend already wrote a persistent notification row for this
       // order (orderController.placeOrder) - pull it in from Postgres
       // rather than guessing the unread count client-side.
@@ -184,8 +228,15 @@ export function ManagerProvider({ children }) {
     return () => {
       socket.off("new_order", handleNewOrder);
       socket.off("order_status_updated", handleStatusUpdated);
-    };
-  }, [isAuthenticated, fetchOrders, fetchNotifications, fetchDashboard, showToast]);
+      disconnectManagerSocket();
+      };
+      }, [
+        isAuthenticated,
+        fetchOrders,
+        fetchNotifications,
+        fetchDashboard,
+        notifyNewOrder,
+      ]);
 
   const login = useCallback(
     async (username, password) => {
@@ -220,6 +271,8 @@ export function ManagerProvider({ children }) {
     authStorage.clearTokens();
     setManager(null);
     setIsAuthenticated(false);
+    seenOrderIds.current.clear();
+    ordersInitialized.current = false;
     setOrders([]);
     setNotifications([]);
     setDashboard(null);

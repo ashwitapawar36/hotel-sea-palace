@@ -32,12 +32,45 @@ const io = new Server(server, {
   },
 });
 
-const limiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 300, standardHeaders: true, legacyHeaders: false });
+// Normal API traffic, including dashboard polling.
+// Shorter window prevents a long lockout during normal use.
+const apiLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  limit: 300,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    success: false,
+    message: 'Too many requests. Please wait a minute and try again.',
+  },
+});
+
+// Separate protection for login attempts.
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 20,
+  skipSuccessfulRequests: true,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    success: false,
+    message: 'Too many unsuccessful sign-in attempts. Please try again in 15 minutes.',
+  },
+});
 
 app.use(helmet());
 app.use(cors({ origin: corsOrigin, credentials: true }));
 app.use(morgan('dev'));
-app.use(limiter);
+app.use('/api', (req, res, next) => {
+  // Login has its own limit, independent of dashboard requests.
+  if (req.method === 'POST' && req.path === '/auth/login') {
+    return next();
+  }
+
+  return apiLimiter(req, res, next);
+});
+
+app.post('/api/auth/login', loginLimiter);
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static(path.join(__dirname, uploadDir)));

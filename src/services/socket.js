@@ -1,18 +1,40 @@
 import { io } from "socket.io-client";
 
-// Same-origin-relative API base minus the /api suffix, since Socket.IO
-// connects to the server root, not the REST prefix.
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
-const SOCKET_URL = API_URL.replace(/\/api\/?$/, "");
+const API_URL =
+  import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+
+const SOCKET_URL = new URL(API_URL, window.location.origin).origin;
 
 let socket = null;
 
-// Only ever called with a manager's JWT access token - the backend's
-// Socket.IO auth middleware rejects any connection that doesn't present a
-// valid token, so customers (who never hold a manager token) can't connect.
 export function connectManagerSocket(token) {
-  if (socket) return socket;
-  socket = io(SOCKET_URL, { auth: { token }, transports: ["websocket", "polling"] });
+  if (!token) return null;
+
+  if (socket && socket.auth?.token !== token) {
+    socket.disconnect();
+    socket = null;
+  }
+
+  if (!socket) {
+    socket = io(SOCKET_URL, {
+      auth: { token },
+      autoConnect: false,
+      reconnection: true,
+    });
+
+    socket.on("connect", () => {
+      console.info("Manager live updates connected");
+    });
+
+    socket.on("connect_error", (error) => {
+      console.error("Manager live updates failed:", error.message);
+    });
+  }
+
+  if (!socket.connected) {
+    socket.connect();
+  }
+
   return socket;
 }
 

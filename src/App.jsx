@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
 import { MenuProvider } from "./context/MenuContext";
 import { CartProvider } from "./context/CartContext";
 import { ToastProvider } from "./context/ToastContext";
@@ -23,38 +23,77 @@ import StockManagement from "./pages/manager/StockManagement";
 import QRManagement from "./pages/manager/QRManagement";
 import RequireManager from "./components/RequireManager";
 
+function ManagerLayout() {
+  return (
+    <ToastProvider>
+      <ManagerProvider>
+        <Outlet />
+      </ManagerProvider>
+    </ToastProvider>
+  );
+}
+
 export default function App() {
   return (
     <MenuProvider>
       <CartProvider>
         <ToastProvider>
-          <ManagerProvider>
-            <BrowserRouter>
-              <Routes>
-              {/* Customer-facing - gated behind a valid, QR-scanned table number.
-                  Order Success / Feedback are reachable after checkout even if a
-                  later refresh drops the URL's ?table= param, since the order
-                  itself is already placed by that point. */}
-              <Route path="/" element={<RequireTable><Home /></RequireTable>} />
-              <Route path="/menu" element={<RequireTable><Menu /></RequireTable>} />
-              <Route path="/cart" element={<RequireTable><Cart /></RequireTable>} />
-              <Route path="/split-bill" element={<RequireTable><SplitBill /></RequireTable>} />
-              <Route path="/bill" element={<RequireTable><DigitalBill /></RequireTable>} />
+          <BrowserRouter>
+            <Routes>
+              <Route
+                path="/"
+                element={<RequireTable><Home /></RequireTable>}
+              />
+              <Route
+                path="/menu"
+                element={<RequireTable><Menu /></RequireTable>}
+              />
+              <Route
+                path="/cart"
+                element={<RequireTable><Cart /></RequireTable>}
+              />
+              <Route
+                path="/split-bill"
+                element={<RequireTable><SplitBill /></RequireTable>}
+              />
+              <Route
+                path="/bill"
+                element={<RequireTable><DigitalBill /></RequireTable>}
+              />
               <Route path="/order-success" element={<OrderSuccess />} />
               <Route path="/feedback" element={<Feedback />} />
 
-              {/* Manager / admin */}
-              <Route path="/manager/login" element={<ManagerLogin />} />
-              <Route path="/manager/dashboard" element={<RequireManager><ManagerDashboard /></RequireManager>} />
-              <Route path="/manager/orders" element={<RequireManager><OrderManagement /></RequireManager>} />
-              <Route path="/manager/menu" element={<RequireManager><MenuManagement /></RequireManager>} />
-              <Route path="/manager/specials" element={<RequireManager><SpecialsManagement /></RequireManager>} />
-              <Route path="/manager/stock" element={<RequireManager><StockManagement /></RequireManager>} />
-              <Route path="/manager/qr" element={<RequireManager><QRManagement /></RequireManager>} />
-              </Routes>
-              <FloatingCart />
-            </BrowserRouter>
-          </ManagerProvider>
+              <Route path="/manager" element={<ManagerLayout />}>
+                <Route path="login" element={<ManagerLogin />} />
+                <Route
+                  path="dashboard"
+                  element={<RequireManager><ManagerDashboard /></RequireManager>}
+                />
+                <Route
+                  path="orders"
+                  element={<RequireManager><OrderManagement /></RequireManager>}
+                />
+                <Route
+                  path="menu"
+                  element={<RequireManager><MenuManagement /></RequireManager>}
+                />
+                <Route
+                  path="specials"
+                  element={<RequireManager><SpecialsManagement /></RequireManager>}
+                />
+                <Route
+                  path="stock"
+                  element={<RequireManager><StockManagement /></RequireManager>}
+                />
+                <Route
+                  path="qr"
+                  element={<RequireManager><QRManagement /></RequireManager>}
+                />
+              </Route>
+            </Routes>
+
+            <FloatingCart />
+          </BrowserRouter>
         </ToastProvider>
       </CartProvider>
     </MenuProvider>

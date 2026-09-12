@@ -9,7 +9,7 @@ export function ToastProvider({ children }) {
   const [toasts, setToasts] = useState([]);
   const timers = useRef({});
 
-  const showToast = useCallback((message) => {
+  const showToast = useCallback((message, duration = 4000) => {
     const id = ++idCounter;
     setToasts((prev) => [...prev, { id, message, leaving: false }]);
 
@@ -19,7 +19,7 @@ export function ToastProvider({ children }) {
         setToasts((prev) => prev.filter((t) => t.id !== id));
         delete timers.current[id];
       }, 220);
-    }, 1800);
+    }, duration);
   }, []);
 
   return (

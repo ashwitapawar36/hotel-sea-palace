@@ -82,7 +82,7 @@ export default function ManagerDashboard() {
           <div>
             <p className="eyebrow">Operations Center</p>
             <h2>Stay ahead of service with a polished command view.</h2>
-            <p>Live orders, statuses, and revenue - all synced straight from PostgreSQL.</p>
+            <p>Track live orders, order status, and revenue in one place.</p>
           </div>
           <div className="hero-badge">Live</div>
         </div>

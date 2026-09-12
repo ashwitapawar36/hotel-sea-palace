@@ -828,8 +828,8 @@ INSERT INTO restaurant_settings (key, value, description)
 VALUES
   ('restaurant_name', 'Hotel Sea Palace', 'Restaurant display name'),
   ('currency', 'INR', 'Default currency'),
-  ('cgst_rate', '9', 'Configured CGST percent on non-alcoholic items'),
-  ('sgst_rate', '9', 'Configured SGST percent on non-alcoholic items'),
+  ('cgst_rate', '2.5', 'Configured CGST percent on non-alcoholic items'),
+  ('sgst_rate', '2.5', 'Configured SGST percent on non-alcoholic items'),
   ('vat_rate', '10', 'Configured VAT percent on alcoholic items'),
   ('service_charge', '0', 'Service charge percentage')
 ON CONFLICT (key) DO NOTHING;

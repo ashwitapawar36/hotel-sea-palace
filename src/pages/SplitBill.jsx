@@ -75,6 +75,7 @@ export default function SplitBill() {
                   <input
                     value={diner.name}
                     onChange={(e) => updateDinerName(diner.id, e.target.value)}
+                    placeholder="Enter name"
                     className="text-input"
                     style={{ padding: "10px 12px", borderRadius: 10, maxWidth: 140 }}
                   />
@@ -141,13 +142,13 @@ export default function SplitBill() {
           </div>
           {cgst > 0 && (
             <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, color: "var(--muted)", marginBottom: 6 }}>
-              <span>CGST (9%)</span>
+              <span>CGST (2.5%)</span>
               <span>₹{cgst.toLocaleString("en-IN")}</span>
             </div>
           )}
           {sgst > 0 && (
             <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, color: "var(--muted)", marginBottom: 6 }}>
-              <span>SGST (9%)</span>
+              <span>SGST (2.5%)</span>
               <span>₹{sgst.toLocaleString("en-IN")}</span>
             </div>
           )}

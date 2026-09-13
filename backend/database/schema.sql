@@ -138,7 +138,7 @@ CREATE TABLE IF NOT EXISTS menu_items (
   name VARCHAR(150) NOT NULL,
   description TEXT,
   price NUMERIC(10,2) NOT NULL DEFAULT 0,
-  image_url VARCHAR(500),
+  image_url TEXT,
   is_veg BOOLEAN NOT NULL DEFAULT TRUE,
   is_available BOOLEAN NOT NULL DEFAULT TRUE,
   is_alcoholic BOOLEAN NOT NULL DEFAULT FALSE,
@@ -149,6 +149,12 @@ CREATE TABLE IF NOT EXISTS menu_items (
   CONSTRAINT menu_items_price_check
     CHECK (price >= 0)
 );
+
+ALTER TABLE menu_items
+  ADD COLUMN IF NOT EXISTS image_url TEXT;
+
+ALTER TABLE menu_items
+  ALTER COLUMN image_url TYPE TEXT;
 
 ALTER TABLE menu_items
   ADD COLUMN IF NOT EXISTS is_alcoholic

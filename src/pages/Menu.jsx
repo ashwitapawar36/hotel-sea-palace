@@ -98,7 +98,7 @@ function DishGrid({ items }) {
 
 export default function Menu() {
   const navigate = useNavigate();
-  const { cartCount } = useCart();
+  const { cartCount, tableNumber } = useCart();
 
   const {
     foodItems,
@@ -246,21 +246,40 @@ export default function Menu() {
         className="topbar"
         style={{ justifyContent: "space-between" }}
       >
-        <button
-          type="button"
-          className="page-title"
-          onClick={() => navigate("/")}
-          style={{
-            cursor: "pointer",
-            background: "transparent",
-            border: "none",
-            color: "var(--white)",
-            padding: 0,
-            textAlign: "left",
-          }}
-        >
-          Hotel Sea Palace
-        </button>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <button
+            type="button"
+            className="page-title"
+            onClick={() => navigate("/")}
+            style={{
+              cursor: "pointer",
+              background: "transparent",
+              border: "none",
+              color: "var(--white)",
+              padding: 0,
+              textAlign: "left",
+            }}
+          >
+            Hotel Sea Palace
+          </button>
+          {tableNumber && (
+            <span
+              style={{
+                fontSize: 11,
+                fontWeight: 600,
+                color: "var(--gold)",
+                background: "rgba(201, 169, 110, 0.12)",
+                border: "1px solid rgba(201, 169, 110, 0.28)",
+                borderRadius: 999,
+                padding: "2px 8px",
+                whiteSpace: "nowrap",
+                fontFamily: "Poppins, sans-serif",
+              }}
+            >
+              Table {tableNumber}
+            </span>
+          )}
+        </div>
 
         <div style={{ display: "flex", gap: 2 }}>
           <button

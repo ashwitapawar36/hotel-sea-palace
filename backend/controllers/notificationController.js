@@ -3,7 +3,7 @@ const db = require('../config/db');
 async function listNotifications(req, res, next) {
   try {
     const { rows } = await db.query(
-      `SELECT id, title, message, type, is_read, created_at FROM notifications WHERE manager_id = $1 ORDER BY created_at DESC LIMIT 50`,
+      `SELECT id, order_id, title, message, type, is_read, created_at FROM notifications WHERE manager_id = $1 ORDER BY created_at DESC LIMIT 50`,
       [req.manager.id],
     );
     res.json({ success: true, data: rows });

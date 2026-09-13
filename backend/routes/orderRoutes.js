@@ -10,9 +10,8 @@ router.post('/', placeOrderValidator, handleValidation, placeOrder);
 router.get('/:id/status', getOrderStatus);
 router.get('/', authenticateManager, listOrders);
 router.patch('/:id/status', authenticateManager, orderStatusValidator, handleValidation, updateOrderStatus);
-// Payment is completed by the customer at checkout, not the manager - kept
-// public like placeOrder/getOrderStatus, and separate from authenticateManager
-// on purpose (manager auth stays scoped to /manager/* actions only).
-router.patch('/:id/pay', payOrderValidator, handleValidation, payOrder);
+// Customer payment controls are removed for the portfolio demo.
+// Any manual payment marking is restricted to manager authentication.
+router.patch('/:id/pay', authenticateManager, payOrderValidator, handleValidation, payOrder);
 
 module.exports = router;

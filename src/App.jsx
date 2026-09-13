@@ -35,13 +35,17 @@ function ManagerLayout() {
 
 export default function App() {
   return (
-    <MenuProvider>
-      <CartProvider>
-        <ToastProvider>
-          <BrowserRouter>
+    <BrowserRouter>
+      <MenuProvider>
+        <CartProvider>
+          <ToastProvider>
             <Routes>
               <Route
                 path="/"
+                element={<RequireTable><Home /></RequireTable>}
+              />
+              <Route
+                path="/home"
                 element={<RequireTable><Home /></RequireTable>}
               />
               <Route
@@ -93,9 +97,9 @@ export default function App() {
             </Routes>
 
             <FloatingCart />
-          </BrowserRouter>
-        </ToastProvider>
-      </CartProvider>
-    </MenuProvider>
+          </ToastProvider>
+        </CartProvider>
+      </MenuProvider>
+    </BrowserRouter>
   );
 }

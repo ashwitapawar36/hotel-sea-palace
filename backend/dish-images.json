@@ -1,0 +1,2788 @@
+[
+  {
+    "id": "1552a9c0-d0df-4a71-b398-8a2d85fe3803",
+    "name": "G Master",
+    "category": "Vodka",
+    "current_image_url": "https://images.unsplash.com/photo-1560512823-829485b8bf24?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "2d7bc689-2445-4fa7-913f-24069df4342a",
+    "name": "Magic Moments",
+    "category": "Vodka",
+    "current_image_url": "https://images.unsplash.com/photo-1560512823-829485b8bf24?auto=format&fit=crop&w=600&q=80",
+    "image_url": "https://www.liquorvaultgoa.com/wp-content/uploads/2025/02/Magic-Moment-Grain-Vodka-750ML.jpg"
+  },
+  {
+    "id": "86427436-7f7e-4b06-86e8-4a551fd5ca0a",
+    "name": "Magic Moments Flavour",
+    "category": "Vodka",
+    "current_image_url": "https://images.unsplash.com/photo-1560512823-829485b8bf24?auto=format&fit=crop&w=600&q=80",
+    "image_url": "https://www.liquorvaultgoa.com/wp-content/uploads/2025/02/Magic-Moment-Grain-Vodka-750ML.jpg"
+  },
+  {
+    "id": "f54a6ec9-6136-4ff4-b037-dabb253f42a7",
+    "name": "Romanov",
+    "category": "Vodka",
+    "current_image_url": "https://images.unsplash.com/photo-1560512823-829485b8bf24?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "1f4c2ba5-8978-45eb-a553-93e5e059cdf7",
+    "name": "Smirnoff",
+    "category": "Vodka",
+    "current_image_url": "https://images.unsplash.com/photo-1560512823-829485b8bf24?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "0e4c85a7-c3e5-48b6-a86c-07bcca2226a3",
+    "name": "Smirnoff Flavour",
+    "category": "Vodka",
+    "current_image_url": "https://images.unsplash.com/photo-1560512823-829485b8bf24?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "d17773b1-66f9-4fbc-aea0-789c53e3b53b",
+    "name": "White Mischief",
+    "category": "Vodka",
+    "current_image_url": "https://images.unsplash.com/photo-1560512823-829485b8bf24?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "2653239c-8184-4cb8-a077-15b5a0b991a8",
+    "name": "Budweiser (Mild)",
+    "category": "Beer Mild",
+    "current_image_url": "https://images.unsplash.com/photo-1535958636474-b021ee887b13?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "906efbf1-339d-42ba-bf70-41e6b346764b",
+    "name": "Carlsberg (Mild)",
+    "category": "Beer Mild",
+    "current_image_url": "https://images.unsplash.com/photo-1535958636474-b021ee887b13?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "9a250761-063b-4e09-9f53-bd33890741de",
+    "name": "Kingfisher (Mild)",
+    "category": "Beer Mild",
+    "current_image_url": "https://images.unsplash.com/photo-1535958636474-b021ee887b13?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "de498180-998e-42b0-81a1-60824431d77c",
+    "name": "London Pilsner",
+    "category": "Beer Mild",
+    "current_image_url": "https://images.unsplash.com/photo-1535958636474-b021ee887b13?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "e74c328a-f148-48ed-b3f9-c2b42e4395bd",
+    "name": "Tuborg (Mild)",
+    "category": "Beer Mild",
+    "current_image_url": "https://images.unsplash.com/photo-1535958636474-b021ee887b13?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "a1cb2b2c-0bbe-4d9c-ab0f-518f7aad823d",
+    "name": "Budweiser Magnum",
+    "category": "Beer Strong",
+    "current_image_url": "https://images.unsplash.com/photo-1535958636474-b021ee887b13?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "d0d647b3-ec33-4cb2-85b0-11f0a83abba2",
+    "name": "Carlsberg Strong",
+    "category": "Beer Strong",
+    "current_image_url": "https://images.unsplash.com/photo-1535958636474-b021ee887b13?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "2c8ec9a8-e02b-4b96-8566-c38ed6fe5764",
+    "name": "Kingfisher Strong",
+    "category": "Beer Strong",
+    "current_image_url": "https://images.unsplash.com/photo-1535958636474-b021ee887b13?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "3a749fda-af60-4499-926f-46a371d907be",
+    "name": "London Pilsner Strong",
+    "category": "Beer Strong",
+    "current_image_url": "https://images.unsplash.com/photo-1535958636474-b021ee887b13?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "580316d3-b84b-41ab-8944-a6b9e9fc53cb",
+    "name": "Tuborg Strong",
+    "category": "Beer Strong",
+    "current_image_url": "https://images.unsplash.com/photo-1535958636474-b021ee887b13?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "5b84fd0c-d822-4710-a6a2-1306bec4325b",
+    "name": "Breezer",
+    "category": "Cold Drinks",
+    "current_image_url": "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "f0bce639-f67f-4fc5-a5be-93950b15cdbc",
+    "name": "Buttermilk",
+    "category": "Cold Drinks",
+    "current_image_url": "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "00ec3141-ff6f-4226-82bf-a788f01787ad",
+    "name": "Cold Drink",
+    "category": "Cold Drinks",
+    "current_image_url": "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "00d993a8-ea2d-4aa8-a964-a48965c2acec",
+    "name": "Mineral Water",
+    "category": "Cold Drinks",
+    "current_image_url": "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "aabc51ae-4544-40e0-b803-65a668e99792",
+    "name": "Red Bull",
+    "category": "Cold Drinks",
+    "current_image_url": "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "046f1343-de12-470c-bb3d-764a1f3af140",
+    "name": "Rio",
+    "category": "Cold Drinks",
+    "current_image_url": "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "3bfa0b58-c134-4aed-83e0-fa5044916049",
+    "name": "Small Water",
+    "category": "Cold Drinks",
+    "current_image_url": "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "08502735-f2fc-4ff7-b468-826a85bc57b0",
+    "name": "Soda",
+    "category": "Cold Drinks",
+    "current_image_url": "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "3c77fa4b-3267-4bd8-9747-174efc4c7d68",
+    "name": "Solkadhi",
+    "category": "Cold Drinks",
+    "current_image_url": "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "0eb14e1b-e308-4447-9cfa-636582570799",
+    "name": "100 Pipers",
+    "category": "Scotch",
+    "current_image_url": "https://images.unsplash.com/photo-1527061011665-3652c757a4d4?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "3fb9923b-3707-43c0-8a0e-22671606a74e",
+    "name": "Ballantine's",
+    "category": "Scotch",
+    "current_image_url": "https://images.unsplash.com/photo-1527061011665-3652c757a4d4?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "5bc2d7b1-f8f1-404f-a619-3d2c62105de7",
+    "name": "Black & White",
+    "category": "Scotch",
+    "current_image_url": "https://images.unsplash.com/photo-1527061011665-3652c757a4d4?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "1ba7ee67-7a79-4cec-9079-72f097178fb2",
+    "name": "Black Label",
+    "category": "Scotch",
+    "current_image_url": "https://images.unsplash.com/photo-1527061011665-3652c757a4d4?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "28e2347d-50c6-49ed-b344-aa14858f1f54",
+    "name": "Indri",
+    "category": "Scotch",
+    "current_image_url": "https://images.unsplash.com/photo-1527061011665-3652c757a4d4?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "1adc8918-6342-4ffa-8d94-52b0fe4c138b",
+    "name": "J&B",
+    "category": "Scotch",
+    "current_image_url": "https://images.unsplash.com/photo-1527061011665-3652c757a4d4?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "d10dadc2-6236-48d0-a809-68198e2a73b9",
+    "name": "Jameson",
+    "category": "Scotch",
+    "current_image_url": "https://images.unsplash.com/photo-1527061011665-3652c757a4d4?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "14d54d8d-42aa-435d-aa93-e909f080d5ef",
+    "name": "Red Label",
+    "category": "Scotch",
+    "current_image_url": "https://images.unsplash.com/photo-1527061011665-3652c757a4d4?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "013d4e3a-50ce-46c0-902f-b46fc43b3346",
+    "name": "Vat 69",
+    "category": "Scotch",
+    "current_image_url": "https://images.unsplash.com/photo-1527061011665-3652c757a4d4?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "9343cc47-60c0-4ac2-b50e-8c7b163f440d",
+    "name": "American Pride",
+    "category": "Premium Whiskey",
+    "current_image_url": "https://images.unsplash.com/photo-1527061011665-3652c757a4d4?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "22fbf181-6f1e-4701-a0b0-2491e1c52649",
+    "name": "Antiquity",
+    "category": "Premium Whiskey",
+    "current_image_url": "https://images.unsplash.com/photo-1527061011665-3652c757a4d4?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "9c25d630-32bc-4802-ae14-03218561dd1d",
+    "name": "Blenders Pride",
+    "category": "Premium Whiskey",
+    "current_image_url": "https://images.unsplash.com/photo-1527061011665-3652c757a4d4?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "e851cca5-f40a-46e8-b7cf-82ec53e53827",
+    "name": "Legacy",
+    "category": "Premium Whiskey",
+    "current_image_url": "https://images.unsplash.com/photo-1527061011665-3652c757a4d4?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "41d9c8b2-dbfa-4a1c-8314-ba3dd091c798",
+    "name": "Oaksmith Gold",
+    "category": "Premium Whiskey",
+    "current_image_url": "https://images.unsplash.com/photo-1527061011665-3652c757a4d4?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "ae46c7f1-f43e-4f59-9af2-eb82ed25d37d",
+    "name": "Oaksmith Silver",
+    "category": "Premium Whiskey",
+    "current_image_url": "https://images.unsplash.com/photo-1527061011665-3652c757a4d4?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "8601b100-0e5b-4d11-a7c6-f2ed1f73f7e8",
+    "name": "Rockford",
+    "category": "Premium Whiskey",
+    "current_image_url": "https://images.unsplash.com/photo-1527061011665-3652c757a4d4?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "46eb4514-5fd2-4f74-8084-9ee9d5a20da1",
+    "name": "Signature",
+    "category": "Premium Whiskey",
+    "current_image_url": "https://images.unsplash.com/photo-1527061011665-3652c757a4d4?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "f76b97ed-a5aa-4b6b-96a9-0fa971264ef4",
+    "name": "Bacardi Black",
+    "category": "Rum",
+    "current_image_url": "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "e38ad1bb-2e8f-40fe-a489-6e36d2c90886",
+    "name": "Bacardi Lemon",
+    "category": "Rum",
+    "current_image_url": "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "38be8711-5785-44ac-b1da-e21b46e45465",
+    "name": "Bacardi White",
+    "category": "Rum",
+    "current_image_url": "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "ed25a691-c42d-4f13-88de-6bedb5d099be",
+    "name": "McDowell's No.1 Rum",
+    "category": "Rum",
+    "current_image_url": "https://images.unsplash.com/photo-1527061011665-3652c757a4d4?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "0b4cfe1f-30cf-41c3-8a44-7c07269f04fd",
+    "name": "Old Monk",
+    "category": "Rum",
+    "current_image_url": "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "4ad8d1e2-f72a-4a06-b2e1-061639117253",
+    "name": "B10",
+    "category": "Whiskey",
+    "current_image_url": "https://images.unsplash.com/photo-1527061011665-3652c757a4d4?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "a9b9777f-edcb-4ac5-8702-dbe793a8e183",
+    "name": "B7",
+    "category": "Whiskey",
+    "current_image_url": "https://images.unsplash.com/photo-1527061011665-3652c757a4d4?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "30f1637b-1504-4add-bb93-45be57de28c0",
+    "name": "DSP Black",
+    "category": "Whiskey",
+    "current_image_url": "https://images.unsplash.com/photo-1527061011665-3652c757a4d4?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "805cf3e3-9548-49f0-b811-36d01c0f7ece",
+    "name": "Iconic",
+    "category": "Whiskey",
+    "current_image_url": "https://images.unsplash.com/photo-1527061011665-3652c757a4d4?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "f7158b83-0b0d-4bb5-91c8-49ac15b7f18e",
+    "name": "Imperial Blue",
+    "category": "Whiskey",
+    "current_image_url": "https://images.unsplash.com/photo-1527061011665-3652c757a4d4?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "026db5dc-3e2c-4d60-b7cc-685dd8f91b7a",
+    "name": "McDowell's No.1",
+    "category": "Whiskey",
+    "current_image_url": "https://images.unsplash.com/photo-1527061011665-3652c757a4d4?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "2315277b-0fc6-44c7-830c-9ab9223066de",
+    "name": "OCB",
+    "category": "Whiskey",
+    "current_image_url": "https://images.unsplash.com/photo-1527061011665-3652c757a4d4?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "015b207f-5b76-4bf6-94c6-b78e05d91b54",
+    "name": "Royal Challenge",
+    "category": "Whiskey",
+    "current_image_url": "https://images.unsplash.com/photo-1527061011665-3652c757a4d4?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "1e987dc6-4a79-4725-9390-60a4e8c823fc",
+    "name": "Royal Stag",
+    "category": "Whiskey",
+    "current_image_url": "https://images.unsplash.com/photo-1527061011665-3652c757a4d4?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "bd389ec4-d1e7-4500-9280-114df4a9f7c7",
+    "name": "Royal Stag Barrel",
+    "category": "Whiskey",
+    "current_image_url": "https://images.unsplash.com/photo-1527061011665-3652c757a4d4?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "08c90e27-ad5b-498d-a724-a9c52f7a90a0",
+    "name": "The Glenwalk",
+    "category": "Whiskey",
+    "current_image_url": "https://images.unsplash.com/photo-1527061011665-3652c757a4d4?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "f7c4e5ed-78f2-445b-867b-e12cd3d8e5f1",
+    "name": "Bangda Tawa / Rawa Fry",
+    "category": "Fish Starters",
+    "current_image_url": "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "a8008a72-141f-4ec1-9361-95415b740199",
+    "name": "Bombil Fry",
+    "category": "Fish Starters",
+    "current_image_url": "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "6263f912-f975-4c7e-b14a-21b99b8e08a0",
+    "name": "Fish Finger",
+    "category": "Fish Starters",
+    "current_image_url": "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "af0c72ad-0a3f-4872-8299-f292ff2a09a8",
+    "name": "Mandeli Fry",
+    "category": "Fish Starters",
+    "current_image_url": "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "f8482bf0-2f97-4313-b41a-2784b555e29c",
+    "name": "Pomfret Tawa / Rawa Fry",
+    "category": "Fish Starters",
+    "current_image_url": "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "d5211d19-ab3c-4da0-a8fd-a21fa35994f5",
+    "name": "Prawns Chilly Dry",
+    "category": "Fish Starters",
+    "current_image_url": "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "fa9323c6-3a0e-4160-ba8a-eeab6e3be347",
+    "name": "Prawns Koliwada",
+    "category": "Fish Starters",
+    "current_image_url": "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "14ae0800-4dc9-4974-8ea9-2780ba13df35",
+    "name": "Prawns Tawa / Rawa Fry",
+    "category": "Fish Starters",
+    "current_image_url": "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "677c23fb-3707-4543-8b4b-5b0ab753a9d6",
+    "name": "Surmai Tawa / Rawa Fry",
+    "category": "Fish Starters",
+    "current_image_url": "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "b86c5875-0744-4ea4-86b7-c117cd665642",
+    "name": "Butter Garlic Prawns",
+    "category": "Seafood",
+    "current_image_url": "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "9fc48f50-a9b2-4a04-83c9-a6075a40b64b",
+    "name": "Fish Curry",
+    "category": "Seafood",
+    "current_image_url": "https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "55b6a7db-1815-4e85-af9c-44448715d4a5",
+    "name": "Tomato Soup",
+    "category": "Soup",
+    "current_image_url": "https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "0d78a22b-10d2-4286-ac4c-37c24bff8f8c",
+    "name": "Veg Hot 'N' Sour Soup",
+    "category": "Soup",
+    "current_image_url": "https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "4fac4fda-761e-4fe8-b091-06600c4e2bbb",
+    "name": "Veg Manchow Soup",
+    "category": "Soup",
+    "current_image_url": "https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "6ca3731a-8557-4c74-9444-6554c9d3794e",
+    "name": "Veg Sweet Corn Soup",
+    "category": "Soup",
+    "current_image_url": "https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "7067961d-83c8-49f2-a295-15ae302bb9c8",
+    "name": "Channa Garlic",
+    "category": "Veg Starters",
+    "current_image_url": "https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "cf9cc7bd-33e1-4135-8371-b99b8046eeda",
+    "name": "Channa Koliwada",
+    "category": "Veg Starters",
+    "current_image_url": "https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "300f15bf-e585-4a13-b391-8834cf200371",
+    "name": "Channa Oil Fry",
+    "category": "Veg Starters",
+    "current_image_url": "https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "10160b7f-8a7d-4c97-9723-476a2223db78",
+    "name": "Finger Chips",
+    "category": "Veg Starters",
+    "current_image_url": "https://images.unsplash.com/photo-1576107232684-1279f3908594?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "12c48ffa-23da-4846-b404-06b2f950e633",
+    "name": "Green Peas Garlic",
+    "category": "Veg Starters",
+    "current_image_url": "https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "baf808d0-7108-4c95-89ad-c0f1a82ddcbc",
+    "name": "Green Peas Oil Fry",
+    "category": "Veg Starters",
+    "current_image_url": "https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "14681603-7a0c-4069-9a59-ca8c47fa1965",
+    "name": "Kaju Namkin",
+    "category": "Veg Starters",
+    "current_image_url": "https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "e9fc5ad6-08e6-4f12-823f-a689e67a377a",
+    "name": "Mashroom Chilly",
+    "category": "Veg Starters",
+    "current_image_url": "https://images.unsplash.com/photo-1585032226651-759b368d7246?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "4d551642-9a38-4c2a-9564-eb674a2c0599",
+    "name": "Mushroom Chilly",
+    "category": "Veg Starters",
+    "current_image_url": "https://images.unsplash.com/photo-1585032226651-759b368d7246?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "01d5f66a-1fe4-407c-a3b2-696d7ebb2ba7",
+    "name": "Paneer Chilly Dry",
+    "category": "Veg Starters",
+    "current_image_url": "https://images.unsplash.com/photo-1585032226651-759b368d7246?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "41a1c855-161b-4975-9971-6d6c2fafb9cc",
+    "name": "Paneer Chilly Dry / Crispy",
+    "category": "Veg Starters",
+    "current_image_url": "https://images.unsplash.com/photo-1585032226651-759b368d7246?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "5d721181-222b-4d6c-9235-caa286b893e3",
+    "name": "paneer crispy",
+    "category": "Veg Starters",
+    "current_image_url": "https://images.unsplash.com/photo-1585032226651-759b368d7246?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "65b60c35-8586-4298-9a61-7b8df5fbbd95",
+    "name": "Veg Chilly",
+    "category": "Veg Starters",
+    "current_image_url": "https://images.unsplash.com/photo-1585032226651-759b368d7246?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "99f1d1ce-ea91-4472-8dc9-0caf71d23097",
+    "name": "Veg Crispy",
+    "category": "Veg Starters",
+    "current_image_url": "https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "c3ef8db0-b26e-402e-8002-4d62b536af5b",
+    "name": "Veg Manchurian",
+    "category": "Veg Starters",
+    "current_image_url": "https://images.unsplash.com/photo-1585032226651-759b368d7246?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "80a24085-a5ff-424f-b4a1-0e458f0ea3e6",
+    "name": "Veg Manchurian Dry",
+    "category": "Veg Starters",
+    "current_image_url": "https://images.unsplash.com/photo-1585032226651-759b368d7246?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "d1a1b0f5-b8c5-42ef-8d92-52e9d5c13970",
+    "name": "Veg Schezwan Dry",
+    "category": "Veg Starters",
+    "current_image_url": "https://images.unsplash.com/photo-1585032226651-759b368d7246?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "254b292e-79f8-46dd-badc-42dcdd33a92a",
+    "name": "Chicken Tikka Masala",
+    "category": "Chicken",
+    "current_image_url": "https://images.unsplash.com/photo-1599488615731-7e5c2823ff28?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "fa3f2a4c-52f3-4e6a-9507-e22065bc7461",
+    "name": "Boil Egg",
+    "category": "Non-Veg Starters",
+    "current_image_url": "https://images.unsplash.com/photo-1582169296194-e4d644c48063?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "cde05225-7c3b-425d-a087-04fd011d36f5",
+    "name": "Chicken 65",
+    "category": "Non-Veg Starters",
+    "current_image_url": "https://images.unsplash.com/photo-1610057099431-d73a1c9d2f2f?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "02b34e86-2edb-411e-b94f-14a84d3f0e9e",
+    "name": "Chicken Chilly Dry",
+    "category": "Non-Veg Starters",
+    "current_image_url": "https://images.unsplash.com/photo-1585032226651-759b368d7246?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "91819c09-30da-441f-a238-5e475fd064cd",
+    "name": "Chicken Crispy",
+    "category": "Non-Veg Starters",
+    "current_image_url": "https://images.unsplash.com/photo-1585032226651-759b368d7246?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "42e2bfa6-7102-4db3-bebe-74e85fd3a482",
+    "name": "Chicken Fry",
+    "category": "Non-Veg Starters",
+    "current_image_url": "https://images.unsplash.com/photo-1610057099431-d73a1c9d2f2f?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "08822112-51dc-475c-a62a-4f971b810371",
+    "name": "Chicken Garlic",
+    "category": "Non-Veg Starters",
+    "current_image_url": "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "657a8f85-8572-4029-8fba-a13ad0ce3eb3",
+    "name": "Chicken Lollipop",
+    "category": "Non-Veg Starters",
+    "current_image_url": "https://images.unsplash.com/photo-1562967914-608f82629710?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "a4300cdc-f0d4-4d57-980e-fbf446e48e84",
+    "name": "Chicken Lollipop Dry",
+    "category": "Non-Veg Starters",
+    "current_image_url": "https://images.unsplash.com/photo-1562967914-608f82629710?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "94edfeae-85c3-482c-a367-1a2531b2a891",
+    "name": "Chicken Lollipop Masala",
+    "category": "Non-Veg Starters",
+    "current_image_url": "https://images.unsplash.com/photo-1562967914-608f82629710?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "a5ec06a2-46a1-41b6-879a-e54acf171a94",
+    "name": "Chicken Lollipop Masala Dry",
+    "category": "Non-Veg Starters",
+    "current_image_url": "https://images.unsplash.com/photo-1562967914-608f82629710?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "90e6dcf0-9c63-4f5d-9aa8-ad0a0c04ff62",
+    "name": "Chicken Manchurian",
+    "category": "Non-Veg Starters",
+    "current_image_url": "https://images.unsplash.com/photo-1585032226651-759b368d7246?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "877d1e48-b599-4e2e-aabd-9244e1d96530",
+    "name": "Chicken Manchurian Dry",
+    "category": "Non-Veg Starters",
+    "current_image_url": "https://images.unsplash.com/photo-1585032226651-759b368d7246?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "3bc1dac6-6527-47de-998f-09ef8a51c451",
+    "name": "Chicken Oil Fry",
+    "category": "Non-Veg Starters",
+    "current_image_url": "https://images.unsplash.com/photo-1610057099431-d73a1c9d2f2f?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "4b3b9591-68e2-4dba-afe9-708b7dc42938",
+    "name": "Chicken Schezwan",
+    "category": "Non-Veg Starters",
+    "current_image_url": "https://images.unsplash.com/photo-1585032226651-759b368d7246?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "ea7dbf69-dcff-4531-809e-20568d4b080a",
+    "name": "Chicken Schezwan Dry",
+    "category": "Non-Veg Starters",
+    "current_image_url": "https://images.unsplash.com/photo-1585032226651-759b368d7246?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "f3379410-f5bc-400a-9687-00d339d0c37e",
+    "name": "Egg Bhurji",
+    "category": "Non-Veg Starters",
+    "current_image_url": "https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "43a173b2-5e9c-4bac-bb2c-7d191f2ed6a0",
+    "name": "Egg Chilly",
+    "category": "Non-Veg Starters",
+    "current_image_url": "https://images.unsplash.com/photo-1582169296194-e4d644c48063?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "d76130a5-76fb-4d91-9ca1-800908869b3e",
+    "name": "Egg Omelette",
+    "category": "Non-Veg Starters",
+    "current_image_url": "https://images.unsplash.com/photo-1510693206972-df098062cb71?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "991aa49d-ea03-4360-8a05-330dd25d2630",
+    "name": "Egg Omlet",
+    "category": "Non-Veg Starters",
+    "current_image_url": "https://images.unsplash.com/photo-1510693206972-df098062cb71?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "1c4ce953-3b07-4330-99f3-ee7559af7fba",
+    "name": "Half Fry",
+    "category": "Non-Veg Starters",
+    "current_image_url": "https://images.unsplash.com/photo-1510693206972-df098062cb71?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "57853c89-cba7-49c0-a717-bb7593cc1aef",
+    "name": "Liver Oil Fry",
+    "category": "Non-Veg Starters",
+    "current_image_url": "https://images.unsplash.com/photo-1545247181-516773cae754?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "7fc2ee3f-5cfd-4b00-b27d-522888b81526",
+    "name": "Mutton Fry",
+    "category": "Non-Veg Starters",
+    "current_image_url": "https://images.unsplash.com/photo-1545247181-516773cae754?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "13431a10-1fd5-4ffc-a06a-13be52656304",
+    "name": "Egg Pakoda",
+    "category": "Snacks",
+    "current_image_url": "https://images.unsplash.com/photo-1582169296194-e4d644c48063?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "10c192f0-dc8e-4e0f-8ad2-7ce04b2a5658",
+    "name": "Paneer Pakoda",
+    "category": "Snacks",
+    "current_image_url": "https://images.unsplash.com/photo-1631452180519-c014fe946bc7?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "f046d38a-7cf2-441d-a2e7-7ffe68e41ee2",
+    "name": "Schezwan Chatani",
+    "category": "Snacks",
+    "current_image_url": "https://images.unsplash.com/photo-1585032226651-759b368d7246?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "7c027c40-5c72-43cb-88cb-67afa545aecf",
+    "name": "Schezwan Chatpata",
+    "category": "Snacks",
+    "current_image_url": "https://images.unsplash.com/photo-1585032226651-759b368d7246?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "a44f79f4-5794-4e58-8d0d-8ec69cc6ada4",
+    "name": "Solkadhi",
+    "category": "Snacks",
+    "current_image_url": "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "ec24979a-c747-421f-92ff-d5e10e0e2269",
+    "name": "Veg Pakoda",
+    "category": "Snacks",
+    "current_image_url": "https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "5579fa34-09d6-40db-816b-b7237fe9fdf2",
+    "name": "Aloo Gobi",
+    "category": "Veg Main Course",
+    "current_image_url": "https://images.unsplash.com/photo-1585937421612-70a008356fbe?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "79b3cd16-7c6f-41bc-96df-a35443bcdbdc",
+    "name": "Aloo Jeera",
+    "category": "Veg Main Course",
+    "current_image_url": "https://images.unsplash.com/photo-1585937421612-70a008356fbe?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "d34419a6-9ba1-468c-bd25-dd8403f460a2",
+    "name": "Aloo Mutter",
+    "category": "Veg Main Course",
+    "current_image_url": "https://images.unsplash.com/photo-1585937421612-70a008356fbe?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "f672f804-7ead-459b-b5ac-c6cb2aa66820",
+    "name": "Aloo Palak",
+    "category": "Veg Main Course",
+    "current_image_url": "https://images.unsplash.com/photo-1585937421612-70a008356fbe?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "4bc25914-7ee7-49db-90f2-59693f911877",
+    "name": "Aloo Shimla",
+    "category": "Veg Main Course",
+    "current_image_url": "https://images.unsplash.com/photo-1585937421612-70a008356fbe?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "9995b2df-22d1-4058-a960-e2c737bccc61",
+    "name": "Aloo Shimla Mirch",
+    "category": "Veg Main Course",
+    "current_image_url": "https://images.unsplash.com/photo-1585937421612-70a008356fbe?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "f969b74d-32d0-4839-a35e-89ce38f2cb05",
+    "name": "Aloo Tomato",
+    "category": "Veg Main Course",
+    "current_image_url": "https://images.unsplash.com/photo-1585937421612-70a008356fbe?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "1e049f39-b4aa-410c-a532-9d538926967e",
+    "name": "Chana Masala",
+    "category": "Veg Main Course",
+    "current_image_url": "https://images.unsplash.com/photo-1585937421612-70a008356fbe?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "b168b2a2-14d2-43f9-b186-ef1a508e4fcd",
+    "name": "Dal Fry",
+    "category": "Veg Main Course",
+    "current_image_url": "https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "1416fa8e-96e6-4551-a8c4-399f4a4b3380",
+    "name": "Dal Kolhapuri Tadka",
+    "category": "Veg Main Course",
+    "current_image_url": "https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "6a7ebdc2-9610-4cf7-b755-638fcc65bed6",
+    "name": "Green Peas Masala",
+    "category": "Veg Main Course",
+    "current_image_url": "https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "df80ca88-63aa-44d0-aadf-9f04f076be73",
+    "name": "Kaju Masala",
+    "category": "Veg Main Course",
+    "current_image_url": "https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "3efd385e-a6b0-4613-b3d5-ac7a6926942b",
+    "name": "Mashroom Cheese Masala",
+    "category": "Veg Main Course",
+    "current_image_url": "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "67079ff3-155a-4b86-a686-b8b71942b552",
+    "name": "Mashroom Handi",
+    "category": "Veg Main Course",
+    "current_image_url": "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "044d6c95-731d-406e-b7b5-5b6464d17071",
+    "name": "Mashroom Masala",
+    "category": "Veg Main Course",
+    "current_image_url": "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "2bfe495e-e8d3-4e82-a526-c7155d23ac8d",
+    "name": "Mix Veg",
+    "category": "Veg Main Course",
+    "current_image_url": "https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "603fdc35-8e5a-49a8-a6a3-b12a9f2da259",
+    "name": "Mix Veg Handi",
+    "category": "Veg Main Course",
+    "current_image_url": "https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "ea3445e7-ea49-4645-be1f-3f9a13a886cc",
+    "name": "Mushroom Cheese Masala",
+    "category": "Veg Main Course",
+    "current_image_url": "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "815b3533-e397-4543-a69b-9f1ee096ca5d",
+    "name": "Mushroom Handi",
+    "category": "Veg Main Course",
+    "current_image_url": "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "63269f74-5e9b-4479-9f73-931b13fca0ce",
+    "name": "Mushroom Masala",
+    "category": "Veg Main Course",
+    "current_image_url": "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "db8a5636-d563-4840-92f8-2f233fed0ce2",
+    "name": "Paneer Bhurji",
+    "category": "Veg Main Course",
+    "current_image_url": "https://images.unsplash.com/photo-1631452180519-c014fe946bc7?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "d23fdb49-0249-4011-9a0b-5f78b0025d12",
+    "name": "Paneer Butter Masala",
+    "category": "Veg Main Course",
+    "current_image_url": "https://images.unsplash.com/photo-1631452180519-c014fe946bc7?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "397ac7ad-1534-4d9a-9c9a-83165fbcb9d2",
+    "name": "Paneer Chingari",
+    "category": "Veg Main Course",
+    "current_image_url": "https://images.unsplash.com/photo-1631452180519-c014fe946bc7?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "474e67a3-b2a0-4cd0-97ae-9aa87d35b537",
+    "name": "Paneer Handi",
+    "category": "Veg Main Course",
+    "current_image_url": "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "79da9c79-cc5e-4c37-8ed0-bfc099b144d4",
+    "name": "Paneer Handi (Family)",
+    "category": "Veg Main Course",
+    "current_image_url": "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "26e0cb0c-0d32-40c2-8e16-245072aa6d62",
+    "name": "Paneer Kadai",
+    "category": "Veg Main Course",
+    "current_image_url": "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "fee1c109-75e7-4ca1-a56f-8b812a76e2ed",
+    "name": "Paneer Kaju Masala",
+    "category": "Veg Main Course",
+    "current_image_url": "https://images.unsplash.com/photo-1631452180519-c014fe946bc7?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "12140dec-45fc-4c37-a74d-0fb8efeff34e",
+    "name": "Paneer Masala",
+    "category": "Veg Main Course",
+    "current_image_url": "https://images.unsplash.com/photo-1631452180519-c014fe946bc7?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "a617ec81-4314-4050-955c-f0ab42f36133",
+    "name": "Paneer Mutter",
+    "category": "Veg Main Course",
+    "current_image_url": "https://images.unsplash.com/photo-1631452180519-c014fe946bc7?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "75bddeae-e0d5-467b-b305-cff47bf60259",
+    "name": "Paneer Palak",
+    "category": "Veg Main Course",
+    "current_image_url": "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "22d49b4c-ce66-403b-bd6a-606977171d2b",
+    "name": "Paneer Tikka Masala",
+    "category": "Veg Main Course",
+    "current_image_url": "https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "ff81157c-f4c3-4c48-b8a3-3ed608f1d0c9",
+    "name": "Shimla Masala",
+    "category": "Veg Main Course",
+    "current_image_url": "https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "a6f92899-1133-4f77-80ae-55ed484d0f7d",
+    "name": "Veg Kadhai",
+    "category": "Veg Main Course",
+    "current_image_url": "https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "f63d6976-8d53-406b-a636-d1174f91aed0",
+    "name": "Veg Kolhapuri",
+    "category": "Veg Main Course",
+    "current_image_url": "https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "ca6a8671-fc26-430e-842b-759c5a5e3360",
+    "name": "Veg Lasuni",
+    "category": "Veg Main Course",
+    "current_image_url": "https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "3a353246-ac6b-4243-befe-6bc49fc1ee4d",
+    "name": "Veg Makhanwala",
+    "category": "Veg Main Course",
+    "current_image_url": "https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "bb7fc553-4808-4be7-a89d-e859fbfcb9f5",
+    "name": "Veg Maratha",
+    "category": "Veg Main Course",
+    "current_image_url": "https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "1476b91a-ca03-45b1-965d-f990afc46b3d",
+    "name": "Curd Rice",
+    "category": "Rice",
+    "current_image_url": "https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "ab5b3696-47df-4cd1-84f1-14d0677dba4e",
+    "name": "Dal Khichadi",
+    "category": "Rice",
+    "current_image_url": "https://images.unsplash.com/photo-1589302168068-964664d93dc0?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "7f70c64b-78c8-4172-8e4e-a9e3654a3745",
+    "name": "Dal Tadka Khichadi",
+    "category": "Rice",
+    "current_image_url": "https://images.unsplash.com/photo-1589302168068-964664d93dc0?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "e2f0d9ab-f42e-40be-bba3-1d7c423a6508",
+    "name": "Jeera Rice",
+    "category": "Rice",
+    "current_image_url": "https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "ec99fd38-3f27-4bb9-82ca-2731b34a20e4",
+    "name": "Masala Rice",
+    "category": "Rice",
+    "current_image_url": "https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "1f098fec-88c9-4899-a17d-e3ad9edaddd7",
+    "name": "Palak Khichadi",
+    "category": "Rice",
+    "current_image_url": "https://images.unsplash.com/photo-1589302168068-964664d93dc0?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "7ac31b08-7951-43d4-af6b-04e7c91f3ffd",
+    "name": "Steam Rice",
+    "category": "Rice",
+    "current_image_url": "https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "7ca7f6da-f213-4590-81ca-b5f0654e6cc8",
+    "name": "Steam Rice (Half)",
+    "category": "Rice",
+    "current_image_url": "https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "310ab185-ff75-4a1c-b8bf-a75b5e223e6b",
+    "name": "Chicken Afagan Tandoori (Full)",
+    "category": "Tandoori Starters",
+    "current_image_url": "https://images.unsplash.com/photo-1610057099443-fde8c4d50f91?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "2498e27f-c575-4e7c-a08c-2dcedc27d654",
+    "name": "Chicken Afagan Tandoori (Half)",
+    "category": "Tandoori Starters",
+    "current_image_url": "https://images.unsplash.com/photo-1610057099443-fde8c4d50f91?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "de46e23b-ee18-46be-ab46-5fb4fd063cdc",
+    "name": "Chicken Afgani Tikka (Full)",
+    "category": "Tandoori Starters",
+    "current_image_url": "https://images.unsplash.com/photo-1599488615731-7e5c2823ff28?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "280d9a35-6a39-412a-bbb0-af72d95b618b",
+    "name": "Chicken Afgani Tikka (Half)",
+    "category": "Tandoori Starters",
+    "current_image_url": "https://images.unsplash.com/photo-1599488615731-7e5c2823ff28?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "2bbf58a3-9ae1-4689-be2d-098fe8aef71c",
+    "name": "Chicken Boti Kabab",
+    "category": "Tandoori Starters",
+    "current_image_url": "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "224782e4-5ff3-4300-b496-56cc8051d8ae",
+    "name": "Chicken Family Platter",
+    "category": "Tandoori Starters",
+    "current_image_url": "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "004b50b8-9383-48f7-abb0-094f5c3dfaa8",
+    "name": "Chicken Jangali Tandoori (Full)",
+    "category": "Tandoori Starters",
+    "current_image_url": "https://images.unsplash.com/photo-1610057099443-fde8c4d50f91?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "fe866215-f2f2-4214-af1f-00556686c298",
+    "name": "Chicken Jangali Tandoori (Half)",
+    "category": "Tandoori Starters",
+    "current_image_url": "https://images.unsplash.com/photo-1610057099443-fde8c4d50f91?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "8829c62f-5fd6-4d9a-89b7-25da02978359",
+    "name": "Chicken Jangali Tikka (Full)",
+    "category": "Tandoori Starters",
+    "current_image_url": "https://images.unsplash.com/photo-1599488615731-7e5c2823ff28?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "a4132eb4-ced0-4efa-b49a-c473465b5f75",
+    "name": "Chicken Jangali Tikka (Half)",
+    "category": "Tandoori Starters",
+    "current_image_url": "https://images.unsplash.com/photo-1599488615731-7e5c2823ff28?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "cb1b275e-0b34-426a-9cee-14404fb1db83",
+    "name": "Chicken Lasooni Kabab",
+    "category": "Tandoori Starters",
+    "current_image_url": "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "ddfe1576-709c-4e40-95e8-77f2cdd9e76c",
+    "name": "Chicken Lasooni Tikka",
+    "category": "Tandoori Starters",
+    "current_image_url": "https://images.unsplash.com/photo-1599488615731-7e5c2823ff28?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "7e644397-2fc3-4385-afbf-2878cf197a64",
+    "name": "Chicken Lollipop Tandoori",
+    "category": "Tandoori Starters",
+    "current_image_url": "https://images.unsplash.com/photo-1610057099443-fde8c4d50f91?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "8ac2984f-ccd7-40f5-a935-410c40c4cda0",
+    "name": "Chicken Pahadi Kabab",
+    "category": "Tandoori Starters",
+    "current_image_url": "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "3b008c93-ef78-4163-b549-ea9a5a1adcfe",
+    "name": "Chicken Reshmi Kabab",
+    "category": "Tandoori Starters",
+    "current_image_url": "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "b10d1a2c-3c42-4211-b585-440bf0cf16b4",
+    "name": "Chicken Tandoori (Full)",
+    "category": "Tandoori Starters",
+    "current_image_url": "https://images.unsplash.com/photo-1610057099443-fde8c4d50f91?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "a642163b-2e2e-4234-b437-24e01f2f1191",
+    "name": "Chicken Tandoori (Half)",
+    "category": "Tandoori Starters",
+    "current_image_url": "https://images.unsplash.com/photo-1610057099443-fde8c4d50f91?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "04f561eb-80fb-425a-a47c-ed9fd7d2cb6c",
+    "name": "Chicken Tandoori Full",
+    "category": "Tandoori Starters",
+    "current_image_url": "https://images.unsplash.com/photo-1610057099443-fde8c4d50f91?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "a044e60f-64e4-4de5-8c96-2b1e5916590c",
+    "name": "Chicken Tandoori Half",
+    "category": "Tandoori Starters",
+    "current_image_url": "https://images.unsplash.com/photo-1610057099443-fde8c4d50f91?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "6849cb31-2b3d-41e3-a6f9-60a792eb6454",
+    "name": "Chicken Tangadi Kabab",
+    "category": "Tandoori Starters",
+    "current_image_url": "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "28fa07bc-2467-4e01-947d-2db7fa77e2a6",
+    "name": "Chicken Tikka",
+    "category": "Tandoori Starters",
+    "current_image_url": "https://images.unsplash.com/photo-1599488615731-7e5c2823ff28?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "5e580813-420d-442a-9950-61e170bb224c",
+    "name": "Rozali Kabab",
+    "category": "Tandoori Starters",
+    "current_image_url": "https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "4db849a2-9f3b-4761-b5e1-9289bfae12f7",
+    "name": "Paneer Tikka",
+    "category": "Veg",
+    "current_image_url": "https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "98086237-776b-4dd3-a1b0-9230b6313a69",
+    "name": "Mashroom Fried Rice",
+    "category": "Veg Chinese",
+    "current_image_url": "https://images.unsplash.com/photo-1603133872878-684f208fb84b?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "58505177-f5ea-46df-a1b4-ad93d0cfa79d",
+    "name": "Mushroom Fried Rice",
+    "category": "Veg Chinese",
+    "current_image_url": "https://images.unsplash.com/photo-1603133872878-684f208fb84b?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "4d058c07-07b9-44ff-9bb1-58dad7f467f9",
+    "name": "Veg Fried Rice",
+    "category": "Veg Chinese",
+    "current_image_url": "https://images.unsplash.com/photo-1603133872878-684f208fb84b?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "827af7aa-cfaf-41f1-92fe-ab9ed34b2f98",
+    "name": "Veg Hakka Noodles",
+    "category": "Veg Chinese",
+    "current_image_url": "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "f4a089fa-26e1-42c5-8781-a034d597cc5b",
+    "name": "Veg Manchurian Fried Rice",
+    "category": "Veg Chinese",
+    "current_image_url": "https://images.unsplash.com/photo-1603133872878-684f208fb84b?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "e52a6062-3648-4ae9-a1c2-5fffb3984d4b",
+    "name": "Veg Manchurian Gravy",
+    "category": "Veg Chinese",
+    "current_image_url": "https://images.unsplash.com/photo-1585032226651-759b368d7246?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "144f466a-6926-440f-8a60-80dbabd3b811",
+    "name": "Veg Schezwan Fried Rice",
+    "category": "Veg Chinese",
+    "current_image_url": "https://images.unsplash.com/photo-1603133872878-684f208fb84b?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "86b9c1f3-b354-49c6-a116-209f39896e1a",
+    "name": "Veg Triple Rice",
+    "category": "Veg Chinese",
+    "current_image_url": "https://images.unsplash.com/photo-1603133872878-684f208fb84b?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "d8454a67-f637-40c8-9cbf-093ee1153480",
+    "name": "Mutton Hyderabadi",
+    "category": "Mutton Main Course",
+    "current_image_url": "https://images.unsplash.com/photo-1545247181-516773cae754?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "8ac31f97-da2f-4ec9-a763-0912c1ae483b",
+    "name": "Mutton Hydrabadi",
+    "category": "Mutton Main Course",
+    "current_image_url": "https://images.unsplash.com/photo-1545247181-516773cae754?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "38db0f45-6fc5-46f8-b238-fb73b63a084a",
+    "name": "Mutton Kheema Masala",
+    "category": "Mutton Main Course",
+    "current_image_url": "https://images.unsplash.com/photo-1545247181-516773cae754?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "c45b1883-99fc-4ef4-8eac-1d6e64a6aab6",
+    "name": "Mutton Kolhapuri",
+    "category": "Mutton Main Course",
+    "current_image_url": "https://images.unsplash.com/photo-1545247181-516773cae754?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "e8f4cc83-6fc1-4a5d-9b89-5c63baf06a54",
+    "name": "Mutton Lapeta",
+    "category": "Mutton Main Course",
+    "current_image_url": "https://images.unsplash.com/photo-1545247181-516773cae754?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "4803ed49-c5a0-4604-8b71-526de1ccdbef",
+    "name": "Mutton Masala",
+    "category": "Mutton Main Course",
+    "current_image_url": "https://images.unsplash.com/photo-1545247181-516773cae754?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "49974645-0664-4f15-9318-4dfcf1affaf7",
+    "name": "Hyderabadi Biryani",
+    "category": "Rice & Biryani",
+    "current_image_url": "https://images.unsplash.com/photo-1642821373181-696a54913e9a?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "56c306b4-8ff3-4ede-bd63-dc6ebb2535b6",
+    "name": "Bhakari",
+    "category": "Roti",
+    "current_image_url": "https://images.unsplash.com/photo-1565557623262-b51c2513a641?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "0da09780-26b7-4bef-a535-9a90b4bad91c",
+    "name": "Butter Chapati",
+    "category": "Roti",
+    "current_image_url": "https://images.unsplash.com/photo-1565557623262-b51c2513a641?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "a299f27c-42f3-4acd-a73f-6fdb56b9d592",
+    "name": "Butter Naan",
+    "category": "Roti",
+    "current_image_url": "https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "cf95b96b-cfed-495f-97de-e15d1aed9ea7",
+    "name": "Butter Paratha",
+    "category": "Roti",
+    "current_image_url": "https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "6dd7e58c-1ead-4b38-ba90-d1f66dbc34ec",
+    "name": "Butter Roti",
+    "category": "Roti",
+    "current_image_url": "https://images.unsplash.com/photo-1565557623262-b51c2513a641?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "255ec71f-89db-45e2-9206-06928e9b6daa",
+    "name": "Chapati",
+    "category": "Roti",
+    "current_image_url": "https://images.unsplash.com/photo-1565557623262-b51c2513a641?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "ec52a5db-da46-4464-a21c-139c0a010add",
+    "name": "Cheese Garlic Naan",
+    "category": "Roti",
+    "current_image_url": "https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "e20c7015-6be3-45ef-9867-210c74f8a783",
+    "name": "Garlic Naan",
+    "category": "Roti",
+    "current_image_url": "https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "4ef73d02-3579-424e-ad03-5702c01e8739",
+    "name": "Naan",
+    "category": "Roti",
+    "current_image_url": "https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "52a8119f-0e79-4053-90db-25cb7a268b8a",
+    "name": "Tandori Roti",
+    "category": "Roti",
+    "current_image_url": "https://images.unsplash.com/photo-1565557623262-b51c2513a641?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "eb298630-61ba-4b8f-9694-28f045b121e7",
+    "name": "Mashroom Biryani",
+    "category": "Veg Biryani",
+    "current_image_url": "https://images.unsplash.com/photo-1642821373181-696a54913e9a?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "08cf49c0-8f1c-4aaf-9ba2-29719329c357",
+    "name": "Mashroom Pulav",
+    "category": "Veg Biryani",
+    "current_image_url": "https://images.unsplash.com/photo-1642821373181-696a54913e9a?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "61236b2b-54cf-4803-9cf4-e98e52ecd1e2",
+    "name": "Paneer Biryani",
+    "category": "Veg Biryani",
+    "current_image_url": "https://images.unsplash.com/photo-1642821373181-696a54913e9a?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "a0689bf9-aa87-4c78-ab45-e95a2c7dd499",
+    "name": "Paneer Pulav",
+    "category": "Veg Biryani",
+    "current_image_url": "https://images.unsplash.com/photo-1642821373181-696a54913e9a?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "25017046-976c-4bbf-b9b4-b7de19774ee1",
+    "name": "Veg Biryani",
+    "category": "Veg Biryani",
+    "current_image_url": "https://images.unsplash.com/photo-1642821373181-696a54913e9a?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "3c07f35f-a93e-423e-b05c-0e66a447b8a2",
+    "name": "Veg Pulav",
+    "category": "Veg Biryani",
+    "current_image_url": "https://images.unsplash.com/photo-1642821373181-696a54913e9a?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "587f1561-84db-4c09-8d24-24ae7b9769b3",
+    "name": "Butter Chicken (Full)",
+    "category": "Chicken Main Course",
+    "current_image_url": "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "7a9fe4a8-2a1a-4a35-a606-b87908a26dab",
+    "name": "Butter Chicken (Half)",
+    "category": "Chicken Main Course",
+    "current_image_url": "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "a6f2cdfd-2760-4be5-b329-0ca907d286ed",
+    "name": "Butter Chicken Full",
+    "category": "Chicken Main Course",
+    "current_image_url": "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "f0c04a81-1126-4c27-bc42-696e758f1644",
+    "name": "Butter Chicken Half",
+    "category": "Chicken Main Course",
+    "current_image_url": "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "30eb496f-3c3f-47c6-94d4-55cf49346579",
+    "name": "Chicken Afagani",
+    "category": "Chicken Main Course",
+    "current_image_url": "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "1d25d18c-88ab-413e-ac64-37968ef30e93",
+    "name": "Chicken Afgani",
+    "category": "Chicken Main Course",
+    "current_image_url": "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "6e373561-8378-4694-8654-8958cc74e55a",
+    "name": "Chicken Hyderabadi",
+    "category": "Chicken Main Course",
+    "current_image_url": "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "acae2d71-2b2f-4b40-b5c2-bcd7d5db82e7",
+    "name": "Chicken Hydrabadi",
+    "category": "Chicken Main Course",
+    "current_image_url": "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "5bc0f55d-ae9c-4ef3-9ff7-87759179e495",
+    "name": "Chicken Kadhai",
+    "category": "Chicken Main Course",
+    "current_image_url": "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "e9b56ea3-de0f-4458-a9f5-2aa87f9c7c0d",
+    "name": "Chicken Kheema",
+    "category": "Chicken Main Course",
+    "current_image_url": "https://images.unsplash.com/photo-1545247181-516773cae754?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "d6b55a24-3190-4738-8665-d835c09cf751",
+    "name": "Chicken Kheema Masala",
+    "category": "Chicken Main Course",
+    "current_image_url": "https://images.unsplash.com/photo-1545247181-516773cae754?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "3f494f80-2079-45e6-bf3c-0f0ac3f3da8b",
+    "name": "Chicken Kolhapuri",
+    "category": "Chicken Main Course",
+    "current_image_url": "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "7486b7c1-5304-468c-b7e2-9f327489e2f8",
+    "name": "Chicken Lapeta",
+    "category": "Chicken Main Course",
+    "current_image_url": "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "2eb72728-2419-4c70-8ae9-23b0ab8bd4d8",
+    "name": "Chicken Masala",
+    "category": "Chicken Main Course",
+    "current_image_url": "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "0b09fd88-b4b0-4906-9c49-aad9877251de",
+    "name": "Chicken Moghlai",
+    "category": "Chicken Main Course",
+    "current_image_url": "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "e433650a-a48f-409f-987e-a4c12defe0c6",
+    "name": "Chicken Tikka Masala",
+    "category": "Chicken Main Course",
+    "current_image_url": "https://images.unsplash.com/photo-1599488615731-7e5c2823ff28?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "b5196210-1988-47f5-bc8c-1cd265ba54c0",
+    "name": "Liver Masala",
+    "category": "Chicken Main Course",
+    "current_image_url": "https://images.unsplash.com/photo-1545247181-516773cae754?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "49833116-0aae-488b-bfda-89b2007c7bac",
+    "name": "Gulab Jamun",
+    "category": "Desserts",
+    "current_image_url": "https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "766bd77d-5e8e-4747-8a2b-a9cf70a947f1",
+    "name": "Veg Thali",
+    "category": "Veg Thali",
+    "current_image_url": "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "84a8184d-609a-4705-a7ce-5a74b569abf2",
+    "name": "Bangda Masala",
+    "category": "Fish",
+    "current_image_url": "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "564b336a-eb69-4c72-9bea-409bd415d2e3",
+    "name": "Khekada Masala",
+    "category": "Fish",
+    "current_image_url": "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "b0b88ba9-ca60-414f-a1b2-160418b881c1",
+    "name": "Khekada Masala (Crab)",
+    "category": "Fish",
+    "current_image_url": "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "282727f7-ce3b-4882-885c-84bb1df521a8",
+    "name": "Prawns Fry",
+    "category": "Fish",
+    "current_image_url": "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "2871499f-9bb7-4f09-8601-ad03c23b25fe",
+    "name": "Prawns Masala",
+    "category": "Fish",
+    "current_image_url": "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "19da3aaf-dc64-40df-a63d-e3c6c78c42b2",
+    "name": "Surmai Curry",
+    "category": "Fish",
+    "current_image_url": "https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "fb102c11-f87f-4e6e-aa5b-206593ca13bb",
+    "name": "Surmai Masala",
+    "category": "Fish",
+    "current_image_url": "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "a51e9e3e-7314-45d2-b9d4-77fbba9a1f86",
+    "name": "Curd Rice",
+    "category": "Legacy Rice",
+    "current_image_url": "https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "7c5d0bf1-a484-4541-ab44-ee3d3af851fe",
+    "name": "Dal Khichadi",
+    "category": "Legacy Rice",
+    "current_image_url": "https://images.unsplash.com/photo-1589302168068-964664d93dc0?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "8b5aec1b-8a92-4a24-8e89-2d24d9f04927",
+    "name": "Dal Tadka Khichadi",
+    "category": "Legacy Rice",
+    "current_image_url": "https://images.unsplash.com/photo-1589302168068-964664d93dc0?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "d82fc6c6-4ab1-4ef3-a03f-9af2392b1a9a",
+    "name": "Jeera Rice",
+    "category": "Legacy Rice",
+    "current_image_url": "https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "8a99443a-190c-40ce-b491-8fb27c3c276b",
+    "name": "Masala Rice",
+    "category": "Legacy Rice",
+    "current_image_url": "https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "9be52e85-2bb4-4501-ab33-3058b7b56a01",
+    "name": "Palak Khichadi",
+    "category": "Legacy Rice",
+    "current_image_url": "https://images.unsplash.com/photo-1589302168068-964664d93dc0?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "1cdc042f-294b-4feb-90b2-bd30330780e2",
+    "name": "Steam Rice",
+    "category": "Legacy Rice",
+    "current_image_url": "https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "a2a41e88-517c-47f1-a102-a6c45cc9943a",
+    "name": "Steam Rice (Half)",
+    "category": "Legacy Rice",
+    "current_image_url": "https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "4c2ffe8f-46f6-4d3a-921e-04d577b7ee9c",
+    "name": "Bhakari",
+    "category": "Legacy Roti",
+    "current_image_url": "https://images.unsplash.com/photo-1565557623262-b51c2513a641?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "8a59642f-db6e-4c4b-839c-89913fd41741",
+    "name": "Butter Chapati",
+    "category": "Legacy Roti",
+    "current_image_url": "https://images.unsplash.com/photo-1565557623262-b51c2513a641?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "4977ccd3-8401-4b33-9af5-33fc49bf5bdd",
+    "name": "Butter Naan",
+    "category": "Legacy Roti",
+    "current_image_url": "https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "622582bf-91ca-4b4a-964f-3514ef0cc77e",
+    "name": "Butter Paratha",
+    "category": "Legacy Roti",
+    "current_image_url": "https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "7e52fe1c-e217-4102-985f-5d1f3bd500fd",
+    "name": "Butter Roti",
+    "category": "Legacy Roti",
+    "current_image_url": "https://images.unsplash.com/photo-1565557623262-b51c2513a641?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "3a82c355-dcf8-49a9-8848-d77bfd3ef6da",
+    "name": "Chapati",
+    "category": "Legacy Roti",
+    "current_image_url": "https://images.unsplash.com/photo-1565557623262-b51c2513a641?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "a7615aea-b863-4381-a529-34640048bcfa",
+    "name": "Cheese Garlic Naan",
+    "category": "Legacy Roti",
+    "current_image_url": "https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "e36be838-67ca-4a0d-8c79-682b7c10998d",
+    "name": "Garlic Naan",
+    "category": "Legacy Roti",
+    "current_image_url": "https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "17c54035-d667-4ff8-8112-7fc5f84a884b",
+    "name": "Naan",
+    "category": "Legacy Roti",
+    "current_image_url": "https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "9fae4fef-f9a3-474b-bc24-b11256501f6d",
+    "name": "Tandoori Roti",
+    "category": "Legacy Roti",
+    "current_image_url": "https://images.unsplash.com/photo-1565557623262-b51c2513a641?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "a6b7eb9c-485d-4a84-b110-823b0774112f",
+    "name": "Chicken Fried Rice",
+    "category": "Non-Veg Chinese",
+    "current_image_url": "https://images.unsplash.com/photo-1603133872878-684f208fb84b?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "7d33d92c-4ac4-43ea-aea1-06b673e49e54",
+    "name": "Chicken Hakka Noodles",
+    "category": "Non-Veg Chinese",
+    "current_image_url": "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "99890fb4-7fde-485e-949d-86da7d9a23e5",
+    "name": "Chicken Manchurian Rice",
+    "category": "Non-Veg Chinese",
+    "current_image_url": "https://images.unsplash.com/photo-1585032226651-759b368d7246?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "7a406020-6219-45b7-8924-dcbda276577f",
+    "name": "Chicken Schezwan Fried Rice",
+    "category": "Non-Veg Chinese",
+    "current_image_url": "https://images.unsplash.com/photo-1585032226651-759b368d7246?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "4a9bbe86-8364-45c5-9739-eed72c8476b0",
+    "name": "Chicken Schezwan Noodles",
+    "category": "Non-Veg Chinese",
+    "current_image_url": "https://images.unsplash.com/photo-1585032226651-759b368d7246?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "168a3ff3-43ba-47a7-9c4e-bfd0314eb25a",
+    "name": "Chicken Schezwan Rice",
+    "category": "Non-Veg Chinese",
+    "current_image_url": "https://images.unsplash.com/photo-1585032226651-759b368d7246?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "d0a22fea-568c-4cda-84f7-80a1c2474cb4",
+    "name": "Chicken Triple Rice",
+    "category": "Non-Veg Chinese",
+    "current_image_url": "https://images.unsplash.com/photo-1603133872878-684f208fb84b?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "7f5c8e01-66eb-483c-b84d-a892ee7cbd98",
+    "name": "Egg Fried Rice",
+    "category": "Non-Veg Chinese",
+    "current_image_url": "https://images.unsplash.com/photo-1603133872878-684f208fb84b?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "1e6e0420-5653-448a-85e9-88d4b08ac627",
+    "name": "Egg Hakka Noodles",
+    "category": "Non-Veg Chinese",
+    "current_image_url": "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "f842d091-bada-4772-9252-84c9909ab584",
+    "name": "Egg Schezwan Noodles",
+    "category": "Non-Veg Chinese",
+    "current_image_url": "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "6247a971-950c-4748-9b74-359da8fe85d0",
+    "name": "Egg Schezwan Rice",
+    "category": "Non-Veg Chinese",
+    "current_image_url": "https://images.unsplash.com/photo-1603133872878-684f208fb84b?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "2cd9901e-d3d2-4c3d-a2b7-dc70ce58477b",
+    "name": "Egg Triple Rice",
+    "category": "Non-Veg Chinese",
+    "current_image_url": "https://images.unsplash.com/photo-1603133872878-684f208fb84b?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "03eb4c00-93ef-491c-86db-f2107c31056c",
+    "name": "Prawns Fried Rice",
+    "category": "Non-Veg Chinese",
+    "current_image_url": "https://images.unsplash.com/photo-1603133872878-684f208fb84b?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "ffbfc25d-b0d5-4f2f-b65b-482d470e82d2",
+    "name": "Prawns Hakka Noodles",
+    "category": "Non-Veg Chinese",
+    "current_image_url": "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "89065c6c-3b37-43cd-b0dc-46ebbe5097f4",
+    "name": "Prawns Schezwan Noodles",
+    "category": "Non-Veg Chinese",
+    "current_image_url": "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "6ec5037a-7eee-474e-a8e6-7251ca4cd26c",
+    "name": "Prawns Schezwan Rice",
+    "category": "Non-Veg Chinese",
+    "current_image_url": "https://images.unsplash.com/photo-1603133872878-684f208fb84b?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "c5837457-9145-41ae-9137-876cb6efa8b7",
+    "name": "Prawns Triple Rice",
+    "category": "Non-Veg Chinese",
+    "current_image_url": "https://images.unsplash.com/photo-1603133872878-684f208fb84b?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "552cf413-0288-40ca-952b-91cfeb10f33f",
+    "name": "Chicken Biryani",
+    "category": "Non-Veg Biryani",
+    "current_image_url": "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "68e447f0-6679-4c83-a8bb-5f7a94751335",
+    "name": "Chicken Hydrabadi Biryani",
+    "category": "Non-Veg Biryani",
+    "current_image_url": "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "a26513e5-bc7b-455a-afb1-58caac482896",
+    "name": "Chicken Pulav",
+    "category": "Non-Veg Biryani",
+    "current_image_url": "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "1dd88d05-7013-4f56-a01e-76a816949063",
+    "name": "Egg Biryani",
+    "category": "Non-Veg Biryani",
+    "current_image_url": "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "1761ba44-1336-44e6-9dff-880820a8c553",
+    "name": "Mutton Biryani",
+    "category": "Non-Veg Biryani",
+    "current_image_url": "https://images.unsplash.com/photo-1633945274405-b6c8069047b0?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "d677b391-891f-4d58-938c-ef966d73f368",
+    "name": "Prawns Biryani",
+    "category": "Non-Veg Biryani",
+    "current_image_url": "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "bc4f02ad-fc72-48ab-8479-874671621330",
+    "name": "Prawns Pulav",
+    "category": "Non-Veg Biryani",
+    "current_image_url": "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "e97a4131-df42-4095-a8be-99a8ad6bb603",
+    "name": "Bangda Thali",
+    "category": "Non-Veg Thali",
+    "current_image_url": "https://images.unsplash.com/photo-1610057099431-d73a1c9d2f2f?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "9041818e-128e-4be0-a9ec-bbc6fdda1a5c",
+    "name": "Bombil Thali",
+    "category": "Non-Veg Thali",
+    "current_image_url": "https://images.unsplash.com/photo-1610057099431-d73a1c9d2f2f?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "c7eb1e74-fd08-4e44-951d-f38625537c21",
+    "name": "Butter Chicken Thali",
+    "category": "Non-Veg Thali",
+    "current_image_url": "https://images.unsplash.com/photo-1610057099431-d73a1c9d2f2f?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "1dd758cb-f995-4ac6-8af2-fcd5bf46b089",
+    "name": "Chicken Kala Masala Thali",
+    "category": "Non-Veg Thali",
+    "current_image_url": "https://images.unsplash.com/photo-1610057099431-d73a1c9d2f2f?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "557df06c-f7cb-406f-ae3a-8d9b8e465d1f",
+    "name": "Chicken Kharda Thali",
+    "category": "Non-Veg Thali",
+    "current_image_url": "https://images.unsplash.com/photo-1610057099431-d73a1c9d2f2f?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "e17004d2-0c9c-4150-bbf7-f0b86c1137f7",
+    "name": "Chicken Kheema Thali",
+    "category": "Non-Veg Thali",
+    "current_image_url": "https://images.unsplash.com/photo-1610057099431-d73a1c9d2f2f?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "ce3c4ced-79c1-4922-b164-8da727ae5ffd",
+    "name": "Chicken Kolhapuri Thali",
+    "category": "Non-Veg Thali",
+    "current_image_url": "https://images.unsplash.com/photo-1610057099431-d73a1c9d2f2f?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "44b197dd-340d-4480-8629-a41fc573c014",
+    "name": "Chicken Liver Thali",
+    "category": "Non-Veg Thali",
+    "current_image_url": "https://images.unsplash.com/photo-1610057099431-d73a1c9d2f2f?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "6d47f786-8cb3-4d22-a249-b348f5b2c45f",
+    "name": "Chicken Thali",
+    "category": "Non-Veg Thali",
+    "current_image_url": "https://images.unsplash.com/photo-1610057099431-d73a1c9d2f2f?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "46c16292-3840-4202-95e7-a8d2cf95729e",
+    "name": "Egg Thali",
+    "category": "Non-Veg Thali",
+    "current_image_url": "https://images.unsplash.com/photo-1610057099431-d73a1c9d2f2f?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "388840c8-c454-4e92-9c12-04c51052035c",
+    "name": "Mutton Kala Masala Thali",
+    "category": "Non-Veg Thali",
+    "current_image_url": "https://images.unsplash.com/photo-1610057099431-d73a1c9d2f2f?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "4a6f34f7-03c2-4789-9718-df12d96d6d17",
+    "name": "Mutton Kharda Thali",
+    "category": "Non-Veg Thali",
+    "current_image_url": "https://images.unsplash.com/photo-1610057099431-d73a1c9d2f2f?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "0e31c92e-1c94-4d81-ad14-fca3f442ca97",
+    "name": "Mutton Kheema Thali",
+    "category": "Non-Veg Thali",
+    "current_image_url": "https://images.unsplash.com/photo-1610057099431-d73a1c9d2f2f?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "9e7a56ff-8392-4dd1-95cf-2f3bd88dd53e",
+    "name": "Mutton Kolhapuri Thali",
+    "category": "Non-Veg Thali",
+    "current_image_url": "https://images.unsplash.com/photo-1610057099431-d73a1c9d2f2f?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "d2934c35-e7ca-4880-b4e3-c840f5f7c6d6",
+    "name": "Mutton Thali",
+    "category": "Non-Veg Thali",
+    "current_image_url": "https://images.unsplash.com/photo-1610057099431-d73a1c9d2f2f?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "3ed833c5-d86c-45ad-8b42-2f2a6f890499",
+    "name": "Pomfret Thali",
+    "category": "Non-Veg Thali",
+    "current_image_url": "https://images.unsplash.com/photo-1610057099431-d73a1c9d2f2f?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "451a40f5-54ca-47d2-a27a-c756ad07c617",
+    "name": "Prawns Thali",
+    "category": "Non-Veg Thali",
+    "current_image_url": "https://images.unsplash.com/photo-1610057099431-d73a1c9d2f2f?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "19a72cec-f0dc-456d-9fce-aafe430df9a9",
+    "name": "Surmai Thali",
+    "category": "Non-Veg Thali",
+    "current_image_url": "https://images.unsplash.com/photo-1610057099431-d73a1c9d2f2f?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "a3b6696c-5785-4425-b8d9-07ad5174bac0",
+    "name": "Boil Egg",
+    "category": "Egg Items",
+    "current_image_url": "https://images.unsplash.com/photo-1582169296194-e4d644c48063?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "15723346-f0ab-4709-9322-50382034e1c5",
+    "name": "Egg Bhurji",
+    "category": "Egg Items",
+    "current_image_url": "https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "6fd45b17-06b9-4030-bcef-4cc92de7fbc0",
+    "name": "Egg Biryani",
+    "category": "Egg Items",
+    "current_image_url": "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "2450a319-944e-49ed-ac5f-5c58677bd5c3",
+    "name": "Egg Chilly",
+    "category": "Egg Items",
+    "current_image_url": "https://images.unsplash.com/photo-1582169296194-e4d644c48063?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "66901419-52ba-4885-a341-81d2efcd8cc0",
+    "name": "Egg Fried Rice",
+    "category": "Egg Items",
+    "current_image_url": "https://images.unsplash.com/photo-1603133872878-684f208fb84b?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "5dbe978f-53bc-4050-9dc0-c001c533fb8a",
+    "name": "Egg Hakka Noodles",
+    "category": "Egg Items",
+    "current_image_url": "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "d5620433-8ab6-4562-8529-96dbe287651c",
+    "name": "Egg Pakoda",
+    "category": "Egg Items",
+    "current_image_url": "https://images.unsplash.com/photo-1582169296194-e4d644c48063?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "2e8197b9-70f5-45b3-b742-7a448cb84af1",
+    "name": "Egg Schezwan Noodles",
+    "category": "Egg Items",
+    "current_image_url": "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "5ad0959a-227a-4ac6-9943-9aa5cda0dc95",
+    "name": "Egg Schezwan Rice",
+    "category": "Egg Items",
+    "current_image_url": "https://images.unsplash.com/photo-1603133872878-684f208fb84b?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "bb4ff0df-1d85-42d0-bf22-7d0fd1f5aae1",
+    "name": "Egg Thali",
+    "category": "Egg Items",
+    "current_image_url": "https://images.unsplash.com/photo-1610057099431-d73a1c9d2f2f?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "31d59a2f-3372-4aa6-9d8d-4234557141c8",
+    "name": "Egg Triple Rice",
+    "category": "Egg Items",
+    "current_image_url": "https://images.unsplash.com/photo-1603133872878-684f208fb84b?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "70510e28-c50d-4572-8244-b27df2bf22ad",
+    "name": "Half Fry",
+    "category": "Egg Items",
+    "current_image_url": "https://images.unsplash.com/photo-1510693206972-df098062cb71?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "220a1f49-7a6a-4011-b3f9-c58a161f8eec",
+    "name": "Chicken 65",
+    "category": "Chicken Starters & Tandoori",
+    "current_image_url": "https://images.unsplash.com/photo-1610057099431-d73a1c9d2f2f?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "932bf0ca-c909-4aa8-abbc-c6b2b7e6fe02",
+    "name": "Chicken Boti Kabab",
+    "category": "Chicken Starters & Tandoori",
+    "current_image_url": "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "ab0e7a93-259c-4c03-986c-886430db0321",
+    "name": "Chicken Chilly Dry",
+    "category": "Chicken Starters & Tandoori",
+    "current_image_url": "https://images.unsplash.com/photo-1585032226651-759b368d7246?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "b2f00cf1-2bcb-46d8-8325-44cf53e1fe7f",
+    "name": "Chicken Crispy",
+    "category": "Chicken Starters & Tandoori",
+    "current_image_url": "https://images.unsplash.com/photo-1585032226651-759b368d7246?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "826025f9-3bef-4107-9397-1ef0dfcb377c",
+    "name": "Chicken Family Platter",
+    "category": "Chicken Starters & Tandoori",
+    "current_image_url": "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "99ad6974-ac58-43f8-ad51-90620a1998d6",
+    "name": "Chicken Fry",
+    "category": "Chicken Starters & Tandoori",
+    "current_image_url": "https://images.unsplash.com/photo-1610057099431-d73a1c9d2f2f?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "993cfe49-26e9-4bd6-a381-bc3275790be8",
+    "name": "Chicken Garlic",
+    "category": "Chicken Starters & Tandoori",
+    "current_image_url": "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "c43a70e3-7e2e-4463-88f7-46d71d8eafde",
+    "name": "Chicken Lollipop Tandoori",
+    "category": "Chicken Starters & Tandoori",
+    "current_image_url": "https://images.unsplash.com/photo-1610057099443-fde8c4d50f91?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "e5567da3-e593-4890-9cf1-dd19f85bce72",
+    "name": "Chicken Oil Fry",
+    "category": "Chicken Starters & Tandoori",
+    "current_image_url": "https://images.unsplash.com/photo-1610057099431-d73a1c9d2f2f?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "82e24ff9-d3fc-4d02-9951-a60c54dccfbd",
+    "name": "Chicken Pahadi Kabab",
+    "category": "Chicken Starters & Tandoori",
+    "current_image_url": "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "ce49c9b5-baab-40ac-bfaa-e5d83c4ff5ce",
+    "name": "Chicken Reshmi Kabab",
+    "category": "Chicken Starters & Tandoori",
+    "current_image_url": "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "09dfc830-85e2-4698-88b7-9896a5526943",
+    "name": "Chicken Tangadi Kabab",
+    "category": "Chicken Starters & Tandoori",
+    "current_image_url": "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "056dd938-669b-4f39-b325-14cc0a7e62da",
+    "name": "Chicken Tikka",
+    "category": "Chicken Starters & Tandoori",
+    "current_image_url": "https://images.unsplash.com/photo-1599488615731-7e5c2823ff28?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "132a54a9-756f-423c-b0c6-4d1c284a4480",
+    "name": "Rozali Kabab",
+    "category": "Chicken Starters & Tandoori",
+    "current_image_url": "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "c983c43c-e8dd-4e95-a6fd-8dd624528e56",
+    "name": "Chicken Biryani",
+    "category": "Chicken Main Course & Biryani",
+    "current_image_url": "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "a24faa1b-eb1c-4818-9d37-1f8d7d354799",
+    "name": "Chicken Fried Rice",
+    "category": "Chicken Main Course & Biryani",
+    "current_image_url": "https://images.unsplash.com/photo-1603133872878-684f208fb84b?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "401d8aa0-3baf-471a-b400-19915b92074d",
+    "name": "Chicken Hakka Noodles",
+    "category": "Chicken Main Course & Biryani",
+    "current_image_url": "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "d7f5efb3-d8a3-4571-b38c-77e8ae826af5",
+    "name": "Chicken Kadhai",
+    "category": "Chicken Main Course & Biryani",
+    "current_image_url": "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "5d8c123c-91da-4018-9ebe-375e5daf9958",
+    "name": "Chicken Kolhapuri",
+    "category": "Chicken Main Course & Biryani",
+    "current_image_url": "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "e87f1e74-3a47-4bb7-8261-2955135cef2d",
+    "name": "Chicken Lapeta",
+    "category": "Chicken Main Course & Biryani",
+    "current_image_url": "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "76ca62c1-12f3-464c-bd1c-27608d1f5168",
+    "name": "Chicken Manchurian Rice",
+    "category": "Chicken Main Course & Biryani",
+    "current_image_url": "https://images.unsplash.com/photo-1585032226651-759b368d7246?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "254965d1-d230-4438-8ed4-edde2d66fc6d",
+    "name": "Chicken Masala",
+    "category": "Chicken Main Course & Biryani",
+    "current_image_url": "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "d160a960-a424-45fd-9613-417601574323",
+    "name": "Chicken Moghlai",
+    "category": "Chicken Main Course & Biryani",
+    "current_image_url": "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "9ee2d003-171a-490c-8aa4-1b75c7f921d2",
+    "name": "Chicken Pulav",
+    "category": "Chicken Main Course & Biryani",
+    "current_image_url": "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "bdd2fbdb-5828-478a-8192-d9edb71b1825",
+    "name": "Chicken Schezwan Noodles",
+    "category": "Chicken Main Course & Biryani",
+    "current_image_url": "https://images.unsplash.com/photo-1585032226651-759b368d7246?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "c809ad9d-139c-47ea-8937-fef47305674b",
+    "name": "Chicken Tikka Masala",
+    "category": "Chicken Main Course & Biryani",
+    "current_image_url": "https://images.unsplash.com/photo-1599488615731-7e5c2823ff28?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "e3a7f229-0f06-40f6-86de-5e90cd2caef1",
+    "name": "Chicken Triple Rice",
+    "category": "Chicken Main Course & Biryani",
+    "current_image_url": "https://images.unsplash.com/photo-1603133872878-684f208fb84b?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "ced6ffd4-49ee-4b18-9ad2-324b15c805a5",
+    "name": "Butter Chicken Thali",
+    "category": "Chicken Thalis",
+    "current_image_url": "https://images.unsplash.com/photo-1610057099431-d73a1c9d2f2f?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "463d12f4-b737-4d1b-821a-8b689899e899",
+    "name": "Chicken Kala Masala Thali",
+    "category": "Chicken Thalis",
+    "current_image_url": "https://images.unsplash.com/photo-1610057099431-d73a1c9d2f2f?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "f2a5e5d0-1d3e-4551-8593-a8f82ad432ab",
+    "name": "Chicken Kharda Thali",
+    "category": "Chicken Thalis",
+    "current_image_url": "https://images.unsplash.com/photo-1610057099431-d73a1c9d2f2f?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "02618741-1050-4cb1-aac4-3027569eedb1",
+    "name": "Chicken Kheema Thali",
+    "category": "Chicken Thalis",
+    "current_image_url": "https://images.unsplash.com/photo-1610057099431-d73a1c9d2f2f?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "25a82975-7de2-4ab6-afeb-a9a3d93bca23",
+    "name": "Chicken Kolhapuri Thali",
+    "category": "Chicken Thalis",
+    "current_image_url": "https://images.unsplash.com/photo-1610057099431-d73a1c9d2f2f?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "68c7d6a9-f885-4b22-9f4a-abaa0be1da35",
+    "name": "Chicken Thali",
+    "category": "Chicken Thalis",
+    "current_image_url": "https://images.unsplash.com/photo-1610057099431-d73a1c9d2f2f?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "596fd008-879d-4eac-b0eb-1a1d73f9720e",
+    "name": "Chicken Liver Thali",
+    "category": "Mutton & Liver Items",
+    "current_image_url": "https://images.unsplash.com/photo-1610057099431-d73a1c9d2f2f?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "8dc1b17d-748b-468a-a37e-8679485b13eb",
+    "name": "Liver Masala",
+    "category": "Mutton & Liver Items",
+    "current_image_url": "https://images.unsplash.com/photo-1545247181-516773cae754?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "80cb680c-41ca-4a84-94d8-8e0e6fe8c6a8",
+    "name": "Liver Oil Fry",
+    "category": "Mutton & Liver Items",
+    "current_image_url": "https://images.unsplash.com/photo-1545247181-516773cae754?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "c215d86c-5015-41a7-aa67-8e51d9ca25da",
+    "name": "Mutton Biryani",
+    "category": "Mutton & Liver Items",
+    "current_image_url": "https://images.unsplash.com/photo-1633945274405-b6c8069047b0?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "db1d8d80-ad43-4354-bddb-a5939e997fa6",
+    "name": "Mutton Fry",
+    "category": "Mutton & Liver Items",
+    "current_image_url": "https://images.unsplash.com/photo-1545247181-516773cae754?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "a0fceb4a-b216-408b-8c22-21b4b00ea070",
+    "name": "Mutton Kala Masala Thali",
+    "category": "Mutton & Liver Items",
+    "current_image_url": "https://images.unsplash.com/photo-1610057099431-d73a1c9d2f2f?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "8da6139a-e1b3-4109-a57c-118068ad292a",
+    "name": "Mutton Kharda Thali",
+    "category": "Mutton & Liver Items",
+    "current_image_url": "https://images.unsplash.com/photo-1610057099431-d73a1c9d2f2f?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "d91fba00-3aaa-46ff-abc0-1f59f43692b4",
+    "name": "Mutton Kheema Masala",
+    "category": "Mutton & Liver Items",
+    "current_image_url": "https://images.unsplash.com/photo-1545247181-516773cae754?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "0dcf70ec-3811-46bb-93c0-007d0179f694",
+    "name": "Mutton Kheema Thali",
+    "category": "Mutton & Liver Items",
+    "current_image_url": "https://images.unsplash.com/photo-1610057099431-d73a1c9d2f2f?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "14df4039-a3d2-4d55-b856-225e3f8380de",
+    "name": "Mutton Kolhapuri",
+    "category": "Mutton & Liver Items",
+    "current_image_url": "https://images.unsplash.com/photo-1545247181-516773cae754?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "b73a58f1-20f8-4871-b5a8-7114ca5c4b0c",
+    "name": "Mutton Kolhapuri Thali",
+    "category": "Mutton & Liver Items",
+    "current_image_url": "https://images.unsplash.com/photo-1610057099431-d73a1c9d2f2f?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "7c8e174a-0030-4985-9d1b-632329d8a964",
+    "name": "Mutton Lapeta",
+    "category": "Mutton & Liver Items",
+    "current_image_url": "https://images.unsplash.com/photo-1545247181-516773cae754?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "eb4e9301-6076-43bd-8574-ab0bb579f836",
+    "name": "Mutton Masala",
+    "category": "Mutton & Liver Items",
+    "current_image_url": "https://images.unsplash.com/photo-1545247181-516773cae754?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "cec26ba8-c475-4b8b-b71f-9d4f8c285e07",
+    "name": "Mutton Thali",
+    "category": "Mutton & Liver Items",
+    "current_image_url": "https://images.unsplash.com/photo-1610057099431-d73a1c9d2f2f?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "ae7405a9-a098-4fff-850a-e509ac0ca1b0",
+    "name": "Chicken Hyderabadi Biryani",
+    "category": "Biryani",
+    "current_image_url": "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "154b5461-1dc3-4bf5-9cb6-4a86854fa01a",
+    "name": "Mushroom Biryani",
+    "category": "Biryani",
+    "current_image_url": "https://images.unsplash.com/photo-1642821373181-696a54913e9a?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "2ed67fe2-abd6-4067-a16a-857d3dc6442f",
+    "name": "Mushroom Pulav",
+    "category": "Biryani",
+    "current_image_url": "https://images.unsplash.com/photo-1642821373181-696a54913e9a?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "3d2252a5-a145-49f8-bfb5-c8cc366094d6",
+    "name": "Paneer Biryani",
+    "category": "Biryani",
+    "current_image_url": "https://images.unsplash.com/photo-1642821373181-696a54913e9a?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "6723be9d-45ae-46e9-8686-37b939c640f2",
+    "name": "Paneer Pulav",
+    "category": "Biryani",
+    "current_image_url": "https://images.unsplash.com/photo-1642821373181-696a54913e9a?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "489612c1-1e13-4fbe-9ecd-4273b69cea66",
+    "name": "Veg Biryani",
+    "category": "Biryani",
+    "current_image_url": "https://images.unsplash.com/photo-1642821373181-696a54913e9a?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "76812048-9263-4b65-8ee6-1146db4dfd51",
+    "name": "Veg Pulav",
+    "category": "Biryani",
+    "current_image_url": "https://images.unsplash.com/photo-1642821373181-696a54913e9a?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "d2032d3a-9ba7-478a-a554-31fa84b8a8f3",
+    "name": "Bangda Masala",
+    "category": "Fish & Seafood",
+    "current_image_url": "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "861a6b4e-3dd9-490f-b06d-97c28e35b0a2",
+    "name": "Bangda Tawa / Rawa Fry",
+    "category": "Fish & Seafood",
+    "current_image_url": "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "1b2f0e30-66f2-4a78-91fb-041c78ba75c5",
+    "name": "Bombil Fry",
+    "category": "Fish & Seafood",
+    "current_image_url": "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "dd0db754-5d10-4461-8481-6875ad90613b",
+    "name": "Fish Finger",
+    "category": "Fish & Seafood",
+    "current_image_url": "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "428e2a43-aa88-4419-8098-72ec58b8866e",
+    "name": "Mandeli Fry",
+    "category": "Fish & Seafood",
+    "current_image_url": "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "0b4e6ab8-c48f-48c0-8150-1aa095773968",
+    "name": "Pomfret Tawa / Rawa Fry",
+    "category": "Fish & Seafood",
+    "current_image_url": "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "f9dbb66b-97f1-4261-a157-3d98f59ca334",
+    "name": "Prawns Biryani",
+    "category": "Fish & Seafood",
+    "current_image_url": "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "cc0b7df1-e152-48b6-920e-a8595beb35ed",
+    "name": "Prawns Chilly Dry",
+    "category": "Fish & Seafood",
+    "current_image_url": "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "e6ab77c6-42a3-4dbe-8cac-acf8e122a189",
+    "name": "Prawns Fried Rice",
+    "category": "Fish & Seafood",
+    "current_image_url": "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "298e4376-bbd8-462a-af43-b7b9c4355bdb",
+    "name": "Prawns Fry",
+    "category": "Fish & Seafood",
+    "current_image_url": "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "4d46280d-b37c-4258-8fda-b0a289032100",
+    "name": "Prawns Hakka Noodles",
+    "category": "Fish & Seafood",
+    "current_image_url": "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "b47636d4-f7be-4004-aa52-ce61bbd2abe5",
+    "name": "Prawns Koliwada",
+    "category": "Fish & Seafood",
+    "current_image_url": "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "f0d9811c-f0ea-435b-b325-0b1a5b902f26",
+    "name": "Prawns Masala",
+    "category": "Fish & Seafood",
+    "current_image_url": "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "ce217a32-e845-4e17-9654-818dc1bd8d38",
+    "name": "Prawns Pulav",
+    "category": "Fish & Seafood",
+    "current_image_url": "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "7caddae2-0dfe-4a0e-8291-3548166d1fcd",
+    "name": "Prawns Schezwan Noodles",
+    "category": "Fish & Seafood",
+    "current_image_url": "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "5194dfb4-7dde-4c0f-a42a-f91dc2179b3f",
+    "name": "Prawns Schezwan Rice",
+    "category": "Fish & Seafood",
+    "current_image_url": "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "d71e40ca-56ba-4b48-b23f-83e89671a7c7",
+    "name": "Prawns Tawa / Rawa Fry",
+    "category": "Fish & Seafood",
+    "current_image_url": "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "c6f6898c-4dd3-4c89-b437-233f3532f69e",
+    "name": "Prawns Triple Rice",
+    "category": "Fish & Seafood",
+    "current_image_url": "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "838a36ea-f4d0-4445-bbda-e25ba177744a",
+    "name": "Surmai Curry",
+    "category": "Fish & Seafood",
+    "current_image_url": "https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "966108a1-4451-44b9-bbed-dee8d6be1644",
+    "name": "Surmai Masala",
+    "category": "Fish & Seafood",
+    "current_image_url": "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "89be3d7f-c77f-4746-88ba-9db611c37148",
+    "name": "Surmai Tawa / Rawa Fry",
+    "category": "Fish & Seafood",
+    "current_image_url": "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "5778ab62-66e5-4dca-a2a1-6fde92e4067a",
+    "name": "Bangda Thali",
+    "category": "Seafood Thalis",
+    "current_image_url": "https://images.unsplash.com/photo-1610057099431-d73a1c9d2f2f?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "9c03733e-eb8a-4eab-b7a2-00aabc922126",
+    "name": "Bombil Thali",
+    "category": "Seafood Thalis",
+    "current_image_url": "https://images.unsplash.com/photo-1610057099431-d73a1c9d2f2f?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "3d45bee3-7b22-41fe-8e61-7b8e34e37eb1",
+    "name": "Pomfret Thali",
+    "category": "Seafood Thalis",
+    "current_image_url": "https://images.unsplash.com/photo-1610057099431-d73a1c9d2f2f?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "9a860edb-c8f4-47d2-a7bc-0e03fcbf83e4",
+    "name": "Prawns Thali",
+    "category": "Seafood Thalis",
+    "current_image_url": "https://images.unsplash.com/photo-1610057099431-d73a1c9d2f2f?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "c2b833ad-9457-4557-9ea7-e8e5b4ee8c7e",
+    "name": "Surmai Thali",
+    "category": "Seafood Thalis",
+    "current_image_url": "https://images.unsplash.com/photo-1610057099431-d73a1c9d2f2f?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  },
+  {
+    "id": "1c060cac-7333-466f-a5ac-e592f3f852dd",
+    "name": "Veg Thali",
+    "category": "Thali",
+    "current_image_url": "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=600&q=80",
+    "image_url": ""
+  }
+]

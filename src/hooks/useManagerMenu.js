@@ -9,6 +9,8 @@ function normalizeItem(row) {
     desc: row.description || "",
     price: Number(row.price),
     image: row.image_url,
+    image_url: row.image_url,
+    imageUrl: row.image_url,
     category: row.category_name,
     menuType: row.menu_type,
     foodGroup: row.food_group || null,

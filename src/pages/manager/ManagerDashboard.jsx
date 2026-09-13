@@ -32,11 +32,11 @@ export default function ManagerDashboard() {
   // data) every metric correctly falls back to 0 / ₹0.
   const metrics = useMemo(
     () => [
-      { label: "Revenue", value: `₹${(dashboard?.revenue || 0).toLocaleString("en-IN")}`, icon: TrendingUp, accent: "gold" },
+      { label: "Order Value (Today)", value: `₹${(dashboard?.orderValue ?? dashboard?.revenue ?? 0).toLocaleString("en-IN")}`, icon: TrendingUp, accent: "gold" },
       { label: "Pending Orders", value: dashboard?.pendingOrders || 0, icon: Clock, accent: "amber" },
       { label: "Preparing Orders", value: dashboard?.preparingOrders || 0, icon: ShoppingBag, accent: "blue" },
       { label: "Completed Orders", value: dashboard?.completedOrders || 0, icon: CheckCircle2, accent: "green" },
-      { label: "Total Orders", value: dashboard?.todayOrders || 0, icon: Users, accent: "neutral" },
+      { label: "Today's Orders", value: dashboard?.todayOrders || 0, icon: Users, accent: "neutral" },
     ],
     [dashboard]
   );

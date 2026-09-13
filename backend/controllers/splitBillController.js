@@ -203,4 +203,4 @@ async function getSplitBill(req, res, next) {
   }
 }
 
-module.exports = { createSplitBill, getSplitBill };
+module.exports = { createSplitBill, getSplitBill, buildShares };

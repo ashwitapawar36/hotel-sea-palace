@@ -3,7 +3,9 @@ import { Plus, Minus, UtensilsCrossed } from "lucide-react";
 import { useCart } from "../context/CartContext";
 import { useToast } from "../context/ToastContext";
 
-export default function DishCard({ dish }) {
+export default function DishCard(props) {
+  const item = props.item || props.dish || {};
+  const dish = item;
   const { cart, add, setQty } = useCart();
   const { showToast } = useToast();
   const [flash, setFlash] = useState(false);
@@ -17,6 +19,7 @@ export default function DishCard({ dish }) {
   const count = cart[cartKey] || 0;
   const displayPrice = hasVariants ? selectedVariant.price : dish.price;
   const isAvailable = dish.available !== false;
+  const imageUrl = item.image_url || item.imageUrl || item.image;
 
   const flashButton = () => {
     setFlash(true);
@@ -48,12 +51,13 @@ export default function DishCard({ dish }) {
       }}
     >
       <div style={{ position: "relative", height: 110, background: "#111" }}>
-        {dish.image && !imageFailed ? (
+        {imageUrl && !imageFailed ? (
           <img
-            src={dish.image}
+            src={imageUrl}
             alt={dish.name}
             onError={() => setImageFailed(true)}
             style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+            loading="lazy"
           />
         ) : (
           <div

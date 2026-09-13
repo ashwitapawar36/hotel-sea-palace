@@ -264,12 +264,30 @@ async function placeOrder(req, res, next) {
     const insertedItems = [];
     for (const line of resolvedLines) {
       const { rows } = await client.query(
-        `INSERT INTO order_items (order_id, menu_item_id, variant_id, quantity, unit_price, line_total, notes)
-         VALUES ($1, $2, $3, $4, $5, $6, $7)
-         RETURNING id, menu_item_id, variant_id, quantity, unit_price, line_total, notes`,
-        [order.id, line.menuItemId, line.variantId, line.quantity, line.unitPrice, line.lineTotal, line.notes],
+        `INSERT INTO order_items (
+           order_id, menu_item_id, variant_id, quantity, unit_price, line_total, notes,
+           item_name, variant_label, is_alcoholic
+         )
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+         RETURNING id, menu_item_id, variant_id, quantity, unit_price, line_total, notes, item_name, variant_label, is_alcoholic`,
+        [
+          order.id,
+          line.menuItemId,
+          line.variantId,
+          line.quantity,
+          line.unitPrice,
+          line.lineTotal,
+          line.notes,
+          line.name,
+          line.variantLabel,
+          line.isAlcoholic,
+        ],
       );
-      insertedItems.push({ ...rows[0], name: line.name, variant_label: line.variantLabel });
+      insertedItems.push({
+        ...rows[0],
+        name: line.name,
+        variant_label: line.variantLabel,
+      });
     }
 
     const { rows: managers } = await client.query('SELECT id FROM managers WHERE is_active = TRUE');
@@ -293,7 +311,7 @@ async function placeOrder(req, res, next) {
       });
     }
 
-    res.status(201).json({ success: true, data: { order: { ...order, items: insertedItems } } });
+    res.status(201).json({ success: true, data: { order: { ...order, table_number: Number(tableNumber), items: insertedItems } } });
   } catch (error) {
     await client.query('ROLLBACK');
     if (error.status) {
@@ -380,16 +398,36 @@ async function payOrder(req, res, next) {
 }
 
 async function updateOrderStatus(req, res, next) {
+  const client = await db.pool.connect();
   try {
+    await client.query('BEGIN');
     const { id } = req.params;
     const { status } = req.body;
-    const { rows } = await db.query(
+
+    const { rows: orderRows } = await client.query(
+      `SELECT id, order_number, status, visit_id FROM orders WHERE id = $1 FOR UPDATE`,
+      [id],
+    );
+    if (!orderRows[0]) {
+      await client.query('ROLLBACK');
+      return res.status(404).json({ success: false, message: 'Order not found' });
+    }
+
+    const order = orderRows[0];
+    if (order.visit_id) {
+      // Shared visit lock: serializes status update/cancellation with bill finalization
+      await client.query(
+        `SELECT id, status FROM table_visits WHERE id = $1 FOR UPDATE`,
+        [order.visit_id],
+      );
+    }
+
+    const { rows } = await client.query(
       `UPDATE orders SET status = $1, updated_at = NOW() WHERE id = $2 RETURNING id, order_number, status`,
       [status, id],
     );
-    if (!rows[0]) {
-      return res.status(404).json({ success: false, message: 'Order not found' });
-    }
+
+    await client.query('COMMIT');
 
     const io = req.app.locals.io;
     if (io) {
@@ -398,7 +436,10 @@ async function updateOrderStatus(req, res, next) {
 
     res.json({ success: true, data: rows[0] });
   } catch (error) {
+    await client.query('ROLLBACK').catch(() => {});
     next(error);
+  } finally {
+    client.release();
   }
 }
 

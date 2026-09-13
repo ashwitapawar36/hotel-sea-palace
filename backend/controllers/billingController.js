@@ -349,4 +349,20 @@ async function getBill(req, res, next) {
   }
 }
 
-module.exports = { createBill, getBill };
+async function generatePdfFile(billPath, { restaurantName = 'Hotel Sea Palace', billNumber, tableNumber, order, items }) {
+  const uploadsPath = path.dirname(billPath);
+  fs.mkdirSync(uploadsPath, { recursive: true });
+
+  const doc = new PDFDocument({ size: 'A4', margin: PAGE_MARGIN });
+  renderInvoicePdf(doc, { restaurantName, billNumber, tableNumber, order, items });
+
+  await new Promise((resolve, reject) => {
+    const stream = fs.createWriteStream(billPath);
+    stream.on('finish', resolve);
+    stream.on('error', reject);
+    doc.pipe(stream);
+    doc.end();
+  });
+}
+
+module.exports = { createBill, getBill, buildBillNumber, renderInvoicePdf, generatePdfFile };

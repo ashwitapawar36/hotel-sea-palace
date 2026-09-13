@@ -68,6 +68,8 @@ function normalizeFoodItem(row) {
     desc: row.description || "",
     price: Number(row.price),
     image: row.image_url || null,
+    image_url: row.image_url || null,
+    imageUrl: row.image_url || null,
 
     categoryId: row.category_id,
     category: row.category_name,
@@ -116,6 +118,8 @@ function normalizeBarItem(row) {
     name: row.name,
     desc: row.description || "",
     image: row.image_url || null,
+    image_url: row.image_url || null,
+    imageUrl: row.image_url || null,
     price: Number(row.price),
 
     categoryId: row.category_id,

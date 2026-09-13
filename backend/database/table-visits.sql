@@ -20,9 +20,9 @@ CREATE TABLE IF NOT EXISTS table_visits (
 );
 
 -- A table can have only one unfinished visit.
-CREATE UNIQUE INDEX IF NOT EXISTS idx_one_active_visit_per_table
-  ON table_visits(table_id)
-  WHERE status IN ('open', 'bill_requested');
+-- Demo visitors can share Table 1 while keeping separate visits.
+CREATE UNIQUE INDEX IF NOT EXISTS idx_visit_table_token
+  ON table_visits(table_id, access_token_hash);
 
 -- Existing orders remain valid without a visit.
 ALTER TABLE orders

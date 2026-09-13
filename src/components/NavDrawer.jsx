@@ -5,8 +5,8 @@ import { useNavigate } from "react-router-dom";
 const LINKS = [
   { label: "Home", path: "/" },
   { label: "Menu", path: "/menu" },
-  { label: "Cart", path: "/cart" },
-  { label: "Feedback", path: "/feedback" },
+  { label: "Your Cart", path: "/cart" },
+  { label: "Final Bill", path: "/bill" },
 ];
 
 export default function NavDrawer() {

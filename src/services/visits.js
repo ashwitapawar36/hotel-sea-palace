@@ -197,3 +197,92 @@ export function acknowledgeOrderRound(tableNumber, submissionKey) {
     pendingSubmission: null,
   });
 }
+
+export async function requestFinalBill(tableNumber) {
+  const session = requireSession(tableNumber);
+
+  const response = await api.post(
+    `/visits/${session.visitId}/bill`,
+    {},
+    {
+      headers: {
+        "X-Visit-Token": session.token,
+      },
+    }
+  );
+
+  return response.data;
+}
+
+const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+
+export async function downloadVisitBillPdf(tableNumber, billNumber) {
+  const session = requireSession(tableNumber);
+
+  const response = await fetch(`${BASE_URL}/visits/${session.visitId}/bill/pdf`, {
+    headers: {
+      "X-Visit-Token": session.token,
+    },
+  });
+
+  if (!response.ok) {
+    let msg = "Could not download the invoice PDF. Please try again.";
+    try {
+      const err = await response.json();
+      if (err.message) msg = err.message;
+    } catch {
+      // ignore
+    }
+    throw new Error(msg);
+  }
+
+  const blob = await response.blob();
+  const blobUrl = window.URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = blobUrl;
+  a.download = `Invoice-${billNumber || "bill"}.pdf`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  window.URL.revokeObjectURL(blobUrl);
+}
+
+export async function submitVisitFeedback(tableNumber, { rating, comment, recommend }) {
+  const session = requireSession(tableNumber);
+
+  const response = await api.post(
+    `/visits/${session.visitId}/feedback`,
+    { rating, comment, recommend },
+    {
+      headers: {
+        "X-Visit-Token": session.token,
+      },
+    }
+  );
+
+  return response.data;
+}
+
+export async function splitVisitBill(tableNumber, { people, assignments }) {
+  const session = requireSession(tableNumber);
+
+  const response = await api.post(
+    `/visits/${session.visitId}/split-bill`,
+    { people, assignments },
+    {
+      headers: {
+        "X-Visit-Token": session.token,
+      },
+    }
+  );
+
+  return response.data;
+}
+
+export function startFreshVisit(tableNumber) {
+  const number = Number(tableNumber);
+  localStorage.removeItem(storageKey(number));
+  localStorage.removeItem(`sea-palace-cart-${number}`);
+  return startOrResumeVisit(number);
+}
+

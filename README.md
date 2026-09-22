@@ -132,3 +132,11 @@ is shared across pages via Context.
 This build is **plain JavaScript** (`.jsx`/`.js` files) — no TypeScript, no build-time
 type checking, nothing to compile away. If you open any file it reads like normal
 React you'd hand-write.
+
+## Live Demo
+
+Customer app: https://hotel-sea-palace.vercel.app
+
+Manager login: https://hotel-sea-palace.vercel.app/manager/login
+
+Backend health: https://hotel-sea-palace.onrender.com/health

@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useMemo, useState, useCallback } from "react";
+import { createContext, useContext, useEffect, useMemo, useState, useCallback, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import { useMenu } from "./MenuContext";
 import { api } from "../services/api";
@@ -137,17 +137,21 @@ export function CartProvider({ children }) {
 
   // Unsent cart is restored on refresh for this table/browser
   const [cart, setCartState] = useState(() => getStoredCart(tableNumber));
+  const cartRef = useRef(cart);
 
   const setCart = useCallback(
-    (actionOrValue) => {
-      setCartState((prev) => {
-        const next = typeof actionOrValue === "function" ? actionOrValue(prev) : actionOrValue;
-        saveStoredCart(tableNumber, next);
-        return next;
-      });
-    },
-    [tableNumber]
-  );
+  (actionOrValue) => {
+    const next =
+      typeof actionOrValue === "function"
+        ? actionOrValue(cartRef.current)
+        : actionOrValue;
+
+    cartRef.current = next;
+    saveStoredCart(tableNumber, next);
+    setCartState(next);
+  },
+  [tableNumber]
+);
 
   const [isSplitActive, setIsSplitActiveState] = useState(() => {
     if (!tableNumber) return false;
@@ -235,7 +239,9 @@ export function CartProvider({ children }) {
   // Reload state when active table changes
   useEffect(() => {
     if (tableNumber) {
-      setCartState(getStoredCart(tableNumber));
+      const restoredCart = getStoredCart(tableNumber);
+cartRef.current = restoredCart;
+setCartState(restoredCart);
       try {
         setIsSplitActiveState(
           window.localStorage.getItem(`sea-palace-split-active-${tableNumber}`) === "true"
@@ -258,7 +264,8 @@ export function CartProvider({ children }) {
         }
       } catch {}
     } else {
-      setCartState({});
+      cartRef.current = {};
+setCartState({});
       setIsSplitActiveState(false);
       setAssignmentsState({});
       setDinersState([
@@ -411,6 +418,26 @@ export function CartProvider({ children }) {
     });
 
   const clear = () => setCart({});
+  const removeSubmittedItems = (submittedItems) => {
+  const next = { ...cartRef.current };
+
+  for (const item of submittedItems) {
+    const key = buildKey(item.menuItemId, item.variantId);
+    const remaining =
+      Number(next[key] || 0) - Number(item.quantity);
+
+    if (remaining > 0) {
+      next[key] = remaining;
+    } else {
+      delete next[key];
+    }
+  }
+
+  setCart(next);
+
+  return Object.values(next).some((quantity) => Number(quantity) > 0);
+};
+
 
   const toggleAssignment = (dishId, dinerId) => {
     setAssignments((p) => {
@@ -669,6 +696,7 @@ export function CartProvider({ children }) {
         remove,
         setQty,
         clear,
+        removeSubmittedItems,
         cartCount,
         cartDishes,
         subtotal,

@@ -1,5 +1,6 @@
-import { useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useMemo, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+
 import {
   Search,
   ShoppingCart,
@@ -98,6 +99,9 @@ function DishGrid({ items }) {
 
 export default function Menu() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+const requestedSection = searchParams.get("section");
+const requestedCategory = searchParams.get("category");
   const { cartCount, tableNumber } = useCart();
 
   const {
@@ -112,7 +116,15 @@ export default function Menu() {
   const [section, setSection] = useState("vegetarian");
   const [activeCategory, setActiveCategory] = useState("all");
   const [search, setSearch] = useState("");
+useEffect(() => {
+  const validSection = SECTIONS.some(
+    (entry) => entry.key === requestedSection
+  );
 
+  setSection(validSection ? requestedSection : "vegetarian");
+  setActiveCategory(requestedCategory || "all");
+  setSearch("");
+}, [requestedSection, requestedCategory]);
   const isBar = section === "bar";
   const currentSection = SECTIONS.find(
     (entry) => entry.key === section
@@ -178,12 +190,14 @@ export default function Menu() {
 
   // If a reload removes the selected category, show all.
   const selectedCategory =
-    activeCategory === "all" ||
-    categories.some(
-      (category) => category.key === activeCategory
-    )
-      ? activeCategory
-      : "all";
+  activeCategory === "all"
+    ? "all"
+    : categories.find(
+        (category) =>
+          category.key === activeCategory ||
+          category.name === activeCategory ||
+          category.slug === activeCategory
+      )?.key || "all";
 
   const visibleCategories = useMemo(() => {
     const query = search.trim().toLowerCase();

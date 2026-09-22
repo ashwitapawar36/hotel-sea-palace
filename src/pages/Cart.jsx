@@ -26,6 +26,7 @@ export default function Cart() {
     setQty,
     remove,
     clear,
+    removeSubmittedItems,
     foodSubtotal,
     alcoholSubtotal,
     cgst,
@@ -59,10 +60,10 @@ export default function Cart() {
 
   // Submit current unsent items as a new order round
   const handleSendRound = async () => {
-    if (submissionLocked.current || cartDishes.length === 0) return;
+    if (submissionLocked.current || cartDishes.length === 0) return false;
     if (isVisitClosed) {
       setSubmissionError("This visit has ended. Please start a new visit.");
-      return;
+      return false;
     }
 
     submissionLocked.current = true;
@@ -77,10 +78,19 @@ export default function Cart() {
         throw new Error("Order confirmation not received from kitchen.");
       }
 
-      // Clear unsent cart after successful confirmation
-      clear();
-      acknowledgeOrderRound(tableNumber, result.submissionKey);
+      // Remove only the quantities actually submitted, preserving newer additions
+    if (
+  !Array.isArray(result.submittedItems) ||
+  result.submittedItems.length === 0
+) {
+  throw new Error(
+    "Could not identify confirmed items. Please refresh and retry."
+  );
+}
 
+const hasRemainingItems = removeSubmittedItems(result.submittedItems);
+
+acknowledgeOrderRound(tableNumber, result.submissionKey);
       showToast(
         result.replayed
           ? "Previous order recovered."
@@ -89,11 +99,21 @@ export default function Cart() {
             : "First round placed successfully!"
       );
 
-      await refreshVisit();
+     await refreshVisit();
+
+if (hasRemainingItems) {
+  setSubmissionError(
+    "The earlier order is confirmed. Your remaining items are still in the cart. Send them before requesting the final bill."
+  );
+  return false;
+}
+
+return true;
     } catch (err) {
-      setSubmissionError(
-        err?.message || "Could not submit your items. Please verify connection and retry."
-      );
+      const msg = err?.message || "Could not submit your items. Please verify connection and retry.";
+      setSubmissionError(msg);
+      showToast(msg);
+      return false;
     } finally {
       setSubmitting(false);
       submissionLocked.current = false;
@@ -112,12 +132,18 @@ export default function Cart() {
 
   // Confirmed: send remaining items first, then request bill
   const handleSendAndRequestBill = async () => {
-    setShowUnsentConfirmModal(false);
-    if (cartDishes.length > 0) {
-      await handleSendRound();
-    }
-    proceedToBillFlow();
-  };
+  if (submissionLocked.current || requestingBill) return;
+
+  setShowUnsentConfirmModal(false);
+
+  if (cartDishes.length > 0) {
+    const sentSuccessfully = await handleSendRound();
+
+    if (!sentSuccessfully) return;
+  }
+
+  proceedToBillFlow();
+};
 
   // Feedback popup step before bill
   const proceedToBillFlow = () => {

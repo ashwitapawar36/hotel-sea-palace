@@ -673,9 +673,9 @@ router.get('/:id/bill/pdf', async (req, res, next) => {
       throw fail(404, 'No active bill found for this visit.');
     }
 
-    const uploadsPath = path.join(__dirname, '..', uploadDir);
-    fs.mkdirSync(uploadsPath, { recursive: true });
-    const billPath = path.join(uploadsPath, `${bill.bill_number}.pdf`);
+    const privateBillsDir = path.join(__dirname, '..', 'private-bills');
+    fs.mkdirSync(privateBillsDir, { recursive: true });
+    const billPath = path.join(privateBillsDir, `${bill.bill_number}.pdf`);
 
     // Regenerate from snapshot if file doesn't exist
     if (!fs.existsSync(billPath)) {

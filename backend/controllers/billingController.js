@@ -1,8 +1,10 @@
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
+const jwt = require('jsonwebtoken');
 const PDFDocument = require('pdfkit');
 const db = require('../config/db');
-const { uploadDir } = require('../config/env');
+const { jwtSecret } = require('../config/env');
 
 function buildBillNumber() {
   return `INV-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
@@ -263,7 +265,7 @@ async function createBill(req, res, next) {
     const { rows: orderRows } = await client.query(
       `SELECT o.id, o.order_number, o.customer_name, o.subtotal, o.tax_amount, o.food_subtotal, o.alcohol_subtotal,
               o.cgst_amount, o.sgst_amount, o.vat_amount, o.total_amount, o.payment_status, o.payment_method,
-              o.table_id, o.created_at, rt.table_number
+              o.table_id, o.created_at, o.visit_id, rt.table_number
        FROM orders o
        LEFT JOIN restaurant_tables rt ON rt.id = o.table_id
        WHERE o.id = $1`,
@@ -277,10 +279,39 @@ async function createBill(req, res, next) {
 
     const order = orderRows[0];
 
+    // Authorization check: visit token or manager auth
+    const visitToken = req.get('X-Visit-Token');
+    const authHeader = req.get('Authorization');
+    let authorized = false;
+
+    if (order.visit_id && visitToken && /^[0-9a-f]{64}$/i.test(visitToken)) {
+      const tokenHash = crypto.createHash('sha256').update(visitToken).digest('hex');
+      const { rows: visitRows } = await client.query(
+        `SELECT id FROM table_visits WHERE id = $1 AND access_token_hash = $2`,
+        [order.visit_id, tokenHash]
+      );
+      if (visitRows[0]) authorized = true;
+    }
+
+    if (!authorized && authHeader && authHeader.startsWith('Bearer ')) {
+      try {
+        const token = authHeader.split(' ')[1];
+        jwt.verify(token, jwtSecret);
+        authorized = true;
+      } catch {
+        authorized = false;
+      }
+    }
+
+    if (!authorized) {
+      await client.query('ROLLBACK');
+      return res.status(403).json({ success: false, message: 'Access denied. Valid visit token or manager authorization required.' });
+    }
+
     const { rows: existingBill } = await client.query('SELECT id, bill_number, total_amount, created_at FROM bills WHERE order_id = $1', [orderId]);
     if (existingBill[0]) {
       await client.query('COMMIT');
-      return res.status(200).json({ success: true, data: { bill: existingBill[0], downloadUrl: `/uploads/${existingBill[0].bill_number}.pdf` } });
+      return res.status(200).json({ success: true, data: { bill: existingBill[0], downloadUrl: `/api/bills/${existingBill[0].id}/pdf` } });
     }
 
     const { rows: itemRows } = await client.query(
@@ -294,12 +325,10 @@ async function createBill(req, res, next) {
     );
 
     const billNumber = buildBillNumber();
-    // Same directory-creation step upload.js already does for menu images -
-    // this must exist before the write stream opens, or a fresh deployment
-    // (no uploads/ yet) fails to write the PDF at all.
-    const uploadsPath = path.join(__dirname, '..', uploadDir);
-    fs.mkdirSync(uploadsPath, { recursive: true });
-    const billPath = path.join(uploadsPath, `${billNumber}.pdf`);
+    // Saved in private-bills directory (not exposed via express.static)
+    const privateBillsDir = path.join(__dirname, '..', 'private-bills');
+    fs.mkdirSync(privateBillsDir, { recursive: true });
+    const billPath = path.join(privateBillsDir, `${billNumber}.pdf`);
 
     const doc = new PDFDocument({ size: 'A4', margin: PAGE_MARGIN });
     renderInvoicePdf(doc, { restaurantName, billNumber, tableNumber: order.table_number, order, items: itemRows });
@@ -323,7 +352,7 @@ async function createBill(req, res, next) {
     );
 
     await client.query('COMMIT');
-    res.status(201).json({ success: true, data: { bill: billRows[0], downloadUrl: `/uploads/${billNumber}.pdf` } });
+    res.status(201).json({ success: true, data: { bill: billRows[0], downloadUrl: `/api/bills/${billRows[0].id}/pdf` } });
   } catch (error) {
     await client.query('ROLLBACK');
     next(error);
@@ -336,22 +365,111 @@ async function getBill(req, res, next) {
   try {
     const { id } = req.params;
     const { rows } = await db.query(
-      `SELECT id, order_id, bill_number, subtotal, tax_amount, food_subtotal, alcohol_subtotal, cgst_amount, sgst_amount, vat_amount, total_amount, payment_method, paid_at, created_at
-       FROM bills WHERE id = $1`,
+      `SELECT b.id, b.order_id, b.bill_number, b.subtotal, b.tax_amount, b.food_subtotal, b.alcohol_subtotal,
+              b.cgst_amount, b.sgst_amount, b.vat_amount, b.total_amount, b.payment_method, b.paid_at, b.created_at,
+              o.visit_id
+       FROM bills b
+       JOIN orders o ON o.id = b.order_id
+       WHERE b.id = $1`,
       [id],
     );
     if (!rows[0]) {
       return res.status(404).json({ success: false, message: 'Bill not found' });
     }
-    res.json({ success: true, data: rows[0] });
+
+    const bill = rows[0];
+
+    const visitToken = req.get('X-Visit-Token');
+    const authHeader = req.get('Authorization');
+    let authorized = false;
+
+    if (bill.visit_id && visitToken && /^[0-9a-f]{64}$/i.test(visitToken)) {
+      const tokenHash = crypto.createHash('sha256').update(visitToken).digest('hex');
+      const { rows: visitRows } = await db.query(
+        `SELECT id FROM table_visits WHERE id = $1 AND access_token_hash = $2`,
+        [bill.visit_id, tokenHash]
+      );
+      if (visitRows[0]) authorized = true;
+    }
+
+    if (!authorized && authHeader && authHeader.startsWith('Bearer ')) {
+      try {
+        const token = authHeader.split(' ')[1];
+        jwt.verify(token, jwtSecret);
+        authorized = true;
+      } catch {
+        authorized = false;
+      }
+    }
+
+    if (!authorized) {
+      return res.status(403).json({ success: false, message: 'Access denied. Valid visit token or manager authorization required.' });
+    }
+
+    res.json({ success: true, data: bill });
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function downloadBillPdf(req, res, next) {
+  try {
+    const { id } = req.params;
+    const { rows } = await db.query(
+      `SELECT b.id, b.bill_number, o.visit_id
+       FROM bills b
+       JOIN orders o ON o.id = b.order_id
+       WHERE b.id = $1`,
+      [id],
+    );
+    if (!rows[0]) {
+      return res.status(404).json({ success: false, message: 'Bill not found' });
+    }
+
+    const bill = rows[0];
+
+    const visitToken = req.get('X-Visit-Token');
+    const authHeader = req.get('Authorization');
+    let authorized = false;
+
+    if (bill.visit_id && visitToken && /^[0-9a-f]{64}$/i.test(visitToken)) {
+      const tokenHash = crypto.createHash('sha256').update(visitToken).digest('hex');
+      const { rows: visitRows } = await db.query(
+        `SELECT id FROM table_visits WHERE id = $1 AND access_token_hash = $2`,
+        [bill.visit_id, tokenHash]
+      );
+      if (visitRows[0]) authorized = true;
+    }
+
+    if (!authorized && authHeader && authHeader.startsWith('Bearer ')) {
+      try {
+        const token = authHeader.split(' ')[1];
+        jwt.verify(token, jwtSecret);
+        authorized = true;
+      } catch {
+        authorized = false;
+      }
+    }
+
+    if (!authorized) {
+      return res.status(403).json({ success: false, message: 'Access denied. Valid visit token or manager authorization required.' });
+    }
+
+    const privateBillsDir = path.join(__dirname, '..', 'private-bills');
+    const billPath = path.join(privateBillsDir, `${bill.bill_number}.pdf`);
+    if (!fs.existsSync(billPath)) {
+      return res.status(404).json({ success: false, message: 'Bill PDF file not found' });
+    }
+
+    res.download(billPath, `Invoice-${bill.bill_number}.pdf`);
   } catch (error) {
     next(error);
   }
 }
 
 async function generatePdfFile(billPath, { restaurantName = 'Hotel Sea Palace', billNumber, tableNumber, order, items }) {
-  const uploadsPath = path.dirname(billPath);
-  fs.mkdirSync(uploadsPath, { recursive: true });
+  const dir = path.dirname(billPath);
+  fs.mkdirSync(dir, { recursive: true });
 
   const doc = new PDFDocument({ size: 'A4', margin: PAGE_MARGIN });
   renderInvoicePdf(doc, { restaurantName, billNumber, tableNumber, order, items });
@@ -365,4 +483,4 @@ async function generatePdfFile(billPath, { restaurantName = 'Hotel Sea Palace', 
   });
 }
 
-module.exports = { createBill, getBill, buildBillNumber, renderInvoicePdf, generatePdfFile };
+module.exports = { createBill, getBill, downloadBillPdf, buildBillNumber, renderInvoicePdf, generatePdfFile };

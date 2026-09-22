@@ -22,3 +22,6 @@ Thumbs.db
 
 # Generated/temp files
 backend/uploads/
+
+backend/private-bills/
+backend/dish-images-backup-*.json

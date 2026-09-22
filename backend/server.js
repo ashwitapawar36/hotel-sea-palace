@@ -74,7 +74,36 @@ app.use('/api', (req, res, next) => {
 app.post('/api/auth/login', loginLimiter);
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
-app.use('/uploads', express.static(path.join(__dirname, uploadDir)));
+// Only menu images may be accessed through the public uploads URL.
+// Invoices must use the protected PDF download endpoints.
+const publicImageExtensions = new Set([
+  '.jpg',
+  '.jpeg',
+  '.png',
+  '.webp',
+  '.gif',
+  '.avif',
+]);
+
+app.use(
+  '/uploads',
+  (req, res, next) => {
+    const extension = path.extname(req.path).toLowerCase();
+
+    if (!publicImageExtensions.has(extension)) {
+      return res.status(404).json({
+        success: false,
+        message: 'File not found',
+      });
+    }
+
+    next();
+  },
+  express.static(path.join(__dirname, uploadDir), {
+    index: false,
+    dotfiles: 'deny',
+  })
+);
 
 app.get('/health', (_req, res) => res.json({ ok: true, message: 'Backend is running' }));
 app.use('/api/health', healthRoutes);

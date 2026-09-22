@@ -101,20 +101,26 @@
      - Normalized `image_url` across `MenuContext.jsx` and `useManagerMenu.js` to support both `item.image_url` and `item.imageUrl`.
      - Updated `DishCard.jsx` to render `item.image_url` with `loading="lazy"` and graceful fallback handling: on image load failure or absence, renders an elegant dark/gold gradient placeholder featuring an `UtensilsCrossed` icon.
 
+6. **Order Integrity, Lock Ordering, Authorization & Image Protection**:
+   - **Submission Error Gating (`src/pages/Cart.jsx`)**: `handleSendRound()` returns an explicit boolean success status. `handleSendAndRequestBill()` halts immediately if submission fails, preventing bill navigation while preserving unsent cart items and displaying the error.
+   - **Selective Cart Quantity Deduction (`src/context/CartContext.jsx`, `src/services/visits.js`, `src/pages/Cart.jsx`)**: `submitOrderRound` returns the exact `submittedItems` array. `removeSubmittedItems` deducts only the submitted quantities, leaving any newer cart additions or excess quantities untouched.
+   - **Order Cancellation Bill Guard (`backend/controllers/orderController.js`)**: Implemented policy (a) to block order cancellation (HTTP 409) if the order's visit already has an active finalized bill or is in `bill_requested`/`closed` state, instructing the manager to reopen the visit first.
+   - **Canonical Lock Ordering (`backend/controllers/orderController.js`)**: Established unified lock ordering (`table_visits FOR UPDATE` before `orders FOR UPDATE`) across status updates and cancellations, eliminating potential deadlocks with billing.
+   - **PDF & Legacy Endpoint Authorization (`backend/routes/visitRoutes.js`, `backend/controllers/billingController.js`, `backend/routes/billingRoutes.js`, `backend/controllers/orderController.js`, `src/pages/OrderSuccess.jsx`)**:
+     - Moved generated bill PDFs to `private-bills/`, which is completely removed from public `express.static`.
+     - Added protected endpoints `GET /api/bills/:id/pdf` and `GET /api/visits/:id/bill/pdf` requiring `X-Visit-Token` or manager JWT.
+     - Protected legacy `GET /api/orders/:id/status`, `POST /api/bills`, `GET /api/bills/:id` with visit token or manager auth.
+   - **DB Init Image Protection (`backend/database/init.js`, `backend/database/update_menu_images.sql.disabled`)**: Removed `update_menu_images.sql` from `init.js` and quarantined the script with `.disabled` suffix, ensuring manually curated image mappings are never overwritten on database initialization.
+
 ## Tests Run & Validation Results
 - **Automated Integration Test Suite (`backend/test_integration.cjs`)**: All 13 tests passed 100%.
-- **Table Identification & Validation Suite**:
-  - `/?table=1` -> visit started on Table 1, order created with table_number: 1.
-  - `/?table=2` -> visit started on Table 2, order created with table_number: 2.
-  - URL table override -> switching from Table 1 to Table 3 overrides stored table in state and localStorage.
-  - Demo fallback -> opening `/` without table parameter triggers "Select Your Table" fallback screen.
-  - Invalid tables -> non-numeric (`?table=abc`) and out-of-range (`?table=999`) rejected with status 400/404.
-  - Table persistence -> navigating away and refreshing retains active assigned table.
-- **Menu Item Image Population Verification**:
-  - Database verification confirmed 398 out of 398 menu items have valid direct image URLs.
-  - Verified 0 dishes missing image URLs.
-  - Verified zero alterations to dish names, prices, categories, or IDs.
-- **Frontend Build (`npm run build`)**: Vite production bundle built successfully in 2.99s with 0 errors.
+- **Verification Suite for 6 Fixes**:
+  - Cart quantity deduction: successfully verified scenario (a) single-item cart, (b) items added before/after, and (c) duplicate item additions with partial reductions.
+  - Cancellation guard: verified 409 conflict returned when attempting to cancel an order belonging to a billed visit.
+  - Authorization protection: verified 403 access denied returned when accessing order status without token, and 200 returned with valid `X-Visit-Token`.
+  - Image URL safety: verified `node backend/database/init.js` completed successfully and preserved manually assigned `image_url` values.
+- **Frontend Build (`npm run build`)**: Vite production bundle built successfully in 2.02s with 0 errors.
+- **Backend Syntax Check (`node -c`)**: All controllers, routes, and init scripts validated cleanly.
 
 ## Remaining Tasks & Blockers
-- None. System is fully operational and deployment ready.
+- None. All requested fixes are complete, validated, and deployment ready.

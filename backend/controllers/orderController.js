@@ -1,5 +1,7 @@
 const db = require('../config/db');
 const crypto = require('crypto');
+const jwt = require('jsonwebtoken');
+const { jwtSecret } = require('../config/env');
 
 const UUID_PATTERN =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -327,12 +329,42 @@ async function getOrderStatus(req, res, next) {
   try {
     const { id } = req.params;
     const { rows } = await db.query(
-      `SELECT id, order_number, status, payment_status, payment_method, paid_at, customer_name, subtotal, tax_amount, food_subtotal, alcohol_subtotal, cgst_amount, sgst_amount, vat_amount, total_amount, created_at
+      `SELECT id, order_number, status, payment_status, payment_method, paid_at, customer_name, subtotal, tax_amount, food_subtotal, alcohol_subtotal, cgst_amount, sgst_amount, vat_amount, total_amount, created_at, visit_id
        FROM orders WHERE id = $1`,
       [id],
     );
     if (!rows[0]) {
       return res.status(404).json({ success: false, message: 'Order not found' });
+    }
+
+    const order = rows[0];
+
+    // Authorization check: either valid visit token for the order's visit, or manager auth
+    const visitToken = req.get('X-Visit-Token');
+    const authHeader = req.get('Authorization');
+    let authorized = false;
+
+    if (order.visit_id && visitToken && /^[0-9a-f]{64}$/i.test(visitToken)) {
+      const tokenHash = crypto.createHash('sha256').update(visitToken).digest('hex');
+      const { rows: visitRows } = await db.query(
+        `SELECT id FROM table_visits WHERE id = $1 AND access_token_hash = $2`,
+        [order.visit_id, tokenHash]
+      );
+      if (visitRows[0]) authorized = true;
+    }
+
+    if (!authorized && authHeader && authHeader.startsWith('Bearer ')) {
+      try {
+        const token = authHeader.split(' ')[1];
+        jwt.verify(token, jwtSecret);
+        authorized = true;
+      } catch {
+        authorized = false;
+      }
+    }
+
+    if (!authorized) {
+      return res.status(403).json({ success: false, message: 'Access denied. Valid visit token or manager authorization required.' });
     }
 
     const { rows: itemRows } = await db.query(
@@ -346,7 +378,7 @@ async function getOrderStatus(req, res, next) {
       [id],
     );
 
-    res.json({ success: true, data: { ...rows[0], items: itemRows } });
+    res.json({ success: true, data: { ...order, items: itemRows } });
   } catch (error) {
     next(error);
   }
@@ -398,51 +430,157 @@ async function payOrder(req, res, next) {
 }
 
 async function updateOrderStatus(req, res, next) {
-  const client = await db.pool.connect();
+  let client;
+
   try {
+    client = await db.pool.connect();
     await client.query('BEGIN');
+
     const { id } = req.params;
     const { status } = req.body;
 
-    const { rows: orderRows } = await client.query(
-      `SELECT id, order_number, status, visit_id FROM orders WHERE id = $1 FOR UPDATE`,
+    // Look up the visit without locking the order first.
+    const lookup = await client.query(
+      'SELECT visit_id FROM orders WHERE id = $1',
       [id],
     );
-    if (!orderRows[0]) {
+
+    if (!lookup.rows[0]) {
       await client.query('ROLLBACK');
-      return res.status(404).json({ success: false, message: 'Order not found' });
+      return res.status(404).json({
+        success: false,
+        message: 'Order not found',
+      });
     }
 
-    const order = orderRows[0];
-    if (order.visit_id) {
-      // Shared visit lock: serializes status update/cancellation with bill finalization
-      await client.query(
-        `SELECT id, status FROM table_visits WHERE id = $1 FOR UPDATE`,
-        [order.visit_id],
+    const visitId = lookup.rows[0].visit_id;
+    let visit = null;
+
+    // Always lock the visit before the order, matching final billing.
+    if (visitId) {
+      const visitResult = await client.query(
+        `SELECT id, status
+         FROM table_visits
+         WHERE id = $1
+         FOR UPDATE`,
+        [visitId],
       );
+
+      visit = visitResult.rows[0];
+
+      if (!visit) {
+        await client.query('ROLLBACK');
+        return res.status(409).json({
+          success: false,
+          message: 'Visit not found. Refresh the orders page.',
+        });
+      }
+    }
+
+    const orderResult = await client.query(
+      `SELECT id, order_number, status, visit_id
+       FROM orders
+       WHERE id = $1
+       FOR UPDATE`,
+      [id],
+    );
+
+    const order = orderResult.rows[0];
+
+    if (!order) {
+      await client.query('ROLLBACK');
+      return res.status(404).json({
+        success: false,
+        message: 'Order not found',
+      });
+    }
+
+    if (order.visit_id !== visitId) {
+      await client.query('ROLLBACK');
+      return res.status(409).json({
+        success: false,
+        message: 'The order visit changed. Refresh and try again.',
+      });
+    }
+
+    // Repeating the current status is harmless.
+    if (order.status === status) {
+      await client.query('COMMIT');
+      return res.json({
+        success: true,
+        data: {
+          id: order.id,
+          order_number: order.order_number,
+          status: order.status,
+        },
+      });
+    }
+
+    if (visit?.status === 'closed') {
+      await client.query('ROLLBACK');
+      return res.status(409).json({
+        success: false,
+        message: 'This visit is closed. Its orders cannot be changed.',
+      });
+    }
+
+    // Both cancelling and restoring a cancelled order change the bill.
+    const changesBill =
+      order.status === 'cancelled' || status === 'cancelled';
+
+    if (visit && changesBill) {
+      const billResult = await client.query(
+        `SELECT id
+         FROM visit_bills
+         WHERE visit_id = $1 AND is_active = TRUE
+         LIMIT 1`,
+        [visitId],
+      );
+
+      if (visit.status !== 'open' || billResult.rows.length > 0) {
+        await client.query('ROLLBACK');
+        return res.status(409).json({
+          success: false,
+          message:
+            'Reopen this visit before cancelling or restoring an order. Then request a new final bill.',
+        });
+      }
     }
 
     const { rows } = await client.query(
-      `UPDATE orders SET status = $1, updated_at = NOW() WHERE id = $2 RETURNING id, order_number, status`,
+      `UPDATE orders
+       SET status = $1, updated_at = NOW()
+       WHERE id = $2
+       RETURNING id, order_number, status`,
       [status, id],
     );
 
     await client.query('COMMIT');
 
     const io = req.app.locals.io;
+
     if (io) {
-      io.emit('order_status_updated', { orderId: rows[0].id, orderNumber: rows[0].order_number, status: rows[0].status });
+      io.emit('order_status_updated', {
+        orderId: rows[0].id,
+        orderNumber: rows[0].order_number,
+        status: rows[0].status,
+      });
     }
 
-    res.json({ success: true, data: rows[0] });
+    return res.json({
+      success: true,
+      data: rows[0],
+    });
   } catch (error) {
-    await client.query('ROLLBACK').catch(() => {});
+    if (client) {
+      await client.query('ROLLBACK').catch(() => {});
+    }
     next(error);
   } finally {
-    client.release();
+    if (client) client.release();
   }
 }
-
+    
 async function listOrders(req, res, next) {
   try {
     const { rows } = await db.query(

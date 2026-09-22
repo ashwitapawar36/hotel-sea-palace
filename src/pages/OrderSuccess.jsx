@@ -5,6 +5,7 @@ import confetti from "canvas-confetti";
 import { useCart } from "../context/CartContext";
 import FeedbackModal from "../components/FeedbackModal";
 import { api } from "../services/api";
+import { readSession } from "../services/visits";
 
 const STATUS_POLL_MS = 8000;
 const FEEDBACK_DELAY_MS = 1400;
@@ -31,7 +32,9 @@ export default function OrderSuccess() {
 
     const poll = async () => {
       try {
-        const res = await api.get(`/orders/${lastOrder.id}/status`);
+        const session = readSession(tableNumber);
+        const headers = session?.token ? { "X-Visit-Token": session.token } : {};
+        const res = await api.get(`/orders/${lastOrder.id}/status`, { headers });
         if (!cancelled) setStatus(res.data.status);
       } catch {
         // Keep showing the last known status if a poll fails.

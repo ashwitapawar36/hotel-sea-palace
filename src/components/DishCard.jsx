@@ -1,25 +1,34 @@
 import { useState } from "react";
-import { Plus, Minus, UtensilsCrossed } from "lucide-react";
+import { Plus, Minus } from "lucide-react";
 import { useCart } from "../context/CartContext";
 import { useToast } from "../context/ToastContext";
 
 export default function DishCard(props) {
-  const item = props.item || props.dish || {};
-  const dish = item;
+  const dish = props.item || props.dish || {};
   const { cart, add, setQty } = useCart();
   const { showToast } = useToast();
+
   const [flash, setFlash] = useState(false);
-  const [imageFailed, setImageFailed] = useState(false);
-
-  const hasVariants = Array.isArray(dish.variants) && dish.variants.length > 0;
   const [variantIndex, setVariantIndex] = useState(0);
-  const selectedVariant = hasVariants ? dish.variants[variantIndex] : null;
 
-  const cartKey = hasVariants ? `${dish.id}::${selectedVariant.id}` : String(dish.id);
+  const hasVariants =
+    Array.isArray(dish.variants) && dish.variants.length > 0;
+
+  const selectedVariant = hasVariants
+    ? dish.variants[variantIndex] || dish.variants[0]
+    : null;
+
+  const cartKey = selectedVariant
+    ? `${dish.id}::${selectedVariant.id}`
+    : String(dish.id);
+
   const count = cart[cartKey] || 0;
-  const displayPrice = hasVariants ? selectedVariant.price : dish.price;
+  const displayPrice = Number(
+    selectedVariant ? selectedVariant.price : dish.price
+  );
+
   const isAvailable = dish.available !== false;
-  const imageUrl = item.image_url || item.imageUrl || item.image;
+  const description = dish.desc || dish.category;
 
   const flashButton = () => {
     setFlash(true);
@@ -27,12 +36,20 @@ export default function DishCard(props) {
   };
 
   const handleAdd = () => {
+    if (!isAvailable) return;
+
     add(dish, selectedVariant);
-    showToast(`${dish.name}${hasVariants ? ` (${selectedVariant.label})` : ""} added to cart`);
+    showToast(
+      `${dish.name}${
+        selectedVariant ? ` (${selectedVariant.label})` : ""
+      } added to cart`
+    );
     flashButton();
   };
 
   const handleIncrement = () => {
+    if (!isAvailable) return;
+
     add(dish, selectedVariant);
     flashButton();
   };
@@ -42,151 +59,175 @@ export default function DishCard(props) {
     flashButton();
   };
 
+  const quantityButtonStyle = {
+    width: 36,
+    height: 36,
+    flexShrink: 0,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    background: "transparent",
+    border: "none",
+    color: "var(--bg)",
+    cursor: "pointer",
+  };
+
   return (
     <div
       className="card"
       style={{
-        overflow: "hidden",
-        opacity: isAvailable ? 1 : 0.5,
+        padding: 14,
+        display: "flex",
+        flexDirection: "column",
+        height: "100%",
+        boxSizing: "border-box",
+        opacity: isAvailable ? 1 : 0.6,
       }}
     >
-      <div style={{ position: "relative", height: 110, background: "#111" }}>
-        {imageUrl && !imageFailed ? (
-          <img
-            src={imageUrl}
-            alt={dish.name}
-            onError={() => setImageFailed(true)}
-            style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-            loading="lazy"
-          />
-        ) : (
-          <div
-            style={{
-              width: "100%",
-              height: "100%",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              background: "linear-gradient(135deg, #1a1a1a, #262626)",
-            }}
-          >
-            <UtensilsCrossed size={26} color="var(--muted)" strokeWidth={1.5} />
-          </div>
-        )}
-        <div
+      <div
+        style={{
+          display: "flex",
+          alignItems: "flex-start",
+          justifyContent: "space-between",
+          flexWrap: "wrap",
+          gap: 8,
+          marginBottom: 8,
+        }}
+      >
+        <p
           style={{
-            position: "absolute",
-            top: 8,
-            right: 8,
-            background: "rgba(0,0,0,0.6)",
-            backdropFilter: "blur(6px)",
-            borderRadius: 8,
-            padding: "3px 8px",
+            flex: "1 1 100px",
+            fontFamily: "Poppins,sans-serif",
+            color: "var(--white)",
+            fontSize: 14,
+            fontWeight: 600,
+            margin: 0,
+            lineHeight: 1.45,
+            overflowWrap: "anywhere",
           }}
         >
-          <span style={{ fontFamily: "Poppins,sans-serif", color: "var(--gold)", fontSize: 12, fontWeight: 700 }}>
-            ₹{displayPrice.toLocaleString("en-IN")}
-          </span>
-        </div>
-        {!isAvailable && (
-          <div
-            style={{
-              position: "absolute",
-              inset: 0,
-              background: "rgba(0,0,0,0.55)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <span
-              style={{
-                fontFamily: "Poppins,sans-serif",
-                fontSize: 11,
-                fontWeight: 700,
-                color: "var(--white)",
-                background: "rgba(229,57,53,0.85)",
-                padding: "4px 10px",
-                borderRadius: 8,
-                letterSpacing: "0.04em",
-              }}
-            >
-              Unavailable
-            </span>
-          </div>
-        )}
-      </div>
-      <div style={{ padding: "10px 10px 12px" }}>
-        <p style={{ fontFamily: "Poppins,sans-serif", color: "var(--white)", fontSize: 12.5, fontWeight: 600, marginBottom: 3, lineHeight: 1.35 }}>
           {dish.name}
         </p>
+
+        <span
+          style={{
+            fontFamily: "Poppins,sans-serif",
+            color: "var(--gold)",
+            fontSize: 14,
+            fontWeight: 700,
+            whiteSpace: "nowrap",
+          }}
+        >
+          {Number.isFinite(displayPrice)
+            ? `₹${displayPrice.toLocaleString("en-IN", {
+                maximumFractionDigits: 2,
+              })}`
+            : "—"}
+        </span>
+      </div>
+
+      {description && (
         <p
           style={{
             fontFamily: "Inter,sans-serif",
             color: "var(--muted)",
-            fontSize: 10.5,
+            fontSize: 11.5,
             lineHeight: 1.5,
-            marginBottom: hasVariants ? 8 : 10,
+            margin: "0 0 12px",
             display: "-webkit-box",
             WebkitLineClamp: 2,
             WebkitBoxOrient: "vertical",
             overflow: "hidden",
           }}
         >
-          {dish.desc || dish.category}
+          {description}
         </p>
+      )}
 
-        {hasVariants && (
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 5, marginBottom: 10 }}>
-            {dish.variants.map((v, i) => {
-              const active = i === variantIndex;
-              return (
-                <button
-                  key={v.id}
-                  type="button"
-                  onClick={() => setVariantIndex(i)}
-                  aria-pressed={active}
-                  style={{
-                    padding: "4px 8px",
-                    borderRadius: 8,
-                    fontSize: 10,
-                    fontWeight: 600,
-                    fontFamily: "Poppins,sans-serif",
-                    lineHeight: 1.6,
-                    border: `1.3px solid ${active ? "var(--gold)" : "var(--border)"}`,
-                    background: active ? "var(--gold-dim)" : "transparent",
-                    color: active ? "var(--gold)" : "var(--muted)",
-                  }}
-                >
-                  {v.label}
-                </button>
-              );
-            })}
-          </div>
-        )}
+      {!isAvailable && (
+        <span
+          style={{
+            alignSelf: "flex-start",
+            color: "#ff8a80",
+            background: "rgba(229,57,53,0.12)",
+            borderRadius: 6,
+            padding: "4px 8px",
+            marginBottom: 10,
+            fontSize: 11,
+            fontWeight: 600,
+          }}
+        >
+          Unavailable
+        </span>
+      )}
 
+      {hasVariants && (
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: 6,
+            marginBottom: 12,
+          }}
+        >
+          {dish.variants.map((variant, index) => {
+            const active = variant.id === selectedVariant.id;
+
+            return (
+              <button
+                key={variant.id}
+                type="button"
+                onClick={() => setVariantIndex(index)}
+                aria-pressed={active}
+                style={{
+                  padding: "5px 9px",
+                  borderRadius: 8,
+                  fontSize: 11,
+                  fontWeight: 600,
+                  fontFamily: "Poppins,sans-serif",
+                  border: `1px solid ${
+                    active ? "var(--gold)" : "var(--border)"
+                  }`,
+                  background: active
+                    ? "var(--gold-dim)"
+                    : "transparent",
+                  color: active ? "var(--gold)" : "var(--muted)",
+                  cursor: "pointer",
+                }}
+              >
+                {variant.label}
+              </button>
+            );
+          })}
+        </div>
+      )}
+
+      <div style={{ marginTop: "auto" }}>
         {count === 0 ? (
           <button
+            type="button"
             disabled={!isAvailable}
             onClick={handleAdd}
             className={flash ? "add-flash" : ""}
             style={{
               width: "100%",
-              padding: "8px 0",
+              minHeight: 38,
+              padding: "8px 4px",
               border: "1.5px solid var(--gold)",
               borderRadius: 10,
               background: "transparent",
               color: "var(--gold)",
               fontFamily: "Poppins,sans-serif",
-              fontSize: 11.5,
+              fontSize: 12,
               fontWeight: 600,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              gap: 4,
+              gap: 5,
+              cursor: isAvailable ? "pointer" : "not-allowed",
             }}
           >
-            <Plus size={12} strokeWidth={2.5} />
+            <Plus size={14} strokeWidth={2.5} />
             Add to Cart
           </button>
         ) : (
@@ -196,7 +237,6 @@ export default function DishCard(props) {
               display: "flex",
               alignItems: "center",
               justifyContent: "space-between",
-              width: "100%",
               border: "1.5px solid var(--gold)",
               borderRadius: 10,
               background: "var(--gold)",
@@ -204,40 +244,36 @@ export default function DishCard(props) {
             }}
           >
             <button
+              type="button"
               onClick={handleDecrement}
-              aria-label="Remove one"
+              aria-label={`Remove one ${dish.name}`}
+              style={quantityButtonStyle}
+            >
+              <Minus size={15} strokeWidth={2.5} />
+            </button>
+
+            <span
               style={{
-                width: 28,
-                height: 28,
-                flexShrink: 0,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                background: "transparent",
-                border: "none",
+                fontFamily: "Poppins,sans-serif",
+                fontSize: 13,
+                fontWeight: 700,
                 color: "var(--bg)",
               }}
             >
-              <Minus size={13} strokeWidth={2.5} />
-            </button>
-            <span style={{ fontFamily: "Poppins,sans-serif", fontSize: 12, fontWeight: 700, color: "var(--bg)" }}>{count}</span>
+              {count}
+            </span>
+
             <button
+              type="button"
               disabled={!isAvailable}
               onClick={handleIncrement}
-              aria-label="Add one more"
+              aria-label={`Add one more ${dish.name}`}
               style={{
-                width: 28,
-                height: 28,
-                flexShrink: 0,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                background: "transparent",
-                border: "none",
-                color: "var(--bg)",
+                ...quantityButtonStyle,
+                cursor: isAvailable ? "pointer" : "not-allowed",
               }}
             >
-              <Plus size={13} strokeWidth={2.5} />
+              <Plus size={15} strokeWidth={2.5} />
             </button>
           </div>
         )}

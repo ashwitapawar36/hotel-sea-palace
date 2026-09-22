@@ -15,8 +15,7 @@ async function initializeDatabase() {
     await runSqlFile(path.join(__dirname, 'seed.sql'));
     await runSqlFile(path.join(__dirname, 'table-visits.sql'));
     await runSqlFile(path.join(__dirname, 'migration-revisions.sql'));
-    await runSqlFile(path.join(__dirname, 'update_menu_images.sql'));
-    console.log('Database initialized successfully with all migrations and menu images');
+    console.log('Database initialized successfully with all migrations');
   } catch (error) {
     console.error('Database initialization failed', error);
     process.exitCode = 1;

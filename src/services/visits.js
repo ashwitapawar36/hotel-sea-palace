@@ -4,7 +4,7 @@ function storageKey(tableNumber) {
   return `sea-palace-visit-${tableNumber}`;
 }
 
-function readSession(tableNumber) {
+export function readSession(tableNumber) {
   const stored = localStorage.getItem(storageKey(tableNumber));
 
   if (!stored) return null;
@@ -96,10 +96,16 @@ export async function startOrResumeVisit(tableNumber) {
     throw new Error("Could not confirm your table visit.");
   }
 
-  saveSession(number, {
-    ...session,
-    visitId: visit.id,
-  });
+  const latestSession = readSession(number);
+
+if (!latestSession || latestSession.token !== session.token) {
+  throw new Error("Your visit changed. Refresh the page before continuing.");
+}
+
+saveSession(number, {
+  ...latestSession,
+  visitId: visit.id,
+});
 
   return visit;
 }
@@ -175,10 +181,11 @@ export async function submitOrderRound(tableNumber, payload) {
   }
 
   return {
-    order,
-    replayed: Boolean(response.data.replayed),
-    submissionKey: pending.submissionKey,
-  };
+  order,
+  replayed: Boolean(response.data.replayed),
+  submissionKey: pending.submissionKey,
+  submittedItems: pending.payload.items,
+};
 }
 
 // Call only after the UI has accepted the successful order response.

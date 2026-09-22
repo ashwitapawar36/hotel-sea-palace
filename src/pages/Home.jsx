@@ -230,7 +230,11 @@ export default function Home() {
                   <SectionTitle label="Bar Menu" />
                   <div className="chip-row">
                     {barCategoryChips.map((label) => (
-                      <Link key={label} to="/menu" className="chip">
+                      <Link
+                          key={label}
+                          to={`/menu?section=bar&category=${encodeURIComponent(label)}`}
+                          className="chip"
+                        >
                         <span style={{ fontSize: 14 }}>{categoryIcon(label, "🍸")}</span>
                         {label}
                       </Link>

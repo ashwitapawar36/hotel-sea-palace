@@ -57,6 +57,14 @@ export default function Cart() {
     () => visitOrders.filter((o) => o.status !== "cancelled"),
     [visitOrders]
   );
+  const ratedItems = useMemo(() => {
+    const seen = new Set();
+    return nonCancelledOrders.flatMap((order) => (order.items || []).filter((item) => {
+      if (!item.id || seen.has(item.id)) return false;
+      seen.add(item.id);
+      return true;
+    }));
+  }, [nonCancelledOrders]);
 
   // Submit current unsent items as a new order round
   const handleSendRound = async () => {
@@ -593,6 +601,7 @@ return true;
         tableNumber={tableNumber}
         onClose={() => setShowFeedbackModal(false)}
         onComplete={handleFeedbackComplete}
+        items={ratedItems}
       />
     </div>
   );

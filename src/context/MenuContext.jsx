@@ -7,6 +7,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { useLocation } from "react-router-dom";
 
 import { api, ApiError } from "../services/api";
 
@@ -92,6 +93,8 @@ function normalizeFoodItem(row) {
     ),
 
     totalQuantity: Number(row.total_quantity ?? 0),
+    averageRating: Number(row.average_rating ?? 0),
+    ratingCount: Number(row.rating_count ?? 0),
   };
 }
 
@@ -142,10 +145,13 @@ function normalizeBarItem(row) {
 
     // Preserve database IDs for order submission.
     variants,
+    averageRating: Number(row.average_rating ?? 0),
+    ratingCount: Number(row.rating_count ?? 0),
   };
 }
 
 export function MenuProvider({ children }) {
+  const location = useLocation();
   const [state, setState] = useState(INITIAL_STATE);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -217,13 +223,15 @@ export function MenuProvider({ children }) {
   }, []);
 
   useEffect(() => {
-    load();
+    if (location.pathname === "/" || location.pathname === "/menu") {
+      load();
+    }
 
     return () => {
       // Ignore pending responses after cleanup.
       requestIdRef.current += 1;
     };
-  }, [load]);
+  }, [load, location.pathname]);
 
   const value = useMemo(
     () => ({

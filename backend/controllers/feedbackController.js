@@ -69,4 +69,11 @@ async function listFeedback(req, res, next) {
   }
 }
 
-module.exports = { submitFeedback, getFeedbackForOrder, listFeedback };
+async function listPublicFeedback(req, res, next) {
+  try {
+    const { rows } = await db.query(`SELECT rating, comment, created_at FROM visit_feedback WHERE comment IS NOT NULL AND LENGTH(TRIM(comment)) > 0 ORDER BY created_at DESC LIMIT 50`);
+    res.json({ success: true, data: rows });
+  } catch (error) { next(error); }
+}
+
+module.exports = { submitFeedback, getFeedbackForOrder, listFeedback, listPublicFeedback };

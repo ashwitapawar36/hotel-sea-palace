@@ -1,15 +1,16 @@
 import { useState } from "react";
 import { Star, X, Loader2 } from "lucide-react";
 import { useToast } from "../context/ToastContext";
-import { submitVisitFeedback } from "../services/visits";
+import { submitVisitFeedback, submitItemRatings } from "../services/visits";
 
-export default function FeedbackModal({ open, onClose, onComplete, tableNumber }) {
+export default function FeedbackModal({ open, onClose, onComplete, tableNumber, items = [] }) {
   const { showToast } = useToast();
   const [rating, setRating] = useState(0);
   const [hover, setHover] = useState(0);
   const [text, setText] = useState("");
   const [closing, setClosing] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [itemRatings, setItemRatings] = useState({});
 
   if (!open && !closing) return null;
 
@@ -19,6 +20,7 @@ export default function FeedbackModal({ open, onClose, onComplete, tableNumber }
       setClosing(false);
       setRating(0);
       setText("");
+      setItemRatings({});
       if (callback) callback();
       if (onClose) onClose();
     }, 220);
@@ -31,15 +33,20 @@ export default function FeedbackModal({ open, onClose, onComplete, tableNumber }
   };
 
   const submit = async () => {
-    if (rating === 0) return;
+    const hasItemRatings = Object.keys(itemRatings).length > 0;
+    if (rating === 0 && !hasItemRatings) return;
 
     setSubmitting(true);
     try {
       if (tableNumber) {
-        await submitVisitFeedback(tableNumber, {
-          rating,
-          comment: text.trim() || undefined,
-        });
+        if (rating > 0) {
+          await submitVisitFeedback(tableNumber, {
+            rating,
+            comment: text.trim() || undefined,
+          });
+        }
+        const ratings = Object.entries(itemRatings).map(([orderItemId, rating]) => ({ orderItemId, rating }));
+        if (ratings.length) await submitItemRatings(tableNumber, ratings);
       }
       showToast("Thank you for your feedback!");
       closeWith(() => {
@@ -104,8 +111,23 @@ export default function FeedbackModal({ open, onClose, onComplete, tableNumber }
           How was your dining experience?
         </h2>
         <p id="feedback-description" style={{ color: "var(--muted)", fontSize: 12, textAlign: "center", marginBottom: 20 }}>
-          Optional feedback helps our kitchen and staff serve you better.
+          Rate the dishes you ordered. You can skip any item.
         </p>
+
+        {items.length > 0 && (
+          <div style={{ maxHeight: 190, overflowY: "auto", marginBottom: 16 }}>
+            {items.map((item) => (
+              <div key={item.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, padding: "8px 0", borderBottom: "1px solid var(--border)" }}>
+                <span style={{ color: "var(--white)", fontSize: 12, flex: 1 }}>{item.name}</span>
+                <div style={{ display: "flex", gap: 1 }}>
+                  {[1, 2, 3, 4, 5].map((n) => (
+                    <button type="button" key={n} onClick={() => setItemRatings((old) => ({ ...old, [item.id]: n }))} style={{ background: "transparent", border: "none", color: "var(--gold)", padding: 2, fontSize: 17, opacity: (itemRatings[item.id] || 0) >= n ? 1 : 0.35 }} aria-label={`${item.name}: ${n} stars`}>★</button>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
 
         <div style={{ display: "flex", justifyContent: "center", gap: 8, marginBottom: 18 }}>
           {[1, 2, 3, 4, 5].map((n) => (
@@ -140,7 +162,7 @@ export default function FeedbackModal({ open, onClose, onComplete, tableNumber }
         <button
           type="button"
           className="gold-btn"
-          disabled={rating === 0 || submitting}
+          disabled={(rating === 0 && Object.keys(itemRatings).length === 0) || submitting}
           onClick={submit}
           style={{ marginBottom: 10 }}
         >

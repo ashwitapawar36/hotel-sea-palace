@@ -126,6 +126,12 @@ export default function DishCard(props) {
         </span>
       </div>
 
+      {dish.ratingCount > 0 && (
+        <div style={{ color: "var(--gold)", fontSize: 11, marginBottom: 8 }}>
+          ★ {dish.averageRating.toFixed(1)} <span style={{ color: "var(--muted)" }}>({dish.ratingCount} rating{dish.ratingCount === 1 ? "" : "s"})</span>
+        </div>
+      )}
+
       {description && (
         <p
           style={{

@@ -7,6 +7,7 @@ const LINKS = [
   { label: "Menu", path: "/menu" },
   { label: "Your Cart", path: "/cart" },
   { label: "Final Bill", path: "/bill" },
+  { label: "Guest Reviews", path: "/reviews" },
 ];
 
 export default function NavDrawer() {

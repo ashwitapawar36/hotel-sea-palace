@@ -756,6 +756,33 @@ router.post('/:id/feedback', async (req, res, next) => {
   }
 });
 
+// Customer-facing ratings for dishes actually ordered in this visit.
+router.post('/:id/item-ratings', async (req, res, next) => {
+  const client = await db.getClient();
+  try {
+    const visitId = req.params.id;
+    const token = req.get('X-Visit-Token');
+    const ratings = req.body?.ratings;
+    if (!UUID_PATTERN.test(visitId) || !validToken(token) || !Array.isArray(ratings)) throw fail(400, 'Valid visit details and ratings are required.');
+    const visitRes = await client.query('SELECT id FROM table_visits WHERE id = $1 AND access_token_hash = $2', [visitId, hashToken(token)]);
+    if (!visitRes.rows[0]) throw fail(403, 'Visit not found or access denied.');
+    await client.query('BEGIN');
+    for (const entry of ratings) {
+      const orderItemId = String(entry.orderItemId || '');
+      const rating = Number(entry.rating);
+      if (!UUID_PATTERN.test(orderItemId) || !Number.isInteger(rating) || rating < 1 || rating > 5) continue;
+      const owned = await client.query(`SELECT oi.id, oi.menu_item_id FROM order_items oi JOIN orders o ON o.id = oi.order_id WHERE oi.id = $1 AND o.visit_id = $2 AND o.status <> 'cancelled'`, [orderItemId, visitId]);
+      if (!owned.rows[0]) continue;
+      await client.query(`INSERT INTO item_feedback (visit_id, order_item_id, menu_item_id, rating) VALUES ($1, $2, $3, $4) ON CONFLICT (visit_id, order_item_id) DO UPDATE SET rating = EXCLUDED.rating`, [visitId, orderItemId, owned.rows[0].menu_item_id, rating]);
+    }
+    await client.query('COMMIT');
+    res.status(201).json({ success: true, message: 'Item ratings saved.' });
+  } catch (error) {
+    try { await client.query('ROLLBACK'); } catch {}
+    next(error);
+  } finally { client.release(); }
+});
+
 // Bill splitting for the visit's final bill
 router.post('/:id/split-bill', async (req, res, next) => {
   try {

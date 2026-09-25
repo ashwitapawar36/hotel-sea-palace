@@ -14,6 +14,7 @@ async function initializeDatabase() {
     await runSqlFile(path.join(__dirname, 'schema.sql'));
     await runSqlFile(path.join(__dirname, 'seed.sql'));
     await runSqlFile(path.join(__dirname, 'table-visits.sql'));
+    await runSqlFile(path.join(__dirname, 'item-feedback.sql'));
     await runSqlFile(path.join(__dirname, 'migration-revisions.sql'));
     console.log('Database initialized successfully with all migrations');
   } catch (error) {

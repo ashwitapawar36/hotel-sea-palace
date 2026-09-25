@@ -204,6 +204,8 @@ const ITEM_COLUMNS = `
   mi.preparation_time_minutes,
   mi.created_at,
   mi.updated_at,
+  COALESCE((SELECT ROUND(AVG(ifb.rating)::numeric, 1) FROM item_feedback ifb WHERE ifb.menu_item_id = mi.id), 0) AS average_rating,
+  COALESCE((SELECT COUNT(*) FROM item_feedback ifb WHERE ifb.menu_item_id = mi.id), 0) AS rating_count,
   EXISTS (
     SELECT 1
     FROM todays_specials ts

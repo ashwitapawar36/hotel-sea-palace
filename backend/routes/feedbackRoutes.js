@@ -1,5 +1,5 @@
 const express = require('express');
-const { submitFeedback, getFeedbackForOrder, listFeedback } = require('../controllers/feedbackController');
+const { submitFeedback, getFeedbackForOrder, listFeedback, listPublicFeedback } = require('../controllers/feedbackController');
 const authenticateManager = require('../middleware/auth');
 const { submitFeedbackValidator, orderIdParam } = require('../validators/feedbackValidators');
 const { handleValidation } = require('../utils/validation');
@@ -10,6 +10,7 @@ const router = express.Router();
 // manager credential, same pattern as orders/bills.
 router.post('/', submitFeedbackValidator, handleValidation, submitFeedback);
 router.get('/order/:orderId', orderIdParam, handleValidation, getFeedbackForOrder);
+router.get('/public', listPublicFeedback);
 
 // Manager-only: browse everything that's come in.
 router.get('/', authenticateManager, listFeedback);

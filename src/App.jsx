@@ -13,6 +13,7 @@ import SplitBill from "./pages/SplitBill";
 import DigitalBill from "./pages/DigitalBill";
 import OrderSuccess from "./pages/OrderSuccess";
 import Feedback from "./pages/Feedback";
+import Reviews from "./pages/Reviews";
 
 import ManagerLogin from "./pages/manager/ManagerLogin";
 import ManagerDashboard from "./pages/manager/ManagerDashboard";
@@ -66,6 +67,7 @@ export default function App() {
               />
               <Route path="/order-success" element={<OrderSuccess />} />
               <Route path="/feedback" element={<Feedback />} />
+              <Route path="/reviews" element={<RequireTable><Reviews /></RequireTable>} />
 
               <Route path="/manager" element={<ManagerLayout />}>
                 <Route path="login" element={<ManagerLogin />} />

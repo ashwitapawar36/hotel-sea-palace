@@ -221,6 +221,14 @@ export async function requestFinalBill(tableNumber) {
   return response.data;
 }
 
+export async function submitItemRatings(tableNumber, ratings) {
+  const session = requireSession(Number(tableNumber));
+  const response = await api.post(`/visits/${session.visitId}/item-ratings`, { ratings }, {
+    headers: { "X-Visit-Token": session.token },
+  });
+  return response.data;
+}
+
 const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
 export async function downloadVisitBillPdf(tableNumber, billNumber) {
